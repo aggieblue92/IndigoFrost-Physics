@@ -1,0 +1,16 @@
+----------------------------------------TODO LIST----------------------------------------
+
+------MAINTENENCE------
+-Organize all physics code into files for easy integration into projects
+++Physics -> Forces / Contacts / Managers
+
+-Add an Ogre integrator - manager that binds particles to scene nodes,
+   and updates the scene nodes as particles are updated
+   
+-Create documentation for each class, and a begin to end application guide
+   (for adding to projects, especially Ogre)
+   
+------PHYSICS------
+-Create "Rigid Body" class
+-Create Matrix3, Matrix4 classes
+-Create an Inverse Tensor Calculator given x,y,z,m list (python and/or c++)
