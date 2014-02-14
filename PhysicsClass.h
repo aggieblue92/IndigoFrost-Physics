@@ -10,10 +10,10 @@ namespace Frost {
 		Vect3() : x(0.0f), y(0.0f), z(0.0f) {}
 		Vect3(float xPos, float yPos, float zPos) :
 			x(xPos), y(yPos), z(zPos) {}
-		Vect3& operator+(const Vect3 right) {
+		Vect3 operator+(const Vect3 right) {
 			return Vect3(x + right.x, y + right.y, z + right.z);
 		}
-		Vect3& operator-(const Vect3 right) {
+		Vect3 operator-(const Vect3 right) {
 			return Vect3(x - right.x, y - right.y, z - right.z);
 		}
 		Vect3& operator+=(const Vect3 right) {

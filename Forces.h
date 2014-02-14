@@ -9,5 +9,6 @@
 #include "PlayerMotionForce.h"
 #include "PhysicsClass.h"
 #include "GravityForce.h"
+#include "ExplosionForce.h"
 
 #endif
