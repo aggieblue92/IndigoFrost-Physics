@@ -1,5 +1,5 @@
-#ifndef _GRAVITY_FORCE_KAM_H_
-#define _GRAVITY_FORCE_KAM_H_
+#ifndef INDIGO_FROST_GRAVITY_FORCE_H
+#define INDIGO_FROST_GRAVITY_FORCE_H
 
 // Notice: As the engine gets larger, it may be more
 //  prudent to implement gravity directly inside the
@@ -8,10 +8,11 @@
 #include "ForceGenerator.h"
 
 namespace Frost {
-	class GravityForce : public ParticleForceGenerator {
+	class GravityForce : public RigidBodyForceGenerator {
 	public:
 		GravityForce() {}
-		virtual void updateForce(Particle* p, float duration);
+		virtual void updateForce(RigidBody* p, float duration);
+
 	};
 }
 #endif

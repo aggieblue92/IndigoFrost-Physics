@@ -3,13 +3,13 @@ using namespace Frost;
 
 ForceRegistry::ForceRegistry() {}
 
-void ForceRegistry::Add(Particle* p, ParticleForceGenerator* g) {
+void ForceRegistry::Add(RigidBody* rb, RigidBodyForceGenerator* g) {
 	// Register the given particle and force.
 	//  Exit w/o fail if either is invalid.
-	if (0 == p || 0 == g)
+	if (0 == rb || 0 == g)
 		return;
 	else
-		m_Registry.push_back(new ParticleForceEntry(p, g));
+		m_Registry.push_back(new RigidBodyForceEntry(rb, g));
 }
 
 void ForceRegistry::ClearRegistry() {
@@ -21,11 +21,11 @@ void ForceRegistry::ClearRegistry() {
 	m_Registry.clear();
 }
 
-void ForceRegistry::Remove(Particle* p, ParticleForceGenerator* g) {
+void ForceRegistry::Remove(RigidBody* p, RigidBodyForceGenerator* g) {
 	for (int i = 0; i < m_Registry.size(); i++) {
 		if ((m_Registry[i]->gen == g || 0 == g)
 			&&
-			(m_Registry[i]->particle == p || 0 == p)) {
+			(m_Registry[i]->rigid_body == p || 0 == p)) {
 			m_Registry.erase(m_Registry.begin() + i);
 		}
 	}
@@ -33,6 +33,6 @@ void ForceRegistry::Remove(Particle* p, ParticleForceGenerator* g) {
 
 void ForceRegistry::UpdateForces(float timeElapsed) {
 	for (int i = 0; i < m_Registry.size(); i++){
-		m_Registry[i]->gen->updateForce(m_Registry[i]->particle, timeElapsed);
+		m_Registry[i]->gen->updateForce(m_Registry[i]->rigid_body, timeElapsed);
 	}
 }

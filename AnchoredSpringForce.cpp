@@ -1,27 +1,30 @@
 #include "AnchoredSpringForce.h"
 using namespace Frost;
 
-AnchoredSpring::AnchoredSpring(Vect3 anchor, float springConstant,
-	float restLength) :
-	m_anchor(anchor),
-	m_springConstant(springConstant),
-	m_restLength(restLength)
+AnchoredSpring::AnchoredSpring(Vect3 anchor, Vect3 connectionPoint_local,
+			float springConstant,
+			float restLength)
+			: m_anchor(anchor),
+			m_connectionPoint(connectionPoint_local),
+			m_springConstant(springConstant),
+			m_restLength(restLength)
 {}
 
-void AnchoredSpring::updateForce(Particle* p, float duration) {
-	Vect3 force;
-	
-	// Calculate vector of the spring
-	force = p->GetPosition();
-	force -= m_anchor;
+void AnchoredSpring::updateForce(RigidBody* rb, float duration) {
+	// Calculate the connected end in world space...
+	Vect3 connection_world = localToWorld(m_connectionPoint, rb->m_transformMatrix);
 
-	// Calculate the magnitude of the force
+	// Calculate the spring vector (i.e., where does it point?)
+	Vect3 force = connection_world - m_anchor;
+	
+	// Calculate the magnitude of the force...
 	float magnitude = force.Magnitude();
-	magnitude = (magnitude - m_restLength);
+	magnitude = std::abs(magnitude - m_restLength);
 	magnitude *= m_springConstant;
 
-	// Calculate final force and apply it.
+	// Calculate the final force and apply it
 	force.Normalize();
-	force *= -magnitude;
-	p->AugmentNetForce(force);
+	force *= -magnitude; // Note def. of force
+	// Note - this is modified. Not sure it's right.
+	rb->addForceAtPoint(force, connection_world);
 }

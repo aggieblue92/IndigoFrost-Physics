@@ -9,7 +9,7 @@ ExplosionForce::ExplosionForce(float duration, float force_per_second, Vect3 sou
 	: m_duration(duration), m_explosionPower(force_per_second), m_sourcePos(sourcePos), m_timeRemaining(0.f)
 {}
 
-void ExplosionForce::updateForce(Particle* p, float duration) {
+void ExplosionForce::updateForce(RigidBody* rb, float duration) {
 	// If this is inactive, just don't do it.
 	if(m_timeRemaining < 0.f)
 		return;
@@ -17,21 +17,21 @@ void ExplosionForce::updateForce(Particle* p, float duration) {
 	m_timeRemaining -= duration;
 
 	// Finite mass?
-	if(!p->IsFiniteMass())
+	if(!rb->IsFiniteMass())
 		return;
 
 	// Get the unit direction we're looking at.
-	Vect3 dir = (p->GetPosition() - m_sourcePos).GetNormal();
+	Vect3 dir = (rb->m_position - m_sourcePos).GetNormal();
 
 	// Multiply by force to add (which is force per second times duration)
 	dir *= m_explosionPower * duration;
 
 	// Divide by radius squared? Sure. Why not.
-	float radius = (p->GetPosition() - m_sourcePos).Magnitude();
+	float radius = (rb->m_position - m_sourcePos).Magnitude();
 	dir *= 1 / (radius * radius);
 
 	// Now we have our force.
-	p->AugmentNetForce(dir);
+	rb->addForce(dir);
 }
 
 void ExplosionForce::setDuration(float duration) {

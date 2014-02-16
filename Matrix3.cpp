@@ -38,6 +38,14 @@ Matrix3 Matrix3::operator*(const Matrix3& o) const {
 	);
 }
 
+Vect3 Matrix3::operator*(const Vect3& o) const {
+	return Vect3(
+		data[0] * o.x + data[3] * o.y + data[6] * o.z,
+		data[1] * o.x + data[4] * o.y + data[7] * o.z,
+		data[2] * o.x + data[5] * o.y + data[8] * o.z
+		);
+}
+
 void Matrix3::setInverse(const Matrix3& m) {
 	float t4 = m.data[0]*m.data[4];
 	float t6 = m.data[0]*m.data[5];

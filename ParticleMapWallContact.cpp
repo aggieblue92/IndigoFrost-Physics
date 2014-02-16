@@ -49,4 +49,5 @@ unsigned int ParticleMapWallContact::fillContact(
 	contact->m_penetration = -distanceFromWall;
 	contact->m_restitutionCoefficient = 0.08f;
 	// We don't want to bounce off of our walls, just thud.
+	//  TODO: Change this - make the map walls way bouncy if you want.
 }

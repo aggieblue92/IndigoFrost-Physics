@@ -1,5 +1,5 @@
-#ifndef _BASIC_SPRING_FORCE_KAM_H_
-#define _BASIC_SPRING_FORCE_KAM_H_
+#ifndef INDIGO_FROST_BASIC_SPRING_FORCE_H
+#define INDIGO_FROST_BASIC_SPRING_FORCE_H
 
 #include "ForceGenerator.h"
 
@@ -17,16 +17,24 @@
 ///////////////////////////////////////////////////////
 
 namespace Frost {
-	class BasicSpringForce : public ParticleForceGenerator {
+	class BasicSpringForce : public RigidBodyForceGenerator {
 	public:
-		BasicSpringForce(Particle* anchor,
-			float springConstant, float restLength);
-		virtual void updateForce(Particle* p, float duration);
+		BasicSpringForce(const Vect3& localConnectionPt,
+			RigidBody* other,
+			const Vect3& otherConnectionPt,
+			float springConstant,
+			float restLength);
+		virtual void updateForce(RigidBody* rb, float duration);
 
 	private:
-		Particle* m_anchor;
+		RigidBody* m_other;
 		float m_springConstant;
 		float m_restLength;
+
+		// These are the connection points to the two objects
+		//  IN LOCAL COORDINATES.
+		Vect3 m_connectionPoint;
+		Vect3 m_otherConnectionPoint;
 	};
 }
 #endif

@@ -1,5 +1,5 @@
-#ifndef _PHYSICS_CLASS_KAM_H_
-#define _PHYSICS_CLASS_KAM_H_
+#ifndef INDIGO_FROST_PHYSICS_CLASS_H
+#define INDIGO_FROST_PHYSICS_CLASS_H
 
 #include <assert.h>
 #include <math.h>
@@ -31,7 +31,7 @@ namespace Frost {
 		Vect3 operator*=(const float right) {
 			return Vect3(x *= right, y *= right, z *= right);
 		}
-		Vect3 CrossProduct(const Vect3 left, const Vect3 right) {
+		static Vect3 CrossProduct(const Vect3 left, const Vect3 right) {
 			return Vect3(left.y * right.z - left.z * right.y,
 				left.z * right.x - left.x * right.z,
 				left.x * right.y - left.y * right.x);

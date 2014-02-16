@@ -11,6 +11,9 @@
    (for adding to projects, especially Ogre)
    
 ------PHYSICS------
--Create "Rigid Body" class
--Create Matrix3, Matrix4 classes
--Create an Inverse Tensor Calculator given x,y,z,m list (python and/or c++)
+-Create multiple constructors for the RigidBody class
+
+-Matrix4 class: Make Transform and TransformDirn (p.206) functions do
+   what they're supposed to - transform a position and direction
+   vector (respectively) by the matrix or something like that.
+   THIS IS ACTUALLY LIKE SUPER VITAL.

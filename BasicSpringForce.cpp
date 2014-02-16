@@ -1,27 +1,33 @@
 #include "BasicSpringForce.h"
 using namespace Frost;
 
-BasicSpringForce::BasicSpringForce(Particle* anchor,
-	float springConstant, float restLength) :
-	m_anchor(anchor),
-	m_springConstant(springConstant),
-	m_restLength(restLength)
+BasicSpringForce::BasicSpringForce(const Vect3& localConnectionPt,
+			RigidBody* other,
+			const Vect3& otherConnectionPt,
+			float springConstant,
+			float restLength)
+			: m_connectionPoint(localConnectionPt),
+			m_otherConnectionPoint(otherConnectionPt),
+			m_other(other),
+			m_springConstant(springConstant),
+			m_restLength(restLength)
 {}
 
-void BasicSpringForce::updateForce(Particle* p, float duration) {
-	Vect3 force;
+void BasicSpringForce::updateForce(RigidBody* rb, float duration) {
+	// Calculate the two ends in world space
+	Vect3 connection_world = localToWorld(m_connectionPoint, rb->m_transformMatrix);
+	Vect3 other_conn_world = localToWorld(m_otherConnectionPoint, m_other->m_transformMatrix);
 
-	// Calculate vector of the spring
-	force = p->GetPosition();
-	force -= m_anchor->GetPosition();
+	// Calculate the vector of the spring...
+	Vect3 force = connection_world - other_conn_world;
 
-	// Calculate magnitude of the force
+	// Calculate the magnitude of the force...
 	float magnitude = force.Magnitude();
-	magnitude = (magnitude - m_restLength);
+	magnitude = std::abs(magnitude - m_restLength);
 	magnitude *= m_springConstant;
 
-	// Calculate final force and apply it.
+	// Calculate the final force and apply it
 	force.Normalize();
-	force *= -magnitude;
-	p->AugmentNetForce(force);
+	force *= -magnitude; // Note definition of force.
+	rb->addForceAtPoint(force, connection_world);
 }

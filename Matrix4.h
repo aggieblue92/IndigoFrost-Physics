@@ -10,7 +10,7 @@ namespace Frost {
 		Matrix4();
 		Matrix4(float _11, float _12, float _13, float _14, float _21, float _22, float _23, float _24, float _31, float _32, float _33, float _34);
 		// Transforms a vector using matrix multiplication
-		Vect3 operator*(const Vect3& vect);
+		Vect3 operator*(const Vect3& vect) const;
 		// Returns a matrix that is this times another one.
 		Matrix4 operator*(const Matrix4 &o) const;
 		// Get determinant of the matrix

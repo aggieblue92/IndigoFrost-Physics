@@ -13,7 +13,7 @@ PlayerMotionForce::PlayerMotionForce(Vect3 maxVelocity, float accTime) :
 //  is: acc = (maxVel(1-dampingConstant))/(duration)
 //  to handle the damping alone, and then for reaching that
 //  maximum velocity acc += (maxVel - curVel) / (timeToMax)
-void PlayerMotionForce::updateForce(Particle* p, float duration) {
+void PlayerMotionForce::updateForce(RigidBody* rb, float duration) {
 
 	// We'll be using the inverse of duration, so make sure
 	//  that it's greater than zero. If zero, nothing happened.
@@ -30,7 +30,7 @@ void PlayerMotionForce::updateForce(Particle* p, float duration) {
 	//  maximum velocity and nothing more is BROKEN.
 	// Consult the whiteboard
 	Vect3 accountForDampingAtMaxVelocity =
-		maxVelocity * (pow(p->GetDrag(), -duration) - 1.0f);
+		maxVelocity * (pow(rb->getDamping(), -duration) - 1.0f);
 	accountForDampingAtMaxVelocity *= (1.0f / duration);
 	
 	// Currently testing this guy - see whiteboard (2)
@@ -39,10 +39,10 @@ void PlayerMotionForce::updateForce(Particle* p, float duration) {
 
 	Vect3 total = accountForDampingAtMaxVelocity + speedUpIfSlowerThanMaxVelocity;
 	// Best idea so far: but WHY is that 10.0f there on the second line?!?
-	total = (maxVelocity) * (1.0f / p->GetDrag());
-	total *= (10.0f * p->GetMass());
+	total = (maxVelocity) * (1.0f / rb->getDamping());
+	total *= (10.0f * rb->getDamping());
 
-	p->AugmentNetForce(total);
+	rb->addForce(total);
 
 	m_active = false;
 }

@@ -47,7 +47,7 @@ Matrix4 Matrix4::operator*(const Matrix4& o) const {
 
 void Matrix4::setInverse(const Matrix4& m) {
 	// Make sure the determinant is non-zero.
-	float det = getDeterminant();
+	float det = m.getDeterminant();
 	if (det == 0)
 		return;
 	det = ((float)1.0)/det;
@@ -84,7 +84,7 @@ void Matrix4::setInverse(const Matrix4& m) {
 		m.data[0]*m.data[5]*m.data[11])*det;
 }
 
-Vect3 Matrix4::operator*(const Vect3& vect) {
+Vect3 Matrix4::operator*(const Vect3& vect) const {
 	return Vect3(
 		vect.x * data[0] +
 		vect.y * data[1] +
@@ -129,12 +129,12 @@ void Matrix4::invert() {
 	setInverse(*this);
 }
 
-Vect3 localToWorld(const Vect3 & local, const Matrix4& transform) {
+Vect3 Frost::localToWorld(const Vect3 & local, const Matrix4& transform) {
 	return transform * local;
 	// Is this even right?
 }
 
-Vect3 worldToLocal(const Vect3 & world, const Matrix4& transform) {
+Vect3 Frost::worldToLocal(const Vect3 & world, const Matrix4& transform) {
 	Matrix4 inverseTransform;
 	inverseTransform.setInverse(transform);
 

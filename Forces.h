@@ -3,11 +3,12 @@
 
 #include "AnchoredSpringForce.h"
 #include "BasicSpringForce.h"
-#include "BuoyancyForce.h"
+//#include "BuoyancyForce.h"
 #include "ForceGenerator.h"
 #include "ForceRegistry.h"
 #include "PlayerMotionForce.h"
 #include "PhysicsClass.h"
+#include "RigidBody.h"
 #include "GravityForce.h"
 #include "ExplosionForce.h"
 

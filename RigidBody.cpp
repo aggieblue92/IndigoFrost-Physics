@@ -75,6 +75,23 @@ static inline void _transformInertiaTensor(Matrix3& iitWorld, const Quaternion& 
 		t62*rotmat.data[10];
 }
 
+RigidBody::RigidBody(Vect3 pos, Vect3 vel, Vect3 acc,
+			Quaternion orientation, Vect3 rotation, Vect3 angularAcc,
+			float mass, float gravity, float damping,
+			float angularDamping, Matrix3 inverseInertiaTensor)
+			: m_position(pos), m_velocity(vel), m_acceleration(acc),
+			m_orientation(orientation), m_rotation(rotation),
+			m_angularAcceleration(angularAcc),
+			m_g(gravity), m_damp(damping),
+			m_angularDamping(angularDamping),
+			m_inverseInertiaTensor(inverseInertiaTensor)
+{
+	assert(mass > 0.f);
+	m_inverseMass = 1.f / mass;
+
+	this->calculateDerivedData();
+}
+
 void RigidBody::calculateDerivedData() {
 	_calculateTransformMatrix(m_transformMatrix, m_position, m_orientation);
 	_transformInertiaTensor(m_inverseInertiaTensorWorld,
@@ -83,4 +100,81 @@ void RigidBody::calculateDerivedData() {
 
 void RigidBody::setInertiaTensor(const Matrix3& inverseInertiaTensor) {
 	m_inverseInertiaTensorWorld = inverseInertiaTensor;
+}
+
+void RigidBody::addForce(const Vect3& force) {
+	this->m_netForces += force;
+}
+
+void RigidBody::addForceAtBodyPoint(const Vect3& force_world, const Vect3& point_local) {
+	// Convert to coordinates relative to center of mass...
+	//worldToLocal
+	Vect3 pt = localToWorld(point_local, m_transformMatrix);
+	addForceAtPoint(force_world, pt);
+}
+
+// ??? I'm pretty sure, but really I'm shakey about all of this.
+void RigidBody::addForceAtPoint(const Vect3& force, const Vect3& pt) {
+	// Add a force to the thinger at this point.
+	//  For now, just handle the torque. I'll figure out
+	//  the linear motion later... TODO TODO
+	Vect3 torque = Vect3::CrossProduct(pt, force);
+	m_netTorque += torque;
+
+	// VERRY VERY TEMPORARY adding of a force...
+	m_netForces += force;
+}
+
+void RigidBody::Integrate(float timeElapsed) {
+	// Calculate linear acceleration from force inputs
+	m_lastFrameAcceleration = m_acceleration;
+	m_lastFrameAcceleration += (m_netForces * m_inverseMass);
+
+	// Calculate angular acceleration from torque inputs
+	m_angularAcceleration = m_inverseInertiaTensorWorld * m_netTorque;
+
+	// Adjust velocities...
+	// Linear velocity from acceleration and impulse
+	m_velocity += (m_lastFrameAcceleration * timeElapsed);
+
+	// Angular velocity from both acceleration and impulse
+	m_rotation += (m_angularAcceleration * timeElapsed);
+
+	// Adjust positions...
+	m_position += (m_velocity * timeElapsed);
+	m_orientation.addScaledVector(m_rotation, timeElapsed);
+
+	// Impose drag...
+	m_velocity *= std::pow(m_damp, timeElapsed);
+	m_rotation *= std::pow(m_angularDamping, timeElapsed);
+
+	// Normalize the orientation quaternion, update matrices
+	//  with new position and orientation
+	calculateDerivedData();
+
+	// Clear the accumulators...
+	m_netForces = Vect3(0.f, 0.f, 0.f);
+	m_netTorque = Vect3(0.f, 0.f, 0.f);
+}
+
+bool RigidBody::IsFiniteMass() {
+	return (0 != m_inverseMass);
+}
+
+float RigidBody::getGravity() {
+	return m_g;
+}
+
+float RigidBody::getDamping() {
+	return m_damp;
+}
+
+float RigidBody::GetMass() {
+	assert(m_inverseMass > 0.f);
+	
+	return 1.f / m_inverseMass;
+}
+
+float RigidBody::GetInverseMass() {
+	return m_inverseMass;
 }

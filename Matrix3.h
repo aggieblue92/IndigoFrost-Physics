@@ -15,6 +15,7 @@ namespace Frost {
 
 		// Matrix multiplication
 		Matrix3 operator*(const Matrix3 &o) const;
+		Vect3 operator*(const Vect3& o) const;
 		// Set as the inverse of a matrix, using witchcraft
 		void Matrix3::setInverse(const Matrix3& m);
 		Matrix3 inverse() const;

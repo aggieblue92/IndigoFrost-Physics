@@ -50,4 +50,6 @@ void Quaternion::addScaledVector(const Vect3& vector, float scale) {
 	i += q.i * 0.5f;
 	j += q.j * 0.5f;
 	k += q.k * 0.5f;
+
+	normalize();
 }

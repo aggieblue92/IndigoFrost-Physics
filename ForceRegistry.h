@@ -1,16 +1,18 @@
-#ifndef _FORCE_REGISTRY_KAM_H_
-#define _FORCE_REGISTRY_KAM_H_
+#ifndef INDIGO_FROST_FORCE_REGISTRY_H
+#define INDIGO_FROST_FORCE_REGISTRY_H
 
 #include "PhysicsClass.h"
 #include "ForceGenerator.h"
+#include "RigidBody.h"
 #include <vector>
 
 namespace Frost {
-	struct ParticleForceEntry {
-		ParticleForceGenerator* gen;
-		Particle* particle;
-		ParticleForceEntry(Particle* p, ParticleForceGenerator* g) :
-			particle(p), gen(g) {}
+
+	struct RigidBodyForceEntry {
+		RigidBodyForceGenerator* gen;
+		RigidBody* rigid_body;
+		RigidBodyForceEntry(RigidBody* rb, RigidBodyForceGenerator* g)
+			: rigid_body(rb), gen(g) {}
 	};
 
 	class ForceRegistry {
@@ -19,8 +21,8 @@ namespace Frost {
 		ForceRegistry(const ForceRegistry& right) {}
 		~ForceRegistry() {}
 
-		void Add(Particle* p, ParticleForceGenerator* g);
-		void Remove(Particle* p, ParticleForceGenerator* g);
+		void Add(RigidBody* rb, RigidBodyForceGenerator* g);
+		void Remove(RigidBody* p, RigidBodyForceGenerator* g);
 		void ClearRegistry();
 
 		void Shutdown() { ClearRegistry(); }
@@ -28,7 +30,7 @@ namespace Frost {
 		void UpdateForces(float timeElapsed);
 
 	protected:
-		std::vector<ParticleForceEntry*> m_Registry;
+		std::vector<RigidBodyForceEntry*> m_Registry;
 	};
 }
 #endif

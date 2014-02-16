@@ -1,7 +1,7 @@
 #pragma once // REMOVE THIS
 
-#ifndef _FROST_EXPLOSION_FORCE_H_
-#define _FROST_EXPLOSION_FORCE_H_
+#ifndef INDIGO_FROST_EXPLOSION_FORCE_H
+#define INDIGO_FROST_EXPLOSION_FORCE_H
 
 #include "ForceGenerator.h"
 
@@ -17,12 +17,15 @@
 
 // Note: Implosions can also be simulated with a negative magnitude of power.
 
+// TODO: Decide if you want this to only affect linear motion.
+//  Really, that's not right.
+
 namespace Frost {
-	class ExplosionForce : public ParticleForceGenerator {
+	class ExplosionForce : public RigidBodyForceGenerator {
 	public:
 		ExplosionForce();
 		ExplosionForce(float duration, float force_per_second, Vect3 sourcePos);
-		virtual void updateForce(Particle* p, float duration);
+		virtual void updateForce(RigidBody* rb, float duration);
 
 		// Getter/Setter functions
 		void setDuration(float duration);
