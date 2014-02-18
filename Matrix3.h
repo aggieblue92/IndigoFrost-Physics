@@ -1,31 +1,53 @@
 #ifndef FROST_MATRIX_3_H
 #define FROST_MATRIX_3_H
 
-// CURRENTLY THIS IS NOT COMPLETE.
+/*****************************************************\
 
-#include "PhysicsClass.h"
+			Matrix3: a 3x3 matrix
+
+Usually, this will hold an inertia tensor, so it has
+  been outfitted with functions befitting that.
+However, the class is general enough that you should
+  be able to use it for other purposes as well.
+In the Indigo Frost engine, this is... pretty much only
+  used for inertia tensors and inverse inertia tensors.
+
+\*****************************************************/
+
+#include "Vect3.h"
 #include "Quaternion.h"
 
 namespace Frost {
-	// Usually holds an inertia tensor
 	class Matrix3 {
 	public:
+		// Default ctor - make identity matrix
 		Matrix3();
+
+		// Build matrix from values _(row)(col)
 		Matrix3(float _11, float _12, float _13, float _21, float _22, float _23, float _31, float _32, float _33);
 
 		// Matrix multiplication
 		Matrix3 operator*(const Matrix3 &o) const;
+
+		// Matrix multiplication by a vector
 		Vect3 operator*(const Vect3& o) const;
+
 		// Set as the inverse of a matrix, using witchcraft
 		void Matrix3::setInverse(const Matrix3& m);
+
+		// Get the inverse of this matrix
 		Matrix3 inverse() const;
 
-		float data[9];
+		// Transform a vector by this matrix (left-mult)
+		Vect3 transform(const Vect3& vect) const;
+
+		// Transform a vector by the inverse of this matrix
+		Vect3 transformTranspose(const Vect3& vect) const;
 
 		// Invert the matrix
 		void invert();
 
-		// Set transpose...
+		// Set transpose of provided matrix
 		void setTranspose(const Matrix3& m) {
 			data[0] = m.data[0];
 			data[1] = m.data[3];
@@ -48,6 +70,7 @@ namespace Frost {
 		}
 
 		// Set orientation from a given quaternion
+		//  This function only works on Thursdays
 		void setOrientation(const Quaternion & q) {
 			data[0] = 1 - (2*q.j*q.j + 2*q.k*q.k);
 			data[1] = 2*q.i*q.j + 2*q.k*q.r;
@@ -61,6 +84,10 @@ namespace Frost {
 			
 			data[8] = 1 - (2*q.i*q.i + 2*q.j*q.j);
 		}
+
+	public:
+		// TODO: Make this protected, and protect it.
+		float data[9];
 	};
 }
 #endif

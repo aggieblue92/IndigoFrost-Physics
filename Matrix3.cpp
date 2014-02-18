@@ -5,6 +5,9 @@ Matrix3::Matrix3() {
 	for(int i = 0; i < 9; i++) {
 		data[i] = 0.0f;
 	}
+	data[0] = 1.f;
+	data[4] = 1.f;
+	data[8] = 1.f;
 }
 
 Matrix3::Matrix3(float _11, float _12, float _13, float _21, float _22, float _23, float _31, float _32, float _33)
@@ -82,4 +85,16 @@ Matrix3 Matrix3::inverse() const {
 
 void Matrix3::invert() {
 	setInverse(*this);
+}
+
+Vect3 Matrix3::transform(const Vect3& vect) const {
+	return (*this) * vect;
+}
+
+Vect3 Matrix3::transformTranspose(const Vect3& vect) const {
+	return Vect3(
+		vect.x * data[0] + vect.y * data[3] + vect.z * data[6],
+		vect.x * data[1] + vect.y * data[4] + vect.z * data[7],
+		vect.x * data[2] + vect.y * data[5] + vect.z * data[8]
+	);
 }

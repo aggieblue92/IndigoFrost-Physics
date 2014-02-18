@@ -12,14 +12,14 @@ AnchoredSpring::AnchoredSpring(Vect3 anchor, Vect3 connectionPoint_local,
 
 void AnchoredSpring::updateForce(RigidBody* rb, float duration) {
 	// Calculate the connected end in world space...
-	Vect3 connection_world = localToWorld(m_connectionPoint, rb->m_transformMatrix);
+	Vect3 connection_world = rb->getPointInWorldSpace(m_connectionPoint);
 
 	// Calculate the spring vector (i.e., where does it point?)
 	Vect3 force = connection_world - m_anchor;
 	
 	// Calculate the magnitude of the force...
 	float magnitude = force.Magnitude();
-	magnitude = std::abs(magnitude - m_restLength);
+	magnitude = magnitude - m_restLength;
 	magnitude *= m_springConstant;
 
 	// Calculate the final force and apply it

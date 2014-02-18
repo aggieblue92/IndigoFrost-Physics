@@ -15,19 +15,19 @@ BasicSpringForce::BasicSpringForce(const Vect3& localConnectionPt,
 
 void BasicSpringForce::updateForce(RigidBody* rb, float duration) {
 	// Calculate the two ends in world space
-	Vect3 connection_world = localToWorld(m_connectionPoint, rb->m_transformMatrix);
-	Vect3 other_conn_world = localToWorld(m_otherConnectionPoint, m_other->m_transformMatrix);
+	Vect3 lws = rb->getPointInWorldSpace(m_connectionPoint);
+	Vect3 rhs = m_other->getPointInWorldSpace(m_otherConnectionPoint);
 
 	// Calculate the vector of the spring...
-	Vect3 force = connection_world - other_conn_world;
+	Vect3 force = lws - rhs;
 
 	// Calculate the magnitude of the force...
 	float magnitude = force.Magnitude();
-	magnitude = std::abs(magnitude - m_restLength);
+	magnitude = (magnitude - m_restLength);
 	magnitude *= m_springConstant;
 
 	// Calculate the final force and apply it
 	force.Normalize();
 	force *= -magnitude; // Note definition of force.
-	rb->addForceAtPoint(force, connection_world);
+	rb->addForceAtPoint(force, lws);
 }

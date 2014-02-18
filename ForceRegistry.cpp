@@ -5,7 +5,7 @@ ForceRegistry::ForceRegistry() {}
 
 void ForceRegistry::Add(RigidBody* rb, RigidBodyForceGenerator* g) {
 	// Register the given particle and force.
-	//  Exit w/o fail if either is invalid.
+	//  Exit if either is invalid.
 	if (0 == rb || 0 == g)
 		return;
 	else
@@ -18,20 +18,31 @@ void ForceRegistry::ClearRegistry() {
 		if (0 != m_Registry[i])
 			delete m_Registry[i];
 	}
+	m_Registry.resize(0);
 	m_Registry.clear();
 }
 
-void ForceRegistry::Remove(RigidBody* p, RigidBodyForceGenerator* g) {
+void ForceRegistry::Remove(RigidBody* rb, RigidBodyForceGenerator* g) {
+	// Search each entry to see if the rigid body is
+	//  the one specified (always true if 0 specified),
+	//  and same for the force generator.
 	for (int i = 0; i < m_Registry.size(); i++) {
 		if ((m_Registry[i]->gen == g || 0 == g)
 			&&
-			(m_Registry[i]->rigid_body == p || 0 == p)) {
-			m_Registry.erase(m_Registry.begin() + i);
+			(m_Registry[i]->rigid_body == rb || 0 == rb)) {
+				// Release memory, clear space from vector,
+				//  return
+				delete m_Registry[i];
+				m_Registry.erase(m_Registry.begin() + i);
+				return;
 		}
 	}
 }
 
 void ForceRegistry::UpdateForces(float timeElapsed) {
+	// For every force entry, call the updateForce method of the
+	//  RigidBodyForceGenerator class on the body, for the amount
+	//  of elapsed time (in seconds usually)
 	for (int i = 0; i < m_Registry.size(); i++){
 		m_Registry[i]->gen->updateForce(m_Registry[i]->rigid_body, timeElapsed);
 	}

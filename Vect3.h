@@ -1,13 +1,24 @@
 #ifndef INDIGO_FROST_PHYSICS_CLASS_H
 #define INDIGO_FROST_PHYSICS_CLASS_H
 
+/*****************************************************\
+
+		Vect3: A 3-dimensional vector class,
+	with standard vector functions supported.
+
+\*****************************************************/
+
 #include <assert.h>
 #include <math.h>
 
 namespace Frost {
 	struct Vect3 {
 		float x, y, z;
+
+		// Default ctor: initialize to zero vector
 		Vect3() : x(0.0f), y(0.0f), z(0.0f) {}
+
+		// Initialize vector 
 		Vect3(float xPos, float yPos, float zPos) :
 			x(xPos), y(yPos), z(zPos) {}
 		Vect3 operator+(const Vect3 right) {
@@ -54,51 +65,6 @@ namespace Frost {
 			return toReturn;
 		}
 	};
-
-	class Particle {
-	public:
-		Particle();
-		Particle(Vect3 pos, Vect3 vel, Vect3 acc);
-		Particle(Vect3 pos, Vect3 vel, Vect3 acc,
-			float mass, float gravity, float damping);
-		Particle(const Particle& right);
-		~Particle() {}
-
-		Vect3 GetPosition();
-		Vect3 GetVelocity();
-		Vect3 GetAcceleration();
-
-		float GetMass();
-		float GetInverseMass();
-		float GetDrag();
-		float GetGravity();
-
-		bool IsFiniteMass();
-
-		void SetMass(float mass);
-		void SetInverseMass(float inverseMass);
-		void SetPosition(Vect3 newPos);
-		void SetVelocity(Vect3 newVel);
-		void SetAcceleration(Vect3 newAcc);
-		void SetGravity(float newG);
-		void SetDamping(float newDampingConstant);
-
-		void AugmentNetForce(Vect3 toAdd);
-
-		void Integrate(float timeElapsed);
-
-		// For the future, you will have force plugins here.
-		// void Frame(); // Go through all force plugins, get forces
-		// For now, it's just gravity.
-
-	protected:
-		Vect3 m_pos, m_vel, m_acc;
-		float m_inverseMass;
-		float m_g, m_damp;
-
-		Vect3 m_netForces;
-	};
-
 }
 
 #endif

@@ -1,7 +1,47 @@
 #ifndef _RIGID_BODY_H_
 #define _RIGID_BODY_H_
 
-#include "PhysicsClass.h"
+/*****************************************************\
+
+		RigidBody: Contains information for a
+	rigid body in the physics engine.
+
+Members:
+	m_inverseMass: Inverse of mass of object represented
+	m_inverseInertiaTensor: Inverse of inertia tensor
+	    of object represented.
+	m_inverseInertiaTensorWorld: Inverse of inertia
+	    tensor of object represented in world space.
+	m_position: Position of object in 3D space
+	m_velocity: Velocity of object in 3D space
+	m_orientation: Quaternion representing orientation
+	    in 3D space. Update this when updating rotation
+	m_rotation: Angular velocity of object
+	m_transformMatrix: 4x4 transform matrix for object
+	m_g: Acceleration due to gravity for object
+	m_damp: Linear dampening (i.e., drag)
+	m_lastFrameAcceleration: acceleration realized in
+	    the last frame.
+	m_netForces: The net force realized to the object
+	    during the current frame
+	m_netTorque: The net torque realized to the object
+	    during the current frame
+
+Note on inverse mass and inverse inertia tensor:
+  In physics, for force, the formula F=ma is used.
+    However, I already know what F is from the force
+	generators in the engine. So, it's easier for the
+	computer to store (1/m), so that the equation
+	a = (1/m)F can be used. Also, it makes more sense
+	for what a zero means - in this engine, it means
+	that the object has infinite mass (like the earth
+	or something like that)
+  The inverse inertia tensor is likewise used for the
+    same reason - a=T^{-1} * Torque.
+
+\*****************************************************/
+
+#include "Vect3.h"
 #include "Quaternion.h"
 #include "Matrix4.h"
 #include "Matrix3.h"
@@ -15,42 +55,72 @@ namespace Frost {
 			float mass, float gravity, float damping,
 			float angularDamping, Matrix3 inverseInertiaTensor);
 
-
-		float m_inverseMass; // Easier than mass to use.
-		Matrix3 m_inverseInertiaTensorWorld; // Stays permanent - this is the inertia tensor in world coords
-		Matrix3 m_inverseInertiaTensor; // Holds the inverse of the inertia tensor used for torque/acceleration gen
+		// TODO: Make all these data members private
+		float m_inverseMass;
+		Matrix3 m_inverseInertiaTensorWorld;
+		Matrix3 m_inverseInertiaTensor;
 		Vect3 m_position;
 		Vect3 m_velocity;
 		Vect3 m_acceleration;
 		Quaternion m_orientation;
 		Vect3 m_rotation;
-		Vect3 m_angularAcceleration;
 		Matrix4 m_transformMatrix; // Holds transform matrix for converting body space to world space, vice versa.
 
 		// Calculate internal data from state data. This is called
 		//  after the body's state is altered directly (during integration)
 		void calculateDerivedData();
+
+		// Set the inertia tensor of the object
 		void setInertiaTensor(const Matrix3& inverseInertiaTensor);
 
 		// Adds given force to center of mass of the rigid body.
 		void addForce(const Vect3& force);
 
 		/* Adds given force at the given point
-		@param force The force to apply in WORLD coords
-		@param point The point of application, in LOCAL coords
+		--force_world The force to apply in WORLD coords
+		--point_local The point of application, in LOCAL coords
 		*/
 		void addForceAtBodyPoint(const Vect3& force_world, const Vect3& point_local);
 
 		// Adds the given force at the given point... Yep.
 		void addForceAtPoint(const Vect3& force_world, const Vect3& pt_world);
 
-		// Helpers from Particle
+		// Returns true if the object has finite mass
 		bool IsFiniteMass();
+
+		// Returns gravity constant of object
 		float getGravity();
+
+		// Returns damping constant of object
 		float getDamping();
+
+		// Returns mass of object
 		float GetMass();
+
+		// Returns (1/mass) of object
 		float GetInverseMass();
 
+		// Set velocity of the object
+		void setVelocity(const Vect3& vel);
+
+		// Set velocity of the object
+		void setVelocity(const float x, const float y, const float z);
+
+		// Transform world point to object local point
+		Vect3 getPointInLocalSpace(const Vect3& pt_w) const;
+
+		// Transform local point to world point
+		Vect3 getPointInWorldSpace(const Vect3& pt_l) const;
+
+		// Transform world direction to local direction
+		Vect3 getDirectionInLocalSpace(const Vect3& d_w) const;
+
+		// Transform local direction to world direction
+		Vect3 getDirectionInWorldSpace(const Vect3& d_l) const;
+
+		// Update position, velocity, rotation, orientation based on
+		//  torques and forces added in the current frame
+		// --timeElapsed: time since last update (usually 1 frame)
 		void Integrate(float timeElapsed);
 
 	protected:
@@ -63,7 +133,5 @@ namespace Frost {
 		Vect3 m_netTorque;
 	};
 }
-
-// Stopped on page 229
 
 #endif

@@ -5,6 +5,8 @@ PlayerMotionForce::PlayerMotionForce(Vect3 maxVelocity, float accTime) :
 	m_timeToMaxSpeed(accTime),
 	m_active(false)
 {
+	// Direction - unit of maxVelcity
+	// Speed - magnitude of maxVelocity
 	m_direction = maxVelocity.GetNormal();
 	m_speed = maxVelocity.Magnitude();
 }
@@ -24,16 +26,19 @@ void PlayerMotionForce::updateForce(RigidBody* rb, float duration) {
 	if (!m_active)
 		return;
 
+	// To be 100% honest with you, this is all very haphazardly put together
+	//  after this. It seems to work, but hasn't been extensively tested yet.
+	// So if it breaks, I am truly sorry.
+	// It does seem to check out though, so don't be afraid to use it.
+
 	Vect3 maxVelocity = m_direction * m_speed;
 
-	// PROBLEM: This vector accounting for damping at the
-	//  maximum velocity and nothing more is BROKEN.
-	// Consult the whiteboard
+	// This is possibly broken. I don't really know.
 	Vect3 accountForDampingAtMaxVelocity =
 		maxVelocity * (pow(rb->getDamping(), -duration) - 1.0f);
 	accountForDampingAtMaxVelocity *= (1.0f / duration);
 	
-	// Currently testing this guy - see whiteboard (2)
+	// Yeah, not sure about this either.
 	Vect3 speedUpIfSlowerThanMaxVelocity =
 		(maxVelocity) * (10.0f / m_timeToMaxSpeed);
 

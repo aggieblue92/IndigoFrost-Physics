@@ -13,7 +13,7 @@
 ------PHYSICS------
 -Create multiple constructors for the RigidBody class
 
--Matrix4 class: Make Transform and TransformDirn (p.206) functions do
-   what they're supposed to - transform a position and direction
-   vector (respectively) by the matrix or something like that.
-   THIS IS ACTUALLY LIKE SUPER VITAL.
+-Fix BasicSpring class - I think the magnitudes are off.
+   When a basic spring attaches two objects at the origin, it attracts them
+   until they occupy the same space - it shouldn't. They should be separated
+   by the distance of restLength, which they aren't.
