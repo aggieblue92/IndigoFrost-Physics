@@ -21,10 +21,10 @@ namespace Frost {
 		// Initialize vector 
 		Vect3(float xPos, float yPos, float zPos) :
 			x(xPos), y(yPos), z(zPos) {}
-		Vect3 operator+(const Vect3 right) {
+		Vect3 operator+(const Vect3& right) {
 			return Vect3(x + right.x, y + right.y, z + right.z);
 		}
-		Vect3 operator-(const Vect3 right) {
+		Vect3 operator-(const Vect3& right) {
 			return Vect3(x - right.x, y - right.y, z - right.z);
 		}
 		Vect3& operator+=(const Vect3 right) {
@@ -64,6 +64,7 @@ namespace Frost {
 			toReturn.Normalize();
 			return toReturn;
 		}
+
 	};
 }
 
