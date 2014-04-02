@@ -60,3 +60,20 @@ void Quaternion::rotateByVector(const Vect3& vect) {
 	Quaternion q(0.f, vect.x, vect.y, vect.z);
 	(*this) *= q;
 }
+
+void Quaternion::setAxisAngleRotation(const Vect3& axis, float angle) {
+	// Use definition of quaternion.
+	if (axis.SquareMagnitude() == 0) {
+		r = 1.f; i = 0.f; j = 0.f; k = 0.f;
+		return;
+	}
+
+	// Optimize?
+	Vect3 normalAxis = axis;
+	normalAxis.Normalize();
+	angle /= 2.f;
+	r = cosf(angle);
+	i = normalAxis.x * sinf(angle);
+	j = normalAxis.y * sinf(angle);
+	k = normalAxis.z * sinf(angle);
+}

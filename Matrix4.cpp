@@ -178,6 +178,12 @@ void Matrix4::setInverse(const Matrix4& m) {
         data[i] = inv[i] * det;
 }
 
+Matrix4 Matrix4::inverse() const {
+	Matrix4 toInvert(*this);
+	toInvert.invert();
+	return toInvert;
+}
+
 Vect3 Matrix4::operator*(const Vect3& vect) const {
 	return Vect3(
 		vect.x * data[0] +
@@ -200,6 +206,10 @@ float Matrix4::getDeterminant() const {
 		data[0] * data[9] * data[6] -
 		data[4] * data[1] * data[10] +
 		data[0] * data[5] * data[10];
+}
+
+Vect3 Matrix4::getAxisVector(int i) const {
+	return Vect3(data[i], data[i+4], data[i+8]);
 }
 
 void Matrix4::setOrientationAndPos(const Quaternion& q, const Vect3& pos) {
@@ -294,6 +304,12 @@ Vect3 Matrix4::transformInverse(const Vect3& vect) const {
 		tmp.y * data[6] +
 		tmp.z * data[10]
 		);
+}
+
+Matrix4 Matrix4::operator=(const Matrix4& other) {
+	for(int i = 0; i < 12; i++)
+		this->data[i] = other.data[i];
+	return *this;
 }
 
 Vect3 Frost::localToWorldDirn(const Vect3& local, const Matrix4& transform) {

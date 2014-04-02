@@ -60,7 +60,7 @@ namespace Frost {
 		//  remove all forces from the rigid body.
 		// NOTE: Setting both parameters to zero clears the
 		//  force registry entirely. So, be careful.
-		void Remove(RigidBody* rb, RigidBodyForceGenerator* g);
+		bool Remove(RigidBody* rb, RigidBodyForceGenerator* g);
 
 		// Empty all values from the registry.
 		void ClearRegistry();

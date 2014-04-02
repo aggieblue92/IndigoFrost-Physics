@@ -96,12 +96,45 @@ RigidBody::RigidBody(Vect3 pos, Vect3 vel, Vect3 acc,
 			m_orientation(orientation), m_rotation(rotation),
 			m_g(gravity), m_damp(damping),
 			m_angularDamping(angularDamping),
-			m_inverseInertiaTensor(inverseInertiaTensor)
+			m_inverseInertiaTensor(inverseInertiaTensor),
+			m_collisionGeometry(0)
 {
 	assert(mass > 0.f);
 	m_inverseMass = 1.f / mass;
 
 	this->calculateDerivedData();
+}
+
+RigidBody::RigidBody(Vect3 pos, Quaternion orientation, float mass,
+	Matrix3 inverseInertiaTensor, float gravity,
+	float damping, float angularDamping)
+	: m_position(pos), m_velocity(Vect3(0.f, 0.f, 0.f)), m_acceleration(Vect3(0.f, 0.f, 0.f)),
+	m_orientation(orientation), m_rotation(Vect3(0.f, 0.f, 0.f)),
+	m_g(gravity), m_damp(damping), m_angularDamping(angularDamping),
+	m_collisionGeometry(0), m_inverseInertiaTensor(inverseInertiaTensor)
+{
+	assert(mass > 0.f);
+	m_inverseMass = 1.f / mass;
+	this->calculateDerivedData();
+}
+
+RigidBody::RigidBody(const RigidBody& other) {
+	this->m_inverseMass = other.m_inverseMass;
+	this->m_inverseInertiaTensor = other.m_inverseInertiaTensor;
+	this->m_inverseInertiaTensorWorld = other.m_inverseInertiaTensorWorld;
+	this->m_position = other.m_position;
+	this->m_velocity = other.m_velocity;
+	this->m_acceleration = other.m_acceleration;
+	this->m_orientation = other.m_orientation;
+	this->m_rotation = other.m_rotation;
+	this->m_transformMatrix = other.m_transformMatrix;
+	this->m_collisionGeometry = other.m_collisionGeometry;
+	this->m_g = other.m_g;
+	this->m_damp = other.m_damp;
+	this->m_angularDamping = other.m_angularDamping;
+	this->m_lastFrameAcceleration = other.m_lastFrameAcceleration;
+	this->m_netForces = other.m_netForces;
+	this->m_netTorque = other.m_netTorque;
 }
 
 void RigidBody::calculateDerivedData() {
@@ -113,6 +146,24 @@ void RigidBody::calculateDerivedData() {
 	_calculateTransformMatrix(m_transformMatrix, m_position, m_orientation);
 	_transformInertiaTensor(m_inverseInertiaTensorWorld,
 		m_orientation, m_inverseInertiaTensor, m_transformMatrix);
+}
+
+void RigidBody::addCollisionGeometry(Geometry* in) {
+	m_collisionGeometry.push_back(in);
+}
+void RigidBody::clearCollisionGeometry() {
+	for (int i = 0; i < m_collisionGeometry.size(); i++) {
+		delete m_collisionGeometry[i];
+		m_collisionGeometry[i] = 0;
+	}
+	m_collisionGeometry.resize(0);
+}
+
+Geometry* RigidBody::getCollisionObject(int index) {
+	if (m_collisionGeometry.size() > index)
+		return m_collisionGeometry[index];
+	else
+		return 0;
 }
 
 void RigidBody::setInertiaTensor(const Matrix3& inverseInertiaTensor) {
@@ -212,6 +263,38 @@ Vect3 RigidBody::getDirectionInLocalSpace(const Vect3& d_w) const {
 
 Vect3 RigidBody::getDirectionInWorldSpace(const Vect3& d_l) const {
 	return m_transformMatrix.transformDirection(d_l);
+}
+
+Vect3 RigidBody::getPosition() const {
+	return m_position;
+}
+
+Vect3 RigidBody::getRotation() const {
+	return m_rotation;
+}
+
+Vect3 RigidBody::getVelocity() const {
+	return m_velocity;
+}
+
+Matrix3 RigidBody::getInverseInertiaTensor() const {
+	return m_inverseInertiaTensor;
+}
+
+Matrix3 RigidBody::getInverseInertiaTensorWorld() const {
+	return m_inverseInertiaTensorWorld;
+}
+
+Quaternion RigidBody::getOrientation() const {
+	return m_orientation;
+}
+
+void RigidBody::setPosition(const Vect3& newPos) {
+	m_position = newPos;
+}
+
+void RigidBody::setOrientation(const Quaternion& newOr) {
+	m_orientation = newOr;
 }
 
 void RigidBody::setVelocity(const Vect3& velocity) {

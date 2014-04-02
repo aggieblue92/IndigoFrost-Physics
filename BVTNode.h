@@ -29,24 +29,31 @@ namespace Frost {
 	struct CoarseContact {
 		RigidBody* rb1;
 		RigidBody* rb2;
+		CoarseContact() : rb1(0), rb2(0) {}
 	};
 
 	class BVTNode {
 	public:
 		BVTNode();
+		BVTNode(BVTNode* parent, BoundingSphere* boundingSphere, RigidBody* body);
 
 		bool isLeaf();
+		void Insert(RigidBody* body, BoundingSphere* boundingVolume);
+		void Release();
+
+		unsigned int CoarseCollisionDetect(CoarseContact* o_contacts, unsigned int limit);
 
 	private:
+		BVTNode* m_parent;
 		BVTNode* m_left;
 		BVTNode* m_right;
 
+	protected:
 		// TODO: Update to include boxes and such.
-		BoundingSphere m_boundingVolume;
+		BoundingSphere* m_bound;
 		RigidBody* m_rb;
 
-		unsigned int CoarseCollisionDetect(CoarseContact* o_contacts, unsigned int limit);
-		static unsigned int CoarseCollisionDetect(BVTNode* bv1, BVTNode* bv2, CoarseContact* o_coarseContacts, unsigned int limit);
+		unsigned int CoarseCollisionDetect(BVTNode* bv1, BVTNode* bv2, CoarseContact* o_coarseContacts, unsigned int limit);
 	};
 }
 

@@ -22,10 +22,11 @@ void ForceRegistry::ClearRegistry() {
 	m_Registry.clear();
 }
 
-void ForceRegistry::Remove(RigidBody* rb, RigidBodyForceGenerator* g) {
+bool ForceRegistry::Remove(RigidBody* rb, RigidBodyForceGenerator* g) {
 	// Search each entry to see if the rigid body is
 	//  the one specified (always true if 0 specified),
 	//  and same for the force generator.
+	bool toReturn = false;
 	for (int i = 0; i < m_Registry.size(); i++) {
 		if ((m_Registry[i]->gen == g || 0 == g)
 			&&
@@ -34,9 +35,10 @@ void ForceRegistry::Remove(RigidBody* rb, RigidBodyForceGenerator* g) {
 				//  return
 				delete m_Registry[i];
 				m_Registry.erase(m_Registry.begin() + i);
-				return;
+				toReturn = true;
 		}
 	}
+	return toReturn;
 }
 
 void ForceRegistry::UpdateForces(float timeElapsed) {

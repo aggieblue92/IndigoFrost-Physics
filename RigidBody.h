@@ -26,6 +26,7 @@ Members:
 	    during the current frame
 	m_netTorque: The net torque realized to the object
 	    during the current frame
+	m_collisionGeometry: List of collision geometry
 
 Note on inverse mass and inverse inertia tensor:
   In physics, for force, the formula F=ma is used.
@@ -41,12 +42,20 @@ Note on inverse mass and inverse inertia tensor:
 
 \*****************************************************/
 
+#include <vector>
 #include "Vect3.h"
 #include "Quaternion.h"
 #include "Matrix4.h"
 #include "Matrix3.h"
+#include "CollisionGeometry.h"
 
 namespace Frost {
+
+	struct Contact;
+	class Geometry;
+	class Box;
+	class Sphere;
+
 	class RigidBody {
 	public:
 		// TODO: Simplify this, add multiple ctors
@@ -54,6 +63,10 @@ namespace Frost {
 			Quaternion orientation, Vect3 rotation, Vect3 angularAcc,
 			float mass, float gravity, float damping,
 			float angularDamping, Matrix3 inverseInertiaTensor);
+		RigidBody(Vect3 pos, Quaternion orientation, float mass,
+			Matrix3 inverseInertiaTensor, float gravity = 9.81f,
+			float damping = 0.8f, float angularDamping = 0.8f);
+		RigidBody(const RigidBody& other);
 
 		// TODO: Make all these data members private
 		float m_inverseMass;
@@ -65,10 +78,16 @@ namespace Frost {
 		Quaternion m_orientation;
 		Vect3 m_rotation;
 		Matrix4 m_transformMatrix; // Holds transform matrix for converting body space to world space, vice versa.
+		std::vector<Geometry*> m_collisionGeometry; // Holds list of collision geometry. POSSIBLE OPTIMIZATION: Also hold a low-qual set, quicker resolution?
 
 		// Calculate internal data from state data. This is called
 		//  after the body's state is altered directly (during integration)
 		void calculateDerivedData();
+
+		// Add a piece of collision geometry to our list.
+		void addCollisionGeometry(Geometry*);
+		void clearCollisionGeometry();
+		Geometry* getCollisionObject(int index);
 
 		// Set the inertia tensor of the object
 		void setInertiaTensor(const Matrix3& inverseInertiaTensor);
@@ -118,6 +137,17 @@ namespace Frost {
 		// Transform local direction to world direction
 		Vect3 getDirectionInWorldSpace(const Vect3& d_l) const;
 
+		// Get position of this thing.
+		Vect3 getPosition() const;
+		Vect3 getRotation() const;
+		Vect3 getVelocity() const;
+		Matrix3 getInverseInertiaTensor() const;
+		Matrix3 getInverseInertiaTensorWorld() const;
+		Quaternion getOrientation() const;
+
+		void setPosition(const Vect3& newPos);
+		void setOrientation(const Quaternion& newOrientation);
+
 		// Update position, velocity, rotation, orientation based on
 		//  torques and forces added in the current frame
 		// --timeElapsed: time since last update (usually 1 frame)
@@ -131,6 +161,30 @@ namespace Frost {
 
 		Vect3 m_netForces;
 		Vect3 m_netTorque;
+
+	private:
+		RigidBody() {}
+	};
+
+	struct Contact {
+		Vect3 contactPoint_wp;
+		Vect3 contactNormal_wd;
+		float closingVelocity_wd;
+		float magnitude;
+		RigidBody* rb[2];
+		float restitution;
+
+		Contact(RigidBody* rbSource, RigidBody* rbOther, Vect3 contactPoint, Vect3 contactNormal, float Magnitude, float Restitution)
+			: contactPoint_wp(contactPoint), contactNormal_wd(contactNormal), magnitude(Magnitude), restitution(Restitution)
+		{
+			rb[0] = rbSource;
+			rb[1] = rbOther;
+			// Closing velocity in direction of contact normal is projection of source velocity onto it minus
+			//  other velocity onto it (normal will be facing wrong way for second term, hence - instead of + )
+			closingVelocity_wd = (rbSource->getVelocity() * contactNormal) - (rbOther->getVelocity() * contactNormal);
+		}
+
+		// Add friction and such here.
 	};
 }
 

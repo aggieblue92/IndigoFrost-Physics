@@ -78,6 +78,9 @@ namespace Frost {
 
 		// Rotate by a vector...
 		void rotateByVector(const Vect3& vect);
+
+		// Set to be a rotation of angle (theta) in radians around an axis (axis)
+		void setAxisAngleRotation(const Vect3& axis, float angle);
 	};
 }
 

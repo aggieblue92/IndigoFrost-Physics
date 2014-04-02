@@ -85,6 +85,8 @@ namespace Frost {
 			data[8] = 1 - (2*q.i*q.i + 2*q.j*q.j);
 		}
 
+		void setComponents(const Vect3 &c1, const Vect3& c2, const Vect3& c3);
+
 	public:
 		// TODO: Make this protected, and protect it.
 		float data[9];

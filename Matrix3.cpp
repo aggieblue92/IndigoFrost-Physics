@@ -98,3 +98,15 @@ Vect3 Matrix3::transformTranspose(const Vect3& vect) const {
 		vect.x * data[2] + vect.y * data[5] + vect.z * data[8]
 	);
 }
+
+void Matrix3::setComponents(const Vect3 &c1, const Vect3& c2, const Vect3& c3) {
+	data[0] = c1.x;
+	data[1] = c2.x;
+	data[2] = c3.x;
+	data[3] = c1.y;
+	data[4] = c2.y;
+	data[5] = c3.y;
+	data[6] = c1.z;
+	data[7] = c2.z;
+	data[8] = c3.z;
+}

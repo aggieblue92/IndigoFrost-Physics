@@ -44,6 +44,8 @@ namespace Frost {
 		// Build transformation matrix from a rotation and translation
 		void setOrientationAndPos(const Quaternion& q, const Vect3& pos);
 
+		Vect3 getAxisVector(int index) const;
+
 		// Invert this matrix
 		void invert();
 
@@ -54,6 +56,9 @@ namespace Frost {
 		// Transform a direction
 		Vect3 transformDirection(const Vect3& vector) const;
 		Vect3 transformInverseDirection(const Vect3& vector) const;
+
+		// Assignment
+		Matrix4 operator=(const Matrix4&);
 
 		float data[12];
 	};

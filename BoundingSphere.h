@@ -23,7 +23,7 @@ Upon implementation of other bounding primitives, you'll
 #include "Vect3.h"
 
 namespace Frost {
-	class BoundingSphere {
+		class BoundingSphere {
 	public:
 		BoundingSphere();
 		BoundingSphere(const Vect3& location, const float radius);
@@ -32,11 +32,16 @@ namespace Frost {
 		void setRadius(const float newRadius);
 
 		Vect3 getLocation() const;
-		float getRadius();
+		float getRadius() const;
 
 		virtual bool isColliding(Vect3 pt);
 		virtual bool isColliding(const BoundingSphere& other);
 		virtual float getVolume();
+
+		// Return how much an object would grow if a bounding sphere was added.
+		virtual float getGrowth(const BoundingSphere& addedVolume);
+
+		virtual void getNewBoundingSphere(BoundingSphere& o_newSphere, const BoundingSphere& toAdd);
 
 	private:
 		Vect3 m_location;
