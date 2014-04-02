@@ -113,6 +113,7 @@ void BVTNode::Release() {
 
 		// Delete the sibling Note- do not have to release it first.
 		delete sibling;
+		sibling = 0;
 
 		// Recalculate bounding sphere?
 	}

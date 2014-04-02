@@ -28,6 +28,9 @@ NOTE: All types of geometry go in here. When filling
 #include "Collisions.h"
 #include <vector>
 
+#include <fstream>
+#include <iostream>
+
 namespace Frost {
 	// LIST OF THINGS IN THIS FILE
 	enum GEOMETRY_TYPE;
@@ -47,9 +50,12 @@ namespace Frost {
 	//  used in bounding volume hierarchies.
 	class Geometry {
 	protected:
-		Matrix4 m_transform; // Contains position and rotation of object (ls->ws)
+		Matrix4 m_transform; // Contains position and orientation of object (ls_geometry->ls_rb)
 		enum GEOMETRY_TYPE m_type; // Contains what type of geometry this is
 		RigidBody* m_parent; // Contains the rigid body to which this is attached (NULL for no parent)
+		Matrix4 m_transform_ws; // Contains position and orientation of object (ls_geometry->ws)
+
+		std::ofstream* debug;
 
 	public:
 		// Base ctor - initializes to origin, no rotation, type whatever is passed.
@@ -66,6 +72,9 @@ namespace Frost {
 		void setTransformMatrix(const Matrix4&);
 		Vect3 getPosition() const;
 
+		// Call every frame in which fine collision needs to be done on this thing
+		void updateFineMatrix();
+
 		enum GEOMETRY_TYPE getType() const;
 
 		// Fills the given sphere with geometry data. Will make s = NULL if not a sphere.
@@ -77,16 +86,20 @@ namespace Frost {
 		// Generic - this goes through every type of geometry, returns if they are 
 		//  touching or not. If you know what type the object is, use the isTouching(Sphere) or (Box)
 		//  versions of this function.
-		virtual bool genContacts(Geometry* g, std::vector<Contact*> o_list) const;
+		virtual bool genContacts(Geometry* g, std::vector<Contact*>& o_list) const;
+		// Is touching - generic
+		virtual bool isTouching(Geometry* g) const;
 
 		// Returns true if this object is touching the given sphere.
-		virtual bool genContacts(Sphere* s, std::vector<Contact*> o_list) const = 0;
+		virtual bool genContacts(Sphere* s, std::vector<Contact*>& o_list) const = 0;
 
 		// Returns true if this boject is touching the given box.
-		virtual bool genContacts(Box* s, std::vector<Contact*> o_list) const = 0;
+		virtual bool genContacts(Box* s, std::vector<Contact*>& o_list) const = 0;
 
 		// virtual unsigned int GenerateContacts(Sphere* s) = 0;
 		// virtual unsigned int GenerateContacts(Box* b) = 0;
+
+		void setDebugOut(std::ofstream& out);
 	};
 
 	//---------------------- SPHERE ----------------------\\
@@ -119,11 +132,11 @@ namespace Frost {
 
 		// Returns true if this sphere is touching the given sphere.
 		virtual bool isTouching(Sphere* s) const;
-		virtual bool genContacts(Sphere* s, std::vector<Contact*> o_list) const;
+		virtual bool genContacts(Sphere* s, std::vector<Contact*>& o_list) const;
 
 		// Returns true if this sphere is touching the given box.
 		virtual bool isTouching(Box* b) const;
-		virtual bool genContacts(Box* b, std::vector<Contact*> o_list) const;
+		virtual bool genContacts(Box* b, std::vector<Contact*>& o_list) const;
 
 		// virtual unsigned int GenerateContacts(Sphere* s) = 0;
 		// virtual unsigned int GenerateContacts(Box* b) = 0;
@@ -162,11 +175,11 @@ namespace Frost {
 
 		// Returns true if this box is touching the given sphere.
 		virtual bool isTouching(Sphere* s) const;
-		virtual bool genContacts(Sphere* s, std::vector<Contact*> o_list) const;
+		virtual bool genContacts(Sphere* s, std::vector<Contact*>& o_list) const;
 
 		// Returns true if this box is touching the given box.
 		virtual bool isTouching(Box* b) const;
-		virtual bool genContacts(Box* s, std::vector<Contact*> o_list) const;
+		virtual bool genContacts(Box* s, std::vector<Contact*>& o_list) const;
 
 		// virtual unsigned int GenerateContacts(Sphere* s) = 0;
 		// virtual unsigned int GenerateContacts(Box* b) = 0;

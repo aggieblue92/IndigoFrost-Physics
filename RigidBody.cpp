@@ -190,8 +190,9 @@ void RigidBody::addForceAtPoint(const Vect3& force_world, const Vect3& pt_world)
 	pt -= m_position;
 
 	// Apply force and torque as per equations.
-	m_netForces += force_world;
 	m_netTorque += Vect3::CrossProduct(pt, force_world);
+
+	m_netForces += force_world;
 }
 
 void RigidBody::Integrate(float timeElapsed) {

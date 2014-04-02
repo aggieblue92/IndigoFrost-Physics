@@ -8,7 +8,9 @@ m_bvhTree(0),
 m_targetFrameSpeed(0.04),
 m_contactLimit(50),
 m_contactResolveRate(1.4f),
-m_contactList(0)
+m_contactList(0),
+m_stop(false),
+debug("debugOut.txt")
 {}
 
 // TODO: Replace with shutdown() function instead?
@@ -35,6 +37,9 @@ IndigoWorld::~IndigoWorld() {
 		}
 	}
 	m_rbList.resize(0);
+
+	if(debug.is_open())
+		debug.close();
 }
 
 int IndigoWorld::getNumRigidBodies() {
@@ -140,7 +145,20 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 		if (myList[i].rb1->getCollisionObject(0) == 0 || myList[i].rb2->getCollisionObject(0) == 0)
 			break;
 
-		myList[i].rb1->getCollisionObject(0)->genContacts(myList[i].rb2->getCollisionObject(0), contactList);
+		// Update fine data for collision objects...
+		myList[i].rb1->getCollisionObject(0)->updateFineMatrix();
+		myList[i].rb2->getCollisionObject(0)->updateFineMatrix();
+		//for(int i = 0; myList[i].rb1->getCollisionObject(i) != 0; i++) {
+		//	myList[i].rb1->getCollisionObject(i)->updateFineMatrix();
+		//}
+		//for(int i = 0; myList[i].rb2->getCollisionObject(i) != 0; i++) {
+		//	myList[i].rb2->getCollisionObject(i)->updateFineMatrix();
+		//}
+		myList[i].rb1->getCollisionObject(0)->setDebugOut(debug);
+		myList[i].rb2->getCollisionObject(0)->setDebugOut(debug);
+		if(myList[i].rb1->getCollisionObject(0)->genContacts(myList[i].rb2->getCollisionObject(0), contactList)) {
+			// Callback support here.
+		}
 	}
 
 	// Resolve all those contacts and clear them
@@ -151,9 +169,9 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 		//  oh well.
 		
 		// DEBUG RIGHT HERE - this isn't working.
-		int k = 3500000; // in N/m
-		contactList[i]->rb[0]->addForceAtPoint(contactList[i]->contactNormal_wd * contactList[i]->magnitude * (-k / timeElapsed), contactList[i]->contactPoint_wp);
-		contactList[i]->rb[1]->addForceAtPoint(contactList[i]->contactNormal_wd * contactList[i]->magnitude * (k / timeElapsed), contactList[i]->contactPoint_wp);
+		int k = 70; // in N/m
+		contactList[i]->rb[0]->addForceAtPoint(contactList[i]->contactNormal_wd * contactList[i]->magnitude * (k), contactList[i]->contactPoint_wp);
+		contactList[i]->rb[1]->addForceAtPoint(contactList[i]->contactNormal_wd * contactList[i]->magnitude * (-k), contactList[i]->contactPoint_wp);
 
 		delete contactList[i];
 		contactList[i] = 0;

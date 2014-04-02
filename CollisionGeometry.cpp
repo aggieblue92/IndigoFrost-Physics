@@ -6,18 +6,21 @@ Geometry::Geometry(RigidBody* parent, enum GEOMETRY_TYPE type) {
 	m_transform.setOrientationAndPos(Quaternion(), Vect3());
 	m_type = type;
 	m_parent = parent;
+	m_transform_ws = (m_parent != 0) ? m_transform * m_parent->m_transformMatrix : m_transform;
 }
 
 Geometry::Geometry(RigidBody* parent, const Matrix4& transform, enum GEOMETRY_TYPE type) {
 	m_transform = transform;
 	m_type = type;
 	m_parent = parent;
+	m_transform_ws = (m_parent != 0) ? m_transform * m_parent->m_transformMatrix : m_transform;
 }
 
 Geometry::Geometry(RigidBody* parent, const Vect3& pos, const Quaternion& quat, enum GEOMETRY_TYPE type) {
 	m_transform.setOrientationAndPos(quat, pos);
 	m_type = type;
 	m_parent = parent;
+	m_transform_ws = (m_parent != 0) ? m_transform * m_parent->m_transformMatrix : m_transform;
 }
 
 Matrix4 Geometry::getTransformMatrix() const {
@@ -29,24 +32,69 @@ void Geometry::setTransformMatrix(const Matrix4& o) {
 }
 
 Vect3 Geometry::getPosition() const {
-	return Vect3(m_transform.data[3], m_transform.data[7], m_transform.data[11]);
+	return Vect3(m_transform_ws.data[3], m_transform_ws.data[7], m_transform_ws.data[11]);
+}
+
+void Geometry::updateFineMatrix() {
+	// Update the ls->ws matrix based on parent transform matrix.
+	if(m_parent != 0){
+		m_transform_ws = m_parent->m_transformMatrix * m_transform;
+	} else {
+		m_transform_ws = m_transform;
+	}
 }
 
 enum GEOMETRY_TYPE Geometry::getType() const {
 	return m_type;
 }
 
-bool Geometry::genContacts(Geometry* g, std::vector<Contact*> o_list) const {
-	if (g->m_type == GEOMETRY_TYPE::BOX) {
+bool Geometry::isTouching(Geometry* g) const {
+	if(this->m_type == GEOMETRY_TYPE::BOX) {
 		Box* box;
 		this->fillBox(box);
+		if(g->m_type == GEOMETRY_TYPE::BOX) {
+			Box* other;
+			g->fillBox(other);
+			return box->isTouching(other);
+		}
+		else if(g->m_type == GEOMETRY_TYPE::SPHERE) {
+			Sphere* other;
+			g->fillSphere(other);
+			return box->isTouching(other);
+		}
+	}
+	else if(g->m_type == GEOMETRY_TYPE::SPHERE) {
+		Sphere* sp;
+		if(g->m_type == GEOMETRY_TYPE::BOX) {
+			Box* other;
+			g->fillBox(other);
+			return sp->isTouching(other);
+		}
+		else if(g->m_type == GEOMETRY_TYPE::SPHERE) {
+			Sphere* other;
+			g->fillSphere(other);
+			return sp->isTouching(other);
+		}
+	}
+
+	return false;
+}
+
+bool Geometry::genContacts(Geometry* g, std::vector<Contact*>& o_list) const {
+	if (g->m_type == GEOMETRY_TYPE::BOX) {
+		Box* box;
+		g->fillBox(box);
 		return this->genContacts(box, o_list);
 	}
 	else if (g->m_type == GEOMETRY_TYPE::SPHERE) {
 		Sphere* sp;
-		this->fillSphere(sp);
+		g->fillSphere(sp);
 		return this->genContacts(sp, o_list);
 	}
+}
+
+void Geometry::setDebugOut(std::ofstream& out) {
+	debug = &out;
 }
 
 // Begin SPHERE code:
@@ -92,7 +140,7 @@ bool Sphere::isTouching(Sphere* s) const {
 	return distance.Magnitude() <= (s->m_radius + m_radius);
 }
 
-bool Sphere::genContacts(Sphere* s, std::vector<Contact*> o_list) const {
+bool Sphere::genContacts(Sphere* s, std::vector<Contact*>& o_list) const {
 	// Get distance between two objects, with this one at origin...
 	Vect3 distance = s->getPosition() - this->getPosition();
 
@@ -156,7 +204,7 @@ bool Sphere::isTouching(Box* b) const {
 	return (closestBoxPoint - transformedSpherePosition).Magnitude() <= m_radius;
 }
 
-bool Sphere::genContacts(Box* b, std::vector<Contact*> o_list) const {
+bool Sphere::genContacts(Box* b, std::vector<Contact*>& o_list) const {
 	// First, we need to transform the sphere position
 	//  into local coordinates of the box.
 	Vect3 transformedSpherePosition = b->getTransformMatrix() * this->getPosition();
@@ -213,7 +261,7 @@ Box::Box(RigidBody* parent, Matrix4 transform, Vect3 halfSize)
 {}
 
 Box::Box(const Box& other)
-	: Geometry(m_parent, other.m_transform, GEOMETRY_TYPE::BOX), m_halfSize(other.m_halfSize)
+	: Geometry(other.m_parent, other.m_transform, GEOMETRY_TYPE::BOX), m_halfSize(other.m_halfSize)
 {}
 
 Vect3 Box::getHalfSize() const {
@@ -252,7 +300,7 @@ bool Box::isTouching(Sphere* s) const {
 	return s->isTouching(&toPass);
 }
 
-bool Box::genContacts(Sphere* s, std::vector<Contact*> o_list) const {
+bool Box::genContacts(Sphere* s, std::vector<Contact*>& o_list) const {
 	Box toPass(*this);
 	return s->genContacts(&toPass, o_list);
 }
@@ -283,9 +331,9 @@ bool Box::isTouching(Box* b) const {
 			(i % 2 == 0 ? -1 : 1) * this->m_halfSize.x,
 			((i / 2) % 2 == 0 ? -1 : 1) * this->m_halfSize.y,
 			((i / 4) % 2 == 0 ? -1 : 1) * this->m_halfSize.z);
-		Vect3 direction_ls = this->m_transform.inverse().transformDirection(direction_ws); // Make sure?
+		Vect3 direction_ls = this->m_transform_ws.inverse().transformDirection(direction_ws); // Make sure?
 		if (check_ls * direction_ls > 0.f) {
-			myQualifying_ws.push_back(this->m_transform * check_ls);
+			myQualifying_ws.push_back(this->m_transform_ws * check_ls);
 		}
 		
 		// Check on other box...
@@ -293,17 +341,17 @@ bool Box::isTouching(Box* b) const {
 			(i % 2 == 0 ? -1 : 1) * b->m_halfSize.x,
 			((i / 2) % 2 == 0 ? -1 : 1) * b->m_halfSize.y,
 			((i / 4) % 2 == 0 ? -1 : 1) * b->m_halfSize.z);
-		direction_ls = b->m_transform.inverse().transformDirection(direction_ws);
+		direction_ls = b->m_transform_ws.inverse().transformDirection(direction_ws);
 		// Go in the other direction now, since the direction_ws vector is from this to other.
 		if (check_ls * direction_ls < 0.f) {
-			otherQualifying_ws.push_back(b->m_transform * check_ls);
+			otherQualifying_ws.push_back(b->m_transform_ws * check_ls);
 		}
 	}
 
 	// First, check point-face collisions. This is done by examining the point in local space,
 	//  to see if it is within all three half-size parameters.
 	for (int i = 0; i < myQualifying_ws.size(); i++) {
-		Vect3 checkPoint = b->m_transform.inverse() * myQualifying_ws[i];
+		Vect3 checkPoint = b->m_transform_ws.inverse() * myQualifying_ws[i];
 		if ((abs(checkPoint.x) <= b->m_halfSize.x) &&
 			(abs(checkPoint.y) <= b->m_halfSize.y) &&
 			(abs(checkPoint.z) <= b->m_halfSize.z)) {
@@ -314,7 +362,7 @@ bool Box::isTouching(Box* b) const {
 	}
 
 	for (int i = 0; i < otherQualifying_ws.size(); i++) {
-		Vect3 checkPoint = this->m_transform.inverse() * otherQualifying_ws[i];
+		Vect3 checkPoint = this->m_transform_ws.inverse() * otherQualifying_ws[i];
 		if ((abs(checkPoint.x) <= this->m_halfSize.x) &&
 			(abs(checkPoint.y) <= this->m_halfSize.y) &&
 			(abs(checkPoint.z) <= this->m_halfSize.z)) {
@@ -386,15 +434,15 @@ bool Box::isTouching(Box* b) const {
 
 		// Edges are selected. If both points are in direction of other cube,
 		//  add them to the edge list.
-		Vect3 dirn_ls = this->m_transform.inverse().transformDirection(direction_ws);
+		Vect3 dirn_ls = this->m_transform_ws.inverse().transformDirection(direction_ws);
 		if (pt_1_ls * dirn_ls > 0 && pt_2_ls * dirn_ls > 0) {
-			our_edge_list_ws.push_back(this->m_transform * pt_1_ls);
-			our_edge_list_ws.push_back(this->m_transform * pt_2_ls);
+			our_edge_list_ws.push_back(this->m_transform_ws * pt_1_ls);
+			our_edge_list_ws.push_back(this->m_transform_ws * pt_2_ls);
 		}
-		dirn_ls = b->m_transform.inverse().transformDirection(direction_ws * -1);
+		dirn_ls = b->m_transform_ws.inverse().transformDirection(direction_ws * -1);
 		if (opt_1_ls * dirn_ls > 0 && opt_2_ls * dirn_ls > 0) {
-			other_edge_list_ws.push_back(b->m_transform * opt_1_ls);
-			other_edge_list_ws.push_back(b->m_transform * opt_2_ls);
+			other_edge_list_ws.push_back(b->m_transform_ws * opt_1_ls);
+			other_edge_list_ws.push_back(b->m_transform_ws * opt_2_ls);
 		}
 		
 		// SWEET JESUS this is getting long.
@@ -473,7 +521,7 @@ bool Box::isTouching(Box* b) const {
 	return false;
 }
 
-bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
+bool Box::genContacts(Box* b, std::vector<Contact*>& o_list) const {
 	// Two types of detection we're going to test for: edge-edge and corner-face.
 	//  All other types will resolve to another, or can be comprised of the others.
 
@@ -501,9 +549,9 @@ bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
 			(i % 2 == 0 ? -1 : 1) * this->m_halfSize.x,
 			((i / 2) % 2 == 0 ? -1 : 1) * this->m_halfSize.y,
 			((i / 4) % 2 == 0 ? -1 : 1) * this->m_halfSize.z);
-		Vect3 direction_ls = this->m_transform.inverse().transformDirection(direction_ws); // Make sure?
+		Vect3 direction_ls = this->m_transform_ws.inverse().transformDirection(direction_ws); // Make sure?
 		if (check_ls * direction_ls > 0.f) {
-			myQualifying_ws.push_back(this->m_transform * check_ls);
+			myQualifying_ws.push_back(this->m_transform_ws * check_ls);
 		}
 
 		// Check on other box...
@@ -511,17 +559,17 @@ bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
 			(i % 2 == 0 ? -1 : 1) * b->m_halfSize.x,
 			((i / 2) % 2 == 0 ? -1 : 1) * b->m_halfSize.y,
 			((i / 4) % 2 == 0 ? -1 : 1) * b->m_halfSize.z);
-		direction_ls = b->m_transform.inverse().transformDirection(direction_ws);
+		direction_ls = b->m_transform_ws.inverse().transformDirection(direction_ws);
 		// Go in the other direction now, since the direction_ws vector is from this to other.
 		if (check_ls * direction_ls < 0.f) {
-			otherQualifying_ws.push_back(b->m_transform * check_ls);
+			otherQualifying_ws.push_back(b->m_transform_ws * check_ls);
 		}
 	}
 
 	// First, check point-face collisions. This is done by examining the point in local space,
 	//  to see if it is within all three half-size parameters.
 	for (int i = 0; i < myQualifying_ws.size(); i++) {
-		Vect3 checkPoint_ls = b->m_transform.inverse() * myQualifying_ws[i];
+		Vect3 checkPoint_ls = b->m_transform_ws.inverse() * myQualifying_ws[i];
 		if ((abs(checkPoint_ls.x) <= b->m_halfSize.x) &&
 			(abs(checkPoint_ls.y) <= b->m_halfSize.y) &&
 			(abs(checkPoint_ls.z) <= b->m_halfSize.z)) {
@@ -537,20 +585,20 @@ bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
 				// Point is checkPoint in world space
 				// Normal is checkPoint - halfSize
 				o_list.push_back(new Contact(this->m_parent, b->m_parent,
-					b->m_transform * checkPoint_ls,
-					b->m_transform.transformDirection(Vect3(xMagnitude, 0.f, 0.f).GetNormal()),
+					b->m_transform_ws * checkPoint_ls,
+					b->m_transform_ws.transformDirection(Vect3(xMagnitude, 0.f, 0.f).GetNormal()),
 					xMagnitude, 0.8f));
 			}
 			else if (yMagnitude < zMagnitude) {
 				o_list.push_back(new Contact(this->m_parent, b->m_parent,
-					b->m_transform * checkPoint_ls,
-					b->m_transform.transformDirection(Vect3(0.f, yMagnitude, 0.f).GetNormal()),
+					b->m_transform_ws * checkPoint_ls,
+					b->m_transform_ws.transformDirection(Vect3(0.f, yMagnitude, 0.f).GetNormal()),
 					yMagnitude, 0.8f));
 			}
 			else {
 				o_list.push_back(new Contact(this->m_parent, b->m_parent,
-					b->m_transform * checkPoint_ls,
-					b->m_transform.transformDirection(Vect3(0.f, 0.f, zMagnitude).GetNormal()),
+					b->m_transform_ws * checkPoint_ls,
+					b->m_transform_ws.transformDirection(Vect3(0.f, 0.f, zMagnitude).GetNormal()),
 					zMagnitude, 0.8f));
 			}
 
@@ -559,7 +607,7 @@ bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
 	}
 
 	for (int i = 0; i < otherQualifying_ws.size(); i++) {
-		Vect3 checkPoint_ls = this->m_transform.inverse() * otherQualifying_ws[i];
+		Vect3 checkPoint_ls = this->m_transform_ws.inverse() * otherQualifying_ws[i];
 		if ((abs(checkPoint_ls.x) <= this->m_halfSize.x) &&
 			(abs(checkPoint_ls.y) <= this->m_halfSize.y) &&
 			(abs(checkPoint_ls.z) <= this->m_halfSize.z)) {
@@ -577,24 +625,24 @@ bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
 			if (xMagnitude < yMagnitude && xMagnitude < zMagnitude) {
 				// Point is checkPoint in world space
 				// Normal is checkPoint - halfSize
-				o_list.push_back(new Contact(this->m_parent, this->m_parent,
-					this->m_transform * checkPoint_ls,
-					this->m_transform.transformDirection(Vect3(xMagnitude, 0.f, 0.f).GetNormal()),
+				o_list.push_back(new Contact(this->m_parent, b->m_parent,
+					this->m_transform_ws * checkPoint_ls,
+					this->m_transform_ws.transformDirection(Vect3(xMagnitude, 0.f, 0.f).GetNormal()),
 					xMagnitude, 0.8f));
 			}
 			else if (yMagnitude < zMagnitude) {
-				o_list.push_back(new Contact(this->m_parent, this->m_parent,
-					this->m_transform * checkPoint_ls,
-					this->m_transform.transformDirection(Vect3(0.f, yMagnitude, 0.f).GetNormal()),
+				o_list.push_back(new Contact(this->m_parent, b->m_parent,
+					this->m_transform_ws * checkPoint_ls,
+					this->m_transform_ws.transformDirection(Vect3(0.f, yMagnitude, 0.f).GetNormal()),
 					yMagnitude, 0.8f));
 			}
 			else {
-				o_list.push_back(new Contact(this->m_parent, this->m_parent,
-					this->m_transform * checkPoint_ls,
-					this->m_transform.transformDirection(Vect3(0.f, 0.f, zMagnitude).GetNormal()),
+				o_list.push_back(new Contact(this->m_parent, b->m_parent,
+					this->m_transform_ws * checkPoint_ls,
+					this->m_transform_ws.transformDirection(Vect3(0.f, 0.f, zMagnitude).GetNormal()),
 					zMagnitude, 0.8f));
 			}
-
+			*debug << "CONTACT GENERATED: Point-Face!\n\txMag: " << xMagnitude << "\n\tyMag: " << yMagnitude << "\n\tzMag: " << zMagnitude << std::endl << std::endl;
 			contactFound = true;
 		}
 	}
@@ -661,15 +709,15 @@ bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
 
 		// Edges are selected. If both points are in direction of other cube,
 		//  add them to the edge list.
-		Vect3 dirn_ls = this->m_transform.inverse().transformDirection(direction_ws);
+		Vect3 dirn_ls = this->m_transform_ws.inverse().transformDirection(direction_ws);
 		if (pt_1_ls * dirn_ls > 0 && pt_2_ls * dirn_ls > 0) {
-			our_edge_list_ws.push_back(this->m_transform * pt_1_ls);
-			our_edge_list_ws.push_back(this->m_transform * pt_2_ls);
+			our_edge_list_ws.push_back(this->m_transform_ws * pt_1_ls);
+			our_edge_list_ws.push_back(this->m_transform_ws * pt_2_ls);
 		}
-		dirn_ls = b->m_transform.inverse().transformDirection(direction_ws * -1);
+		dirn_ls = b->m_transform_ws.inverse().transformDirection(direction_ws * -1);
 		if (opt_1_ls * dirn_ls > 0 && opt_2_ls * dirn_ls > 0) {
-			other_edge_list_ws.push_back(b->m_transform * opt_1_ls);
-			other_edge_list_ws.push_back(b->m_transform * opt_2_ls);
+			other_edge_list_ws.push_back(b->m_transform_ws * opt_1_ls);
+			other_edge_list_ws.push_back(b->m_transform_ws * opt_2_ls);
 		}
 
 		// SWEET JESUS this is getting long.
@@ -746,6 +794,8 @@ bool Box::genContacts(Box* b, std::vector<Contact*> o_list) const {
 					edgeDistance_ws.GetNormal(),
 					edgeDistance_ws.Magnitude(),
 					0.8f));
+
+				*debug << "CONTACT GENRATED: Edge-Edge\n\n";
 
 				contactFound = true;
 			}

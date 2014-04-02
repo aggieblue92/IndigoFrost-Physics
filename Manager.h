@@ -2,6 +2,7 @@
 #define INDIGO_FROST_MANAGER_H
 
 #include <vector>
+#include <fstream>
 #include "RigidBody.h"
 #include "Forces.h"
 #include "CollisionGeometry.h"
@@ -24,7 +25,12 @@ namespace Frost {
 		int m_contactLimit; // Number of contacts allowable
 		float m_contactResolveRate; // Rate at which extra contact resolution steps are allowed - 1 means only resolve generated contacts, no more, 2 means 2x ct... etc...
 
+		// DEBUG
+		std::ofstream debug;
+
 	public:
+		bool m_stop; // REMOVE - ONly for debugging!
+
 		IndigoWorld();
 		~IndigoWorld();
 
