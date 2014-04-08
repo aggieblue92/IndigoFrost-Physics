@@ -1,16 +1,19 @@
 #include "Manager.h"
+#include <iostream>
 using namespace Frost;
 
 IndigoWorld::IndigoWorld()
 : m_forces(new ForceRegistry()),
 m_rbList(0),
-m_bvhTree(0),
+m_bvhTree(new BVTNode()),
 m_targetFrameSpeed(0.04),
 m_contactLimit(50),
 m_contactResolveRate(1.4f),
 m_contactList(0),
-m_stop(false),
-debug("debugOut.txt")
+m_stop(false) // <BROKEN>,
+//m_timeElapsedSinceRebalance(0.f),
+//m_reBalanceRate(5.f)
+//// </BROKEN>
 {}
 
 // TODO: Replace with shutdown() function instead?
@@ -24,7 +27,6 @@ IndigoWorld::~IndigoWorld() {
 
 	// Shutdown bounding volume heirarchy tree...
 	if (m_bvhTree != 0) {
-		m_bvhTree->Release();
 		delete m_bvhTree;
 		m_bvhTree = 0;
 	}
@@ -37,9 +39,6 @@ IndigoWorld::~IndigoWorld() {
 		}
 	}
 	m_rbList.resize(0);
-
-	if(debug.is_open())
-		debug.close();
 }
 
 int IndigoWorld::getNumRigidBodies() {
@@ -74,49 +73,30 @@ RigidBody* IndigoWorld::getRigidBodyInformation(int index) {
 		return 0;
 }
 
-int IndigoWorld::addNewRigidBody(const RigidBody& info) {
+int IndigoWorld::addNewRigidBody(RigidBody* info) {
 	// Add to rigid body list...
-	m_rbList.push_back(new RigidBody(info));
+	m_rbList.push_back(info);
 	int newPos = m_rbList.size() - 1;
 
-	// Generate bounding volume sphere for rigid body...
-	// UPDATE THIS HERE PLZ. Optimize, efficientcy-ize!
-	// Origin: Origin of rigid body.
-	// Radius: Distance of furthest point from origin on geometry
-	float maxRadius = 1.f;
-	for (int i = 0; i < info.m_collisionGeometry.size(); i++) {
-		if (info.m_collisionGeometry[i]->getType() == GEOMETRY_TYPE::BOX) {
-			// For now, while we're only using one collision object,
-			//  the radius will just be distance of half size.
-			Box* myBox;
-			info.m_collisionGeometry[i]->fillBox(myBox);
-			if (myBox != 0) {
-				maxRadius = myBox->getHalfSize().Magnitude();
-			}
-		}
-		else {
-			Sphere* mySphere;
-			info.m_collisionGeometry[i]->fillSphere(mySphere);
-			if (mySphere != 0) {
-				maxRadius = mySphere->getRadius();
-			}
-		}
-	}
-	m_bvList.push_back(new BoundingSphere(info.getPosition(), maxRadius));
-	
-	if (m_bvhTree == 0) {
-		m_bvhTree = new BVTNode(0, m_bvList[newPos], m_rbList[newPos]);
-	}
-	else {
-		m_bvhTree->Insert(m_rbList[newPos], m_bvList[newPos]);
-	}
+	// Insert to our tree...
+	m_bvhTree->Insert(m_rbList.back());
 
 	return newPos;
 }
 
 // TODO: Add CUDA support?
 void IndigoWorld::UpdateWorld(float timeElapsed) {
+
 	int nContactsGenerated = 0;
+
+	//// <BROKEN>
+	//m_timeElapsedSinceRebalance += timeElapsed;
+	//if(m_timeElapsedSinceRebalance > m_reBalanceRate) {
+	//	// TODO: This NEEDS to be handled using threading!
+	//	m_bvhTree = BVTNode::createRebalancedTree(m_bvhTree);
+	//	m_timeElapsedSinceRebalance = 0.f;
+	//}
+	//// </BROKEN>
 
 	// First: Update all forces and integrators.
 	m_forces->UpdateForces(timeElapsed);
@@ -125,23 +105,29 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 	// Update bounding sphere locations...
 	for (int i = 0; i < m_rbList.size(); i++) {
 		m_rbList[i]->Integrate(timeElapsed);
-		m_bvList[i]->setLocation(m_rbList[i]->getPosition());
 	}
 
+	// <DEBUG>
+	if ((m_rbList[0]->getPosition() - m_rbList[1]->getPosition()).Magnitude() < 1.5f) {
+		bool breakHere = true;
+	}
+	// </DEBUG>
+
+	m_bvhTree->Update();
+
 	// Generate coarse contact data from tree...
-	// TODO: Use a vector instead of an array?
-	CoarseContact* myList = new CoarseContact[m_contactLimit];
-	nContactsGenerated = m_bvhTree->CoarseCollisionDetect(myList, m_contactLimit);
+	std::vector<CoarseContact> myList(0);
+	m_bvhTree->CoarseCollision(myList, m_contactLimit);
 
 	// Fine contact generation loop
 	// Go through, adding contacts if they exist. Only add up until the limit.
 	std::vector<Contact*> contactList(0);
-	for (int i = 0; (i < m_contactLimit) && (contactList.size() <= (m_contactLimit * m_contactResolveRate)); i++) {
+
+	for (int i = 0; (i < m_contactLimit) && (i < myList.size()); i++) {
+		// TODO: Create new contacts should they arise after resolution?
+
 		// Check collision against all collision geometry in list.
 		//  OPTIMIZE THIS BIT FOR MULTIPLE GEOMETRY
-		if (myList[i].rb1 == 0 || myList[i].rb2 == 0)
-			break;
-
 		if (myList[i].rb1->getCollisionObject(0) == 0 || myList[i].rb2->getCollisionObject(0) == 0)
 			break;
 
@@ -154,10 +140,8 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 		//for(int i = 0; myList[i].rb2->getCollisionObject(i) != 0; i++) {
 		//	myList[i].rb2->getCollisionObject(i)->updateFineMatrix();
 		//}
-		myList[i].rb1->getCollisionObject(0)->setDebugOut(debug);
-		myList[i].rb2->getCollisionObject(0)->setDebugOut(debug);
 		if(myList[i].rb1->getCollisionObject(0)->genContacts(myList[i].rb2->getCollisionObject(0), contactList)) {
-			// Callback support here.
+			
 		}
 	}
 
@@ -168,7 +152,7 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 		// For complicated simulations, this may not work so well, but
 		//  oh well.
 		
-		// DEBUG RIGHT HERE - this isn't working.
+		// This bit is a hair wonky, you might want to fix it. You will want to fix it.
 		int k = 70; // in N/m
 		contactList[i]->rb[0]->addForceAtPoint(contactList[i]->contactNormal_wd * contactList[i]->magnitude * (k), contactList[i]->contactPoint_wp);
 		contactList[i]->rb[1]->addForceAtPoint(contactList[i]->contactNormal_wd * contactList[i]->magnitude * (-k), contactList[i]->contactPoint_wp);
@@ -183,6 +167,12 @@ void IndigoWorld::addForce(RigidBody* rb, RigidBodyForceGenerator* force) {
 	m_forces->Add(rb, force);
 }
 
+void IndigoWorld::setContactResolutionStepsAllowed(int nPerFrame) {
+	if(nPerFrame > 0) {
+		m_contactLimit = nPerFrame;
+	}
+}
+
 void IndigoWorld::addForce(int index, RigidBodyForceGenerator* force) {
 	if(index < m_rbList.size() && index >= 0)
 		m_forces->Add(m_rbList[index], force);
@@ -190,4 +180,24 @@ void IndigoWorld::addForce(int index, RigidBodyForceGenerator* force) {
 
 bool IndigoWorld::removeForce(RigidBody* rb, RigidBodyForceGenerator* force) {
 	return m_forces->Remove(rb, force);
+}
+
+bool IndigoWorld::removeForce(int index, RigidBodyForceGenerator* force) {
+	if(index < m_rbList.size() && index >= 0)
+		return m_forces->Remove(m_rbList[index], force);
+	else
+		return false;
+}
+
+// BEGIN DEBUG FUNCTIONS
+void IndigoWorld::GetCirclesAtBVHLevel(int level, std::vector<Vect3>& o_origins, std::vector<float>& o_radii) {
+	// Go into the BHV Tree, get bounding volume information at specified levels.
+	std::vector<BoundingSphere*> list(0);
+	m_bvhTree->GetNodesAtDepth(list, level);
+
+	// Push out.
+	for(int i = 0; i < list.size(); i++) {
+		o_origins.push_back(list[i]->getLocation());
+		o_radii.push_back(list[i]->getRadius());
+	}
 }

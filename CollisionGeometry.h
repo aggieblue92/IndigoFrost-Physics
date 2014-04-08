@@ -55,8 +55,6 @@ namespace Frost {
 		RigidBody* m_parent; // Contains the rigid body to which this is attached (NULL for no parent)
 		Matrix4 m_transform_ws; // Contains position and orientation of object (ls_geometry->ws)
 
-		std::ofstream* debug;
-
 	public:
 		// Base ctor - initializes to origin, no rotation, type whatever is passed.
 		Geometry(RigidBody* parent, enum GEOMETRY_TYPE type);
@@ -65,7 +63,7 @@ namespace Frost {
 		Geometry(RigidBody* parent, const Matrix4& transform, enum GEOMETRY_TYPE type);
 
 		// Creates a transform matrix from position and quaternion given
-		Geometry(RigidBody* parent, const Vect3& position, const Quaternion& orientation, enum GEOMETRY_TYPE type);
+		Geometry(RigidBody* parent, const Vect3& local_position, const Quaternion& orientation, enum GEOMETRY_TYPE type);
 
 		// Return transform matrix - transform from local space to world space
 		Matrix4 getTransformMatrix() const;
@@ -98,8 +96,6 @@ namespace Frost {
 
 		// virtual unsigned int GenerateContacts(Sphere* s) = 0;
 		// virtual unsigned int GenerateContacts(Box* b) = 0;
-
-		void setDebugOut(std::ofstream& out);
 	};
 
 	//---------------------- SPHERE ----------------------\\
@@ -114,7 +110,7 @@ namespace Frost {
 		Sphere(RigidBody* parent);
 
 		// Position and radius included.
-		Sphere(RigidBody* parent, Vect3 pos, float radius);
+		Sphere(RigidBody* parent, Vect3 local_pos, float radius);
 
 		// Copy ctor
 		Sphere(const Sphere&);
@@ -151,7 +147,7 @@ namespace Frost {
 		Box(RigidBody* parent);
 
 		// Full ctor - position, rotation, halfsize
-		Box(RigidBody* parent, Vect3 pos, Quaternion rot, Vect3 halfSize);
+		Box(RigidBody* parent, Vect3 local_pos, Quaternion rot, Vect3 halfSize);
 
 		// Full ctor with transform matrix instead
 		Box(RigidBody* parent, Matrix4 transform, Vect3 halfSize);

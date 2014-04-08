@@ -2,7 +2,6 @@
 #define INDIGO_FROST_MANAGER_H
 
 #include <vector>
-#include <fstream>
 #include "RigidBody.h"
 #include "Forces.h"
 #include "CollisionGeometry.h"
@@ -25,8 +24,10 @@ namespace Frost {
 		int m_contactLimit; // Number of contacts allowable
 		float m_contactResolveRate; // Rate at which extra contact resolution steps are allowed - 1 means only resolve generated contacts, no more, 2 means 2x ct... etc...
 
-		// DEBUG
-		std::ofstream debug;
+		//// <BROKEN>
+		//float m_reBalanceRate; // How often we attempt to re-balance our BVH Tree
+		//float m_timeElapsedSinceRebalance; // How long it has been since a balancing has been performed.
+		//// </BROKEN>
 
 	public:
 		bool m_stop; // REMOVE - ONly for debugging!
@@ -45,11 +46,13 @@ namespace Frost {
 		void setTargetFrameTime(int frameTime);
 		// Set percent extra resolutions allowable - 0 means no extra steps.
 		void setExtraResolutionStepAllowance(float pecentage);
+		// Manually set number of contact steps allowable
+		void setContactResolutionStepsAllowed(int nPerFrame);
 
 		// Get information about a rigid body
 		RigidBody* getRigidBodyInformation(int index);
 		// Add a new rigid body to the system, return its index.
-		int addNewRigidBody(const RigidBody& info);
+		int addNewRigidBody(RigidBody* info);
 
 		// Add a new force to the environment
 		void addForce(RigidBody* rb, RigidBodyForceGenerator* force);
@@ -57,9 +60,15 @@ namespace Frost {
 		void addForce(int index, RigidBodyForceGenerator* force);
 		// Remove force. If a force is found, return true. If either parameter is zero, serves as a wildcard.
 		bool removeForce(RigidBody* rb, RigidBodyForceGenerator* force);
+		// Remove force, as specified by the index. Parameters cannot be zero.
+		bool removeForce(int index, RigidBodyForceGenerator* force);
 
 		// Simulate passing of world by timeElapsed seconds internally.
 		void UpdateWorld(float timeElapsed);
+
+		// BEGIN DEBUG FUNCTIONS:
+		void GetCirclesAtBVHLevel(int level, std::vector<Vect3>& o_origins, std::vector<float>& o_radii);
+		// END DEBUG FUNCTIONS
 	};
 }
 

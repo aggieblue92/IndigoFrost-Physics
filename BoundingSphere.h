@@ -21,9 +21,10 @@ Upon implementation of other bounding primitives, you'll
 \*****************************************************/
 
 #include "Vect3.h"
+#include "RigidBody.h"
 
 namespace Frost {
-		class BoundingSphere {
+	class BoundingSphere {
 	public:
 		BoundingSphere();
 		BoundingSphere(const Vect3& location, const float radius);
@@ -38,13 +39,17 @@ namespace Frost {
 		virtual bool isColliding(const BoundingSphere& other);
 		virtual float getVolume();
 
-		// Return how much an object would grow if a bounding sphere was added.
-		virtual float getGrowth(const BoundingSphere& addedVolume);
+		// Return the new volume should a new object be added.
+		virtual float getNewRadius(const BoundingSphere& addedVolume);
+		static BoundingSphere getNewBoundingSphere(const BoundingSphere& sphere_1, const BoundingSphere& sphere_2);
 
-		virtual void getNewBoundingSphere(BoundingSphere& o_newSphere, const BoundingSphere& toAdd);
+		// Generates smallest completely enclosing bounding volume from rigid body.
+		void fillFromRigidBody(const RigidBody& rb);
 
 	private:
+		// Location in world space of sphere.
 		Vect3 m_location;
+		// Radius of sphere.
 		float m_radius;
 	};
 }

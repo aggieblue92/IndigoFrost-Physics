@@ -63,8 +63,9 @@ bool Geometry::isTouching(Geometry* g) const {
 			return box->isTouching(other);
 		}
 	}
-	else if(g->m_type == GEOMETRY_TYPE::SPHERE) {
+	else if(this->m_type == GEOMETRY_TYPE::SPHERE) {
 		Sphere* sp;
+		this->fillSphere(sp);
 		if(g->m_type == GEOMETRY_TYPE::BOX) {
 			Box* other;
 			g->fillBox(other);
@@ -91,10 +92,6 @@ bool Geometry::genContacts(Geometry* g, std::vector<Contact*>& o_list) const {
 		g->fillSphere(sp);
 		return this->genContacts(sp, o_list);
 	}
-}
-
-void Geometry::setDebugOut(std::ofstream& out) {
-	debug = &out;
 }
 
 // Begin SPHERE code:
@@ -642,7 +639,7 @@ bool Box::genContacts(Box* b, std::vector<Contact*>& o_list) const {
 					this->m_transform_ws.transformDirection(Vect3(0.f, 0.f, zMagnitude).GetNormal()),
 					zMagnitude, 0.8f));
 			}
-			*debug << "CONTACT GENERATED: Point-Face!\n\txMag: " << xMagnitude << "\n\tyMag: " << yMagnitude << "\n\tzMag: " << zMagnitude << std::endl << std::endl;
+
 			contactFound = true;
 		}
 	}
@@ -794,8 +791,6 @@ bool Box::genContacts(Box* b, std::vector<Contact*>& o_list) const {
 					edgeDistance_ws.GetNormal(),
 					edgeDistance_ws.Magnitude(),
 					0.8f));
-
-				*debug << "CONTACT GENRATED: Edge-Edge\n\n";
 
 				contactFound = true;
 			}

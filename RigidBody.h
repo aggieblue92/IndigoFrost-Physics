@@ -87,7 +87,9 @@ namespace Frost {
 		// Add a piece of collision geometry to our list.
 		void addCollisionGeometry(Geometry*);
 		void clearCollisionGeometry();
-		Geometry* getCollisionObject(int index);
+		Geometry* getCollisionObject(int index) const;
+		// Get number of collision objects stored.
+		int getNumCollisionObjects() const;
 
 		// Set the inertia tensor of the object
 		void setInertiaTensor(const Matrix3& inverseInertiaTensor);

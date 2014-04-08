@@ -159,11 +159,15 @@ void RigidBody::clearCollisionGeometry() {
 	m_collisionGeometry.resize(0);
 }
 
-Geometry* RigidBody::getCollisionObject(int index) {
+Geometry* RigidBody::getCollisionObject(int index) const {
 	if (m_collisionGeometry.size() > index)
 		return m_collisionGeometry[index];
 	else
 		return 0;
+}
+
+int RigidBody::getNumCollisionObjects() const {
+	return m_collisionGeometry.size();
 }
 
 void RigidBody::setInertiaTensor(const Matrix3& inverseInertiaTensor) {
