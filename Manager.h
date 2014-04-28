@@ -25,9 +25,12 @@ namespace Frost {
 		float m_contactResolveRate; // Rate at which extra contact resolution steps are allowed - 1 means only resolve generated contacts, no more, 2 means 2x ct... etc...
 
 		//// <BROKEN>
-		//float m_reBalanceRate; // How often we attempt to re-balance our BVH Tree
-		//float m_timeElapsedSinceRebalance; // How long it has been since a balancing has been performed.
+		float m_reBalanceRate; // How often we attempt to re-balance our BVH Tree
+		float m_timeElapsedSinceRebalance; // How long it has been since a balancing has been performed.
 		//// </BROKEN>
+
+		float m_updateAllFineRate; // How often we update all fine matrices in the rigid bodies...
+		float m_timeElapsedSinceFineUpdate; // How long it has been since a global fine-update matrix
 
 	public:
 		bool m_stop; // REMOVE - ONly for debugging!

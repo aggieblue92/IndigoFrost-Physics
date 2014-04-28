@@ -112,8 +112,14 @@ namespace Frost {
 		// Returns gravity constant of object
 		float getGravity();
 
+		// Set gravity constant of object
+		void setGravity(float newGravity);
+
 		// Returns damping constant of object
 		float getDamping();
+
+		// Sets damping constant of object
+		void setDamping(float);
 
 		// Returns mass of object
 		float GetMass();

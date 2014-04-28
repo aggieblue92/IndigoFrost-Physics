@@ -39,26 +39,26 @@ void BVTNode::getDeepestElement(BVTNode*& deepest, int& depth, int myDepth) {
 		this->m_right->getDeepestElement(deepest, depth, myDepth + 1);
 	}
 }
-// THE PROBLEM SEEMS TO BE HERE - it's not checking properly both sides of the tree together. Must consider left->left and left->right together
-//  as well.
+
 unsigned int BVTNode::CoarseCollision(BVTNode* checkLeft, BVTNode* checkRight, std::vector<CoarseContact>& o_contacts, unsigned int limit) {
 	// If the left and right side aren't touching, just go down the left and right sides, giving each
 	//  1/2 of the contact limit (CHANGE THIS)
 	if (!checkLeft->m_volume->isColliding(*checkRight->m_volume)) {
 		unsigned int nGenerated = 0;
 		if(!checkLeft->isLeaf()) {
-			nGenerated += BVTNode::CoarseCollision(checkLeft->m_left, checkLeft->m_right, o_contacts, limit / 2);
+			nGenerated += BVTNode::CoarseCollision(checkLeft->m_left, checkLeft->m_right, o_contacts, limit);
 		}
 		if(!checkRight->isLeaf()) {
-			nGenerated += BVTNode::CoarseCollision(checkRight->m_left, checkRight->m_right, o_contacts, limit / 2);
+			nGenerated += BVTNode::CoarseCollision(checkRight->m_left, checkRight->m_right, o_contacts, limit - nGenerated);
 		}
+		return nGenerated;
 	}
 
 	// If our left side is a leaf node (rigid body)...
 	if (checkLeft->isLeaf()) {
 		// If right is also a leaf, then flag potential contact for the two.
 		if (checkRight->isLeaf()) {
-			CoarseContact* gen = new CoarseContact;
+			// We can already assume they are colliding.
 			o_contacts.push_back(CoarseContact(checkLeft->m_rb, checkRight->m_rb));
 			return 1;
 		}
@@ -107,7 +107,10 @@ unsigned int BVTNode::CoarseCollision(BVTNode* checkLeft, BVTNode* checkRight, s
 			//  LL, LR, RL, RR
 			unsigned int nGenerated = rSide;
 			if(limit - nGenerated > 0) {
-				nGenerated += BVTNode::CoarseCollision(checkLeft->m_left, checkRight->m_left, o_contacts, limit - rSide);
+				nGenerated += BVTNode::CoarseCollision(checkRight->m_left, checkRight->m_right, o_contacts, limit - nGenerated);
+			}
+			if(limit - nGenerated > 0) {
+				nGenerated += BVTNode::CoarseCollision(checkLeft->m_left, checkRight->m_left, o_contacts, limit - nGenerated);
 			}
 			if (limit - nGenerated > 0) {
 				nGenerated +=
@@ -127,7 +130,9 @@ unsigned int BVTNode::CoarseCollision(BVTNode* checkLeft, BVTNode* checkRight, s
 	}
 
 	// If the left side is a leaf, and the right side is
-	return 4;
+	// We should never make it here.
+	assert(false);
+	return 0;
 }
 
 void BVTNode::Insert(RigidBody* newObject) {
@@ -249,6 +254,7 @@ void BVTNode::GetNodesAtDepth(std::vector<BoundingSphere*>& o_nodes, int level, 
 int BVTNode::getDepth() const {
 	if(m_rb != 0)
 		return 1;
+	
 	else {
 		int lSide = m_left->getDepth();
 		int rSide = m_right->getDepth();
@@ -261,7 +267,9 @@ int BVTNode::getDepth() const {
 
 void BVTNode::GetBodiesAtDepth(std::vector<RigidBody*>& o_bodies, int level, int myLevel) const {
 	if(myLevel == level) {
-		o_bodies.push_back(m_rb);
+		if(m_rb != 0) {
+			o_bodies.push_back(m_rb);
+		}
 	}
 	else {
 		if(m_left != 0) {
@@ -284,7 +292,7 @@ BVTNode* BVTNode::createRebalancedTree(const BVTNode* oldTree) {
 	// Start at that depth, go to zero, insert nodes.
 	for(int i = depth; i >= 0; i--) {
 		std::vector<RigidBody*> atDepth(0);
-		oldTree->GetBodiesAtDepth(atDepth, depth);
+		oldTree->GetBodiesAtDepth(atDepth, i);
 		for(int j = 0; j < atDepth.size(); j++) {
 			toReturn->Insert(atDepth[j]);
 		}
@@ -293,5 +301,6 @@ BVTNode* BVTNode::createRebalancedTree(const BVTNode* oldTree) {
 	// Perform release...
 	delete oldTree;
 	oldTree = 0;
+	oldTree = toReturn;
 	return toReturn;
 }

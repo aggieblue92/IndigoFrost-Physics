@@ -1,18 +1,21 @@
 #include "Manager.h"
 #include <iostream>
+#include <boost\thread\thread.hpp>
 using namespace Frost;
 
 IndigoWorld::IndigoWorld()
 : m_forces(new ForceRegistry()),
 m_rbList(0),
 m_bvhTree(new BVTNode()),
-m_targetFrameSpeed(0.04),
+m_targetFrameSpeed(1.f/100.f),
 m_contactLimit(50),
 m_contactResolveRate(1.4f),
 m_contactList(0),
-m_stop(false) // <BROKEN>,
-//m_timeElapsedSinceRebalance(0.f),
-//m_reBalanceRate(5.f)
+m_stop(false), // <BROKEN>,
+m_timeElapsedSinceRebalance(0.f),
+m_reBalanceRate(5.f),
+m_timeElapsedSinceFineUpdate(0.f),
+m_updateAllFineRate(0.f)
 //// </BROKEN>
 {}
 
@@ -90,13 +93,25 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 	int nContactsGenerated = 0;
 
 	//// <BROKEN>
-	//m_timeElapsedSinceRebalance += timeElapsed;
-	//if(m_timeElapsedSinceRebalance > m_reBalanceRate) {
+	// Re-balance the tree occasionally
+	m_timeElapsedSinceRebalance += timeElapsed;
+	if(m_timeElapsedSinceRebalance > m_reBalanceRate) {
 	//	// TODO: This NEEDS to be handled using threading!
-	//	m_bvhTree = BVTNode::createRebalancedTree(m_bvhTree);
-	//	m_timeElapsedSinceRebalance = 0.f;
-	//}
+		m_bvhTree = BVTNode::createRebalancedTree(m_bvhTree);
+		m_timeElapsedSinceRebalance = 0.f;
+	}
 	//// </BROKEN>
+
+	// Update all fine matrices for all collision objects occasionally.
+	m_timeElapsedSinceFineUpdate += timeElapsed;
+	if(m_timeElapsedSinceFineUpdate > m_updateAllFineRate) {
+		for(int i = 0; i < m_rbList.size(); i++) {
+			for(int j = 0; m_rbList[i]->getCollisionObject(j) != 0; j++) {
+				m_rbList[i]->getCollisionObject(j)->updateFineMatrix();
+			}
+		}
+		m_timeElapsedSinceFineUpdate = 0.f;
+	}
 
 	// First: Update all forces and integrators.
 	m_forces->UpdateForces(timeElapsed);
@@ -107,16 +122,10 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 		m_rbList[i]->Integrate(timeElapsed);
 	}
 
-	// <DEBUG>
-	if ((m_rbList[0]->getPosition() - m_rbList[1]->getPosition()).Magnitude() < 1.5f) {
-		bool breakHere = true;
-	}
-	// </DEBUG>
-
 	m_bvhTree->Update();
 
 	// Generate coarse contact data from tree...
-	std::vector<CoarseContact> myList(0);
+	std::vector<CoarseContact> myList(0); // contact out list...
 	m_bvhTree->CoarseCollision(myList, m_contactLimit);
 
 	// Fine contact generation loop
@@ -126,20 +135,16 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 	for (int i = 0; (i < m_contactLimit) && (i < myList.size()); i++) {
 		// TODO: Create new contacts should they arise after resolution?
 
-		// Check collision against all collision geometry in list.
-		//  OPTIMIZE THIS BIT FOR MULTIPLE GEOMETRY
+		// Possible optimization: only consider collision objects with origins in direction of object, or at least not behind...?
 		if (myList[i].rb1->getCollisionObject(0) == 0 || myList[i].rb2->getCollisionObject(0) == 0)
 			break;
 
-		// Update fine data for collision objects...
-		myList[i].rb1->getCollisionObject(0)->updateFineMatrix();
-		myList[i].rb2->getCollisionObject(0)->updateFineMatrix();
-		//for(int i = 0; myList[i].rb1->getCollisionObject(i) != 0; i++) {
-		//	myList[i].rb1->getCollisionObject(i)->updateFineMatrix();
-		//}
-		//for(int i = 0; myList[i].rb2->getCollisionObject(i) != 0; i++) {
-		//	myList[i].rb2->getCollisionObject(i)->updateFineMatrix();
-		//}
+		for(int j = 0; myList[i].rb1->getCollisionObject(j) != 0; j++) {
+			myList[i].rb1->getCollisionObject(j)->updateFineMatrix();
+		}
+		for(int j = 0; myList[i].rb2->getCollisionObject(j) != 0; j++) {
+			myList[i].rb2->getCollisionObject(j)->updateFineMatrix();
+		}
 		if(myList[i].rb1->getCollisionObject(0)->genContacts(myList[i].rb2->getCollisionObject(0), contactList)) {
 			
 		}
@@ -151,6 +156,7 @@ void IndigoWorld::UpdateWorld(float timeElapsed) {
 		//  the object and the object is bouncing back as if a spring.
 		// For complicated simulations, this may not work so well, but
 		//  oh well.
+		// THIS IS THE NEXT THING TO UPDATE. This is slow, this is ugly, this is inaccurate.
 		
 		// This bit is a hair wonky, you might want to fix it. You will want to fix it.
 		int k = 70; // in N/m

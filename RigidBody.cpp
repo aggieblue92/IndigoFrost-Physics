@@ -170,6 +170,10 @@ int RigidBody::getNumCollisionObjects() const {
 	return m_collisionGeometry.size();
 }
 
+void RigidBody::setGravity(float newG) {
+	this->m_g = newG;
+}
+
 void RigidBody::setInertiaTensor(const Matrix3& inverseInertiaTensor) {
 	m_inverseInertiaTensorWorld = inverseInertiaTensor;
 }
@@ -310,4 +314,9 @@ void RigidBody::setVelocity(const float x, const float y, const float z) {
 	m_velocity.x = x;
 	m_velocity.y = y;
 	m_velocity.z = z;
+}
+
+void RigidBody::setDamping(float nD) {
+	if(nD > 0.f && nD < 1.f)
+		m_damp = nD;
 }
