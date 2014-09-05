@@ -1,122 +1,70 @@
-#ifndef INDIGO_FROST_PHYSICS_CLASS_H
-#define INDIGO_FROST_PHYSICS_CLASS_H
+#ifndef FROSTDLL_API
+#ifdef _WINDLL
+#define FROSTDLL_API __declspec(dllexport)
+#else
+#define FROSTDLL_API __declspec(dllimport)
+#endif
+#endif
 
-/*****************************************************\
+/////////////////////////////////////////
+// Vect3: A 3-dimensional vector class,
+//  supporting standard vector math funcs
+/////////////////////////////////////////
 
-		Vect3: A 3-dimensional vector class,
-	with standard vector functions supported.
+#ifndef FROST_MATH_VECT3_H
+#define FROST_MATH_VECT3_H
 
-\*****************************************************/
+#include <cmath>
+#include "FloatStructs.h"
+#include "FrostExceptions.h"
 
-#include <assert.h>
-#include <math.h>
-
-namespace Frost {
-	struct Vect3 {
-		float x, y, z;
-
+namespace Frost
+{
+	class Vect3 : public FLOAT3
+	{
+	public:
+		/////////////////// CTORS //////////////////////
+		
 		// Default ctor: initialize to zero vector
-		Vect3() : x(0.0f), y(0.0f), z(0.0f) {}
+		FROSTDLL_API Vect3();
+		// Initialize component-wise
+		FROSTDLL_API Vect3(float x, float y, float z);
+		// Initialize with another Vect3 or other R32B32G32_FLOAT type object
+		FROSTDLL_API Vect3(const FLOAT3& right);
+		// Initialize with another Vect3 or other R32B32G32_FLOAT type object
+		FROSTDLL_API Vect3(const Vect3& right);
 
-		// Initialize vector 
-		Vect3(float xPos, float yPos, float zPos) :
-			x(xPos), y(yPos), z(zPos) {}
-		Vect3 operator+(const Vect3& right) const {
-			return Vect3(x + right.x, y + right.y, z + right.z);
-		}
-		Vect3 operator+(float right) const {
-			// Add to magnitude, but not to direction...
-			Vect3 u = this->GetNormal();
-			u *= right;
-			return Vect3(x + u.x, y + u.y, z + u.z);
-		}
-		Vect3 operator-(const Vect3& right) const {
-			return Vect3(x - right.x, y - right.y, z - right.z);
-		}
-		Vect3 operator-(float right) const {
-			Vect3 u = this->GetNormal();
-			u *= right;
-			return Vect3(x - u.x, y - u.y, z - u.z);
-		}
-		Vect3& operator+=(const Vect3 right) {
-			return Vect3(x += right.x, y += right.y, z += right.z);
-		}
-		Vect3& operator+=(float right) {
-			Vect3 u = this->GetNormal();
-			u *= right;
-			return Vect3(x += u.x, y += u.y, z += u.z);
-		}
-		Vect3& operator-=(const Vect3 right) {
-			return Vect3(x -= right.x, y -= right.y, z -= right.z);
-		}
-		Vect3& operator-=(float right) {
-			Vect3 u = this->GetNormal();
-			u *= right;
-			return Vect3(x -= u.x, y -= u.y, z -= u.z);
-		}
-		float operator*(const Vect3 right) const {
-			return (x * right.x + y * right.y + z * right.z);
-		}
-		Vect3 operator*(const float right) const {
-			return Vect3(x * right, y * right, z * right);
-		}
-		Vect3 operator*=(const float right) {
-			return Vect3(x *= right, y *= right, z *= right);
-		}
+		///////////// OPERATOR OVERLOADS /////////////
+		FROSTDLL_API Vect3 operator+(const FLOAT3& other) const;
+		FROSTDLL_API Vect3 operator-(const FLOAT3& other) const;
+		FROSTDLL_API float operator*(const FLOAT3& other) const;
+		FROSTDLL_API Vect3 operator%(const FLOAT3& other) const;
+		FROSTDLL_API Vect3 operator*(float other) const;
+		FROSTDLL_API Vect3 operator/(float other) const;
+		FROSTDLL_API Vect3& operator+=(const FLOAT3& other);
+		FROSTDLL_API Vect3& operator-=(const FLOAT3& other);
+		FROSTDLL_API Vect3& operator*=(float other);
+		FROSTDLL_API Vect3& operator/=(float other);
+		FROSTDLL_API float operator[](int i) const;
+		FROSTDLL_API float& operator[](int i);
+		FROSTDLL_API Vect3& operator=(const FLOAT3& other);
+		FROSTDLL_API bool operator==(const FLOAT3& other);
 
-		float operator[](unsigned int i) const {
-			switch(i) {
-			case 0: return x;
-			case 1: return y;
-			case 2: return z;
-			default:
-				// Throw an error here is what you should do.
-				return 666;
-				// But, instead, summon Satan to handle it for me.
-			}
-		}
+		///////////// OTHER VECTOR FUNCTIONS //////////////
+		FROSTDLL_API float Magnitude();
+		FROSTDLL_API float SquareMagnitude();
 
-		float& operator[](unsigned int i){
-			switch(i) {
-			case 0: return x;
-			case 1: return y;
-			case 2: default: return z;
-			}
-		}
-
-		static Vect3 CrossProduct(const Vect3 left, const Vect3 right) {
-			return Vect3(left.y * right.z - left.z * right.y,
-				left.z * right.x - left.x * right.z,
-				left.x * right.y - left.y * right.x);
-		}
-
-		static float DotProduct(const Vect3 left, const Vect3 right) {
-			return left.x * right.x + left.y * right.y + left.z * right.z;
-		}
-
-		void Normalize() {
-			float divBy = sqrt((x * x) + (y * y) + (z * z));
-			// If divBy is zero, then x,y,z are all zero.
-			if (0 == divBy)
-				divBy = 1.0f;
-			x /= divBy;
-			y /= divBy;
-			z /= divBy;
-		}
-		float Magnitude() {
-			return sqrt((x * x) + (y * y) + (z * z));
-		}
-		// Useful for saving time from sqrt() op.
-		float SquareMagnitude() const {
-			return x*x + y*y + z*z;
-		}
-		Vect3 GetNormal() const {
-			Vect3 toReturn(*this);
-			toReturn.Normalize();
-			return toReturn;
-		}
-
+	private:
 	};
+
+	// Perform a dot product operation on the two specified vectors
+	FROSTDLL_API float DotProduct(const Vect3& v1, const Vect3& v2);
+
+	// Perform a cross product operation on the two specified vectors
+	FROSTDLL_API Vect3 CrossProduct(const Vect3& v1, const Vect3& v2);
+
+	// Perform a component-wise multiplication on the two specified vectors
+	FROSTDLL_API Vect3 ComponentProduct(const Vect3& v1, const Vect3& v2);
 }
 
 #endif

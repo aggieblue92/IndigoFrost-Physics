@@ -2,78 +2,103 @@
 using namespace Frost;
 
 Quaternion::Quaternion()
-	: r(1.f), i(0.f), j(0.f), k(0.f)
-{}
-
-Quaternion::Quaternion(float _r, float _i, float _j, float _k)
-	: r(_r), i(_i), j(_j), k(_k)
-{}
-
-void Quaternion::normalize(){
-	float d = r*r + i*i + j*j + k*k;
-
-	// If zero length, eh, use no-rotation.
-	if(0 == d) {
-		r = 1;
-		return;
-	}
-
-	d = (1.0f / std::sqrt(d));
-	r *= d;
-	i *= d;
-	j *= d;
-	k *= d;
+{
+	_x = 0.f;
+	_y = 0.f;
+	_z = 0.f;
+	_w = 1.f;
 }
 
-void Quaternion::operator*=(const Quaternion& multiplier) {
-	Quaternion q = *this;
+Quaternion::Quaternion(float r, float i, float j, float k)
+{
+	_x = i;
+	_y = j;
+	_z = k;
+	_w = r;
+	float d = Magnitude();
 
-	// These rules can be derived from just basic multiplication
-	//  of two quaternions, FOIL-like, and the rules described in
-	//  the head of Quaternion.h
-	r = q.r*multiplier.r - q.i*multiplier.i - q.j*multiplier.j - q.k*multiplier.k;
-	i = q.r*multiplier.i + q.i*multiplier.r + q.j*multiplier.k - q.k*multiplier.j;
-	j = q.r*multiplier.j + q.j*multiplier.r + q.k*multiplier.i - q.i*multiplier.k;
-	k = q.r*multiplier.k + q.k*multiplier.r + q.i*multiplier.j - q.j*multiplier.i;
+	_x = i / d;
+	_y = j / d;
+	_z = k / d;
+	_w = r / d;
 }
 
-void Quaternion::rotateByVector(const Vect3& vector, float scale) {
-	Quaternion q(0.0f, vector.x * scale,
-		vector.y * scale, vector.z * scale);
-	(*this) *= q;
+Quaternion::Quaternion(const FLOAT4& o)
+{
+	this->_x = o._x;
+	this->_y = o._y;
+	this->_z = o._z;
+	this->_w = o._w;
+	float d = Magnitude();
+
+	_x /= d;
+	_y /= d;
+	_z /= d;
+	_w /= d;
 }
 
-void Quaternion::addScaledVector(const Vect3& vector, float scale) {
-	Quaternion q(0.f,
-		vector.x * scale,
-		vector.y * scale,
-		vector.z * scale);
-
-	q *= *this;
-	r += q.r * 0.5f;
-	i += q.i * 0.5f;
-	j += q.j * 0.5f;
-	k += q.k * 0.5f;
-}
-
-void Quaternion::rotateByVector(const Vect3& vect) {
-	Quaternion q(0.f, vect.x, vect.y, vect.z);
-	(*this) *= q;
-}
-
-void Quaternion::setAxisAngleRotation(const Vect3& axis, float angle) {
-	// Use definition of quaternion.
-	if (axis.SquareMagnitude() == 0) {
-		r = 1.f; i = 0.f; j = 0.f; k = 0.f;
-		return;
-	}
-
-	// Optimize?
-	Vect3 normalAxis = axis;
-	normalAxis.Normalize();
+Quaternion::Quaternion(const FLOAT3& axis, float angle)
+{
+	// Use the definition of a rotation quaternion...
+	Vect3Normal axis_n(axis);
 	angle /= 2.f;
-	r = cosf(angle);
-	i = normalAxis.x * sinf(angle);
-	j = normalAxis.y * sinf(angle);
-	k = normalAxis.z * sinf(angle);
+	_w = std::cosf(angle);
+	_x = axis_n._x * std::sinf(angle);
+	_y = axis_n._y * std::sinf(angle);
+	_z = axis_n._z * std::sinf(angle);
+}
+
+///////////// OPERATOR OVERLOADS /////////////
+Quaternion& Quaternion::operator=(const FLOAT4& o)
+{
+	float mag = Magnitude();
+	this->_x = o._x / mag;
+	this->_y = o._y / mag;
+	this->_z = o._z / mag;
+	this->_w = o._w / mag;
+	return *this;
+}
+
+Quaternion& Quaternion::operator=(const Quaternion& o)
+{
+	// Since this is also a quaternion, we're guaranteed that it's normal.
+	this->_x = o._x;
+	this->_y = o._y;
+	this->_z = o._z;
+	this->_w = o._w;
+	return *this;
+}
+
+Quaternion Quaternion::operator*(const FLOAT4& o) const
+{
+	return Quaternion(
+		this->_w * o._w - this->_x * o._x - this->_y * o._y - this->_z * o._z,
+		this->_w * o._x + this->_x * o._w + this->_y * o._z - this->_z * o._y,
+		this->_w * o._y + this->_y * o._w + this->_z * o._x - this->_x * o._z,
+		this->_w * o._z + this->_z * o._w + this->_x * o._y - this->_y * o._x);
+}
+
+Quaternion& Quaternion::operator*=(const FLOAT4& other)
+{
+	*this = *this * other;
+	return *this;
+}
+
+
+/////////////// QUATERNION FUNCS /////////////
+void Quaternion::GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const
+{
+	o_Angle = 2.f * std::acosf(_w);
+	float sin_half_angle = std::sin(o_Angle / 2.f);
+	o_Axis = Vect3Normal(
+		this->_x / sin_half_angle,
+		this->_y / sin_half_angle,
+		this->_z / sin_half_angle);
+}
+
+inline float Quaternion::Magnitude()
+{
+	float toReturn = std::sqrt(_x * _x + _y * _y + _z * _z + _w * _w);
+	if (toReturn == 0.f) throw ZeroMagnitudeException();
+	return toReturn;
 }

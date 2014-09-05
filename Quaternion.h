@@ -1,86 +1,63 @@
-#ifndef _FROST_QUATERNION_H_
-#define _FROST_QUATERNION_H_
+#ifndef FROSTDLL_API
+#ifdef _WINDLL
+#define FROSTDLL_API __declspec(dllexport)
+#else
+#define FROSTDLL_API __declspec(dllimport)
+#endif
+#endif
 
-/*****************************************************\
+/////////////////////////////////////////
+// Quaternion: A 4-d vector class, with
+//  all the additional bells and whistles
+//  of quaternion math
+/////////////////////////////////////////
 
-		Quaternion: quaternion structure
+#ifndef FROST_QUATERNION_H
+#define FROST_QUATERNION_H
 
-Quaternions handle orientations (rotations) in 3D space
-  very well. The math is a bit hairy, but essentially,
-  a quaternion is a "vector" with four elements, which
-  represents a structure with one real part and three
-  imaginary components (much like complex numbers have
-  one real part and one imaginary component).
-
-Quaternion q = a + bi + cj + dk
-
-The following properties define how quaternions are
-  combined: multiplication is handled FOIL-like
-  (remember multiplying polynomials in Algebra I?)
-
-i^2 = j^2 = k^2 = ijk = -1
-
-ij = k, ji = -k,
-jk = i, kj = -i,
-ki = j, ik = -j
-
-A rotation of theta radians about an axis <x, y, z>
-  can be expressed in a quaternion as such:
-
-q = cos(theta / a) + x*sin(theta / 2)*i +
-      y*sin(theta / 2)*j + z*sin(theta / 2)*k
-
-To express a two rotations, multiply the quaternions
-  together, much like matrix multiplication - that is,
-  the order of application goes from right to left.
-
-\*****************************************************/
-
+#include "FloatStructs.h"
+#include "FrostExceptions.h"
+#include "Vect3Normal.h"
 #include <cmath>
-#include "Vect3.h"
 
-namespace Frost {
-	class Quaternion {
+namespace Frost
+{
+	class Quaternion : public FLOAT4
+	{
 	public:
-		// Union holds data as accessible either
-		//  as r, i, j, k elements or as data[0-3] elements
-		union {
-			struct {
-				// r: real component coefficient
-				// i: first imaginary component coefficient
-				// j: second imaginary comopnent coefficient
-				// k: third imaginary component coefficient
-				float r, i, j, k;
-			};
+		/////////////////// CTORS //////////////////////
 
-			float data[4];
-		};
+		// Default ctor - initialize with no rotation
+		FROSTDLL_API Quaternion();
 
-		// Default ctor - initialize no rotation
-		Quaternion();
+		// Initialize values manually
+		FROSTDLL_API Quaternion(float r, float i, float j, float k);
 
-		// Initialize with values r, i, j, k manually.
-		Quaternion(float _r, float _i, float _j, float _k);
+		// Initialize from another R32G32B32A32_FLOAT structure
+		FROSTDLL_API Quaternion(const FLOAT4& other);
 
-		// Normalize the quaternion
-		void normalize();
+		// Initialize from an axis and an angle
+		FROSTDLL_API Quaternion(const FLOAT3& axis, float angle);
 
-		// Multiply quaternion by quaternion
-		void operator *=(const Quaternion& multiplier);
+		///////////// OPERATOR OVERLOADS /////////////
+		FROSTDLL_API Quaternion& operator=(const FLOAT4& other);
+		FROSTDLL_API Quaternion& operator=(const Quaternion& other);
+		FROSTDLL_API Quaternion operator*(const FLOAT4& other) const;
+		FROSTDLL_API Quaternion& operator*=(const FLOAT4& other);
+		FROSTDLL_API Quaternion operator+(const FLOAT4& o) const
+		{
+			return Quaternion(
+				this->_w + o._w,
+				this->_x + o._x,
+				this->_y + o._y,
+				this->_z + o._z
+				);
+		}
 
-		// Rotate a quaternion by a vector representing
-		//  a rotation amount to add. This is only used
-		//  to update a quaternion by a rotation over time usually.
-		void rotateByVector(const Vect3& vector, float scale);
-
-		// Add a scaled vector...
-		void addScaledVector(const Vect3& vector, float scale);
-
-		// Rotate by a vector...
-		void rotateByVector(const Vect3& vect);
-
-		// Set to be a rotation of angle (theta) in radians around an axis (axis)
-		void setAxisAngleRotation(const Vect3& axis, float angle);
+		////////////////// QUATERNION FUNCS //////////////////
+		FROSTDLL_API void GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const;
+	private:
+		float Magnitude();
 	};
 }
 
