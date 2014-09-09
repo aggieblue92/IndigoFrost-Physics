@@ -17,6 +17,9 @@
 
 namespace Frost
 {
+	////////////// GENERAL EXCEPTIONS ///////////
+	class NotImplementedException {};
+
 	////////////// MATH EXCEPTIONS //////////////
 	class DivByZeroException {};
 	class IndexOutOfBoundsException

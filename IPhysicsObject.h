@@ -43,6 +43,6 @@ namespace Frost
 
 	private:
 		Vect3 _linearVelocity;
-		Vect3 _rotationalVelocity;
+		Vect3 _angularVelocity;
 	};
 }
