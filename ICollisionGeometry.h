@@ -11,8 +11,12 @@
 //  geometry. Encapsulates all supported types.
 /////////////////////////////////////////
 
+#ifndef FROST_COLLISION_GEOMETRY_INTERFACE_H
+#define FROST_COLLISION_GEOMETRY_INTERFACE_H
+
 #include "Movable.h"
 #include "IContact.h"
+#include "IPhysicsObject.h"
 #include <vector>
 
 namespace Frost
@@ -46,6 +50,9 @@ namespace Frost
 		// Construct with type and local spatial information
 		FROSTDLL_API ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const FLOAT3& pos, const Quaternion& orientation);
 
+		// Constructor with type, spatial information and attached object
+		FROSTDLL_API ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const FLOAT3& pos, const Quaternion& orientation, IPhysicsObject* attachedObject);
+
 		// Copy ctor
 		FROSTDLL_API ICollisionGeometry(const ICollisionGeometry& copy);
 
@@ -55,8 +62,12 @@ namespace Frost
 
 		/////////////////// HELPERS //////////////////////
 		FROSTDLL_API FROST_COLLISION_GEOMETRY_TYPE GetType();
+		FROSTDLL_API IPhysicsObject* GetAttachedObjectPtr() const;
 
 	protected:
 		FROST_COLLISION_GEOMETRY_TYPE _type;
+		IPhysicsObject* _attachedObject;
 	};
 }
+
+#endif

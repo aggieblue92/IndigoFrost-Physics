@@ -13,6 +13,11 @@ CollisionBox::CollisionBox(const FLOAT3& size, const FLOAT3& position, const Qua
 , _size(size)
 {}
 
+CollisionBox::CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation, IPhysicsObject* toAttach)
+: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE::BOX, position, orientation, toAttach)
+, _size(size)
+{}
+
 CollisionBox::CollisionBox(const CollisionBox& o)
 : ICollisionGeometry(o)
 , _size(o._size)
@@ -47,6 +52,96 @@ void CollisionBox::genContacts(ICollisionGeometry* other, std::vector<IContact*>
 	else
 	{
 		throw UnsupportedCollisionGeometryEvent(_type, other->GetType());
+	}
+}
+
+bool CollisionBox::isTouchingS(CollisionSphere* s) const
+{
+	// Get the sphere position in local coordinates of the box.
+	Vect3 transformedSpherePosition = this->GetTransformMatrix().GetInverse() * s->GetPos();
+
+	// If the sphere is further away than the magnitude of the furthest distance a corner can
+	//  be, get an early out:
+	if (transformedSpherePosition.SquareMagnitude() > _size.SquareMagnitude()) return false;
+
+	// Otherwise, find the closest point on the cube.
+	//  For any axis, it will be the cube half-length on that
+	//  side if the sphere's position is further than the half-length,
+	//  or it will be the component of the sphere's location on that axis if not.
+	Vect3 closestBoxPoint = transformedSpherePosition;
+	if (closestBoxPoint._x > this->_size._x)
+		closestBoxPoint._x = this->_size._x;
+	else if (closestBoxPoint._x < -this->_size._x)
+		closestBoxPoint._x = -this->_size._x;
+
+	if (closestBoxPoint._y > this->_size._y)
+		closestBoxPoint._y = this->_size._y;
+	else if (closestBoxPoint._y < -this->_size._y)
+		closestBoxPoint._y = -this->_size._y;
+
+	if (closestBoxPoint._z > this->_size._z)
+		closestBoxPoint._z = this->_size._z;
+	else if (closestBoxPoint._z < -this->_size._z)
+		closestBoxPoint._z = -this->_size._z;
+
+	// Now we have the closest point on the box.
+	//  If it's closer than the radius, we have contact.
+	return ((closestBoxPoint - transformedSpherePosition).SquareMagnitude() <= s->GetRadius() * s->GetRadius());
+}
+
+void CollisionBox::genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const
+{
+	// Get the sphere position in local coordinates of the box.
+	Vect3 transformedSpherePosition = this->GetTransformMatrix().GetInverse() * s->GetPos();
+
+	// If the sphere is further away than the magnitude of the furthest distance a corner can
+	//  be, get an early out:
+	if (transformedSpherePosition.SquareMagnitude() > _size.SquareMagnitude()) return;
+
+	// Otherwise, find the closest point on the cube.
+	//  For any axis, it will be the cube half-length on that
+	//  side if the sphere's position is further than the half-length,
+	//  or it will be the component of the sphere's location on that axis if not.
+	Vect3 closestBoxPoint = transformedSpherePosition;
+	if (closestBoxPoint._x > this->_size._x)
+		closestBoxPoint._x = this->_size._x;
+	else if (closestBoxPoint._x < -this->_size._x)
+		closestBoxPoint._x = -this->_size._x;
+
+	if (closestBoxPoint._y > this->_size._y)
+		closestBoxPoint._y = this->_size._y;
+	else if (closestBoxPoint._y < -this->_size._y)
+		closestBoxPoint._y = -this->_size._y;
+
+	if (closestBoxPoint._z > this->_size._z)
+		closestBoxPoint._z = this->_size._z;
+	else if (closestBoxPoint._z < -this->_size._z)
+		closestBoxPoint._z = -this->_size._z;
+
+	// Now we have the closest point on the box.
+	//  If it's closer than the radius, we have contact.
+	if ((closestBoxPoint - transformedSpherePosition).SquareMagnitude() <= s->GetRadius() * s->GetRadius())
+	{
+		// Box contact data: contact is under the surface of the sphere, pointing directly out.
+		Vect3 collisionPoint_w = this->GetTransformMatrix() * (closestBoxPoint - transformedSpherePosition);
+		Vect3 penetration_w = (Vect3Normal(collisionPoint_w - s->GetPos()) * s->GetRadius()) - collisionPoint_w;
+		if (this->GetAttachedObjectPtr() != 0)
+		{
+			o.push_back(new BasicContact(
+				collisionPoint_w,
+				penetration_w,
+				this->GetAttachedObjectPtr()));
+		}
+
+		// Sphere contact data: Exact opposite of the box contact data
+		if (s->GetAttachedObjectPtr() != 0)
+		{
+			penetration_w *= -1.f;
+			o.push_back(new BasicContact(
+				collisionPoint_w,
+				penetration_w,
+				s->GetAttachedObjectPtr()));
+		}
 	}
 }
 
@@ -125,7 +220,7 @@ void CollisionBox::BlackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 	}
 }
 
-void CollisionBox::VirginSacrifices(const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, std::vector<IContact*>& o_Contacts) const
+void CollisionBox::VirginSacrifices(const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, std::vector<IContact*>& o_Contacts, IPhysicsObject* otherObject) const
 {
 	// Find the edge vectors...
 	Vect3 ourEdge = pt12 - pt11;
@@ -174,18 +269,28 @@ void CollisionBox::VirginSacrifices(const Vect3& pt11, const Vect3& pt12, const 
 	if (alpha1 < 0.f || alpha1 > 1.f || alpha2 > 1.f || alpha2 < 0.f) return;
 
 	// They are within bounds. Generate contact...
-	o_Contacts.push_back(this->SummonDemons(
-		pt11 + ourEdge * alpha1,
-		(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1)));
+	// TODO: We'll want to generate a pair of contacts, one for us and one for the other object.
+	if (_attachedObject != 0)
+	{
+		o_Contacts.push_back(this->SummonDemons(
+			pt11 + ourEdge * alpha1,
+			(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1),
+			_attachedObject));
+	}
+
+	if (otherObject != 0)
+	{
+		o_Contacts.push_back(this->SummonDemons(
+			pt21 + otherEdge * alpha2,
+			(pt11 + ourEdge * alpha1) - (pt21 + otherEdge * alpha2),
+			otherObject));
+	}
 }
 
-IContact* CollisionBox::SummonDemons(const Vect3& point, const Vect3& penetration) const
+IContact* CollisionBox::SummonDemons(const Vect3& point, const Vect3& penetration, IPhysicsObject* afObj) const
 {
-	// TODO: This will return a contact object.
+	// Return a contact object.
 	//  This will be called by 'Virgin Sacrifices'
 	// This function is virtual to allow for derived classes to make fancier contacts.
-
-	// return new BasicContact(point, penetration);
-
-	return 0;
+	return new BasicContact(point, penetration, afObj);
 }

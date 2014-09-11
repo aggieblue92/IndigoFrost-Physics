@@ -11,7 +11,13 @@
 //  that represents a box.
 /////////////////////////////////////////
 
+#ifndef FROST_COLLISION_BOX_H
+#define FROST_COLLISION_BOX_H
+
 #include "ICollisionGeometry.h"
+
+// TODO: Update
+#include "BasicContact.h"
 
 namespace Frost
 {
@@ -25,6 +31,9 @@ namespace Frost
 
 		// Construct a box with the given dimensions, at the given position and orientation
 		FROSTDLL_API CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation);
+
+		// Construct a box with the given dimensions, at the given position and orientation, and attach the given physical object.
+		FROSTDLL_API CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation, IPhysicsObject* toAttach);
 
 		// Copy ctor
 		FROSTDLL_API CollisionBox(const CollisionBox& other);
@@ -53,7 +62,9 @@ namespace Frost
 		// Now, I can. These functions are used in what forms the meat and potatoes of the
 		//  collision resolution in the physics engine.
 		FROSTDLL_API void BlackMagic(CollisionBox*, std::vector<Vect3>&, std::vector<Vect3>&) const;
-		FROSTDLL_API void VirginSacrifices(const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&) const;
-		FROSTDLL_API virtual Frost::IContact* SummonDemons(const Vect3&, const Vect3&) const;
+		FROSTDLL_API void VirginSacrifices(const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&, IPhysicsObject* otherObject) const;
+		FROSTDLL_API virtual Frost::IContact* SummonDemons(const Vect3&, const Vect3&, IPhysicsObject*) const;
 	};
 }
+
+#endif

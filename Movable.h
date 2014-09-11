@@ -11,6 +11,9 @@
 //  be moved (has a position and orientation)
 /////////////////////////////////////////
 
+#ifndef FROST_MOVABLE_H
+#define FROST_MOVABLE_H
+
 #include "FrostMath.h"
 
 namespace Frost
@@ -50,3 +53,5 @@ namespace Frost
 		Quaternion _orientation;
 	};
 }
+
+#endif

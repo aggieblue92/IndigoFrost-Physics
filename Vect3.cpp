@@ -131,12 +131,12 @@ bool Vect3::operator==(const FLOAT3& o)
 }
 
 ///////////// OTHER VECTOR FUNCTIONS //////////////
-inline float Vect3::Magnitude()
+inline float Vect3::Magnitude() const
 {
 	return std::sqrt(SquareMagnitude());
 }
 
-inline float Vect3::SquareMagnitude()
+inline float Vect3::SquareMagnitude() const
 {
 	return _x * _x + _y * _y + _z * _z;
 }

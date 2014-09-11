@@ -11,6 +11,9 @@
 //  that represents a sphere.
 /////////////////////////////////////////
 
+#ifndef FROST_COLLISION_SPHERE_H
+#define FROST_COLLISION_SPHERE_H
+
 #include "ICollisionGeometry.h"
 
 namespace Frost
@@ -37,6 +40,9 @@ namespace Frost
 		// Appends a list of contacts (if any) between the two geometry objects to o_list
 		FROSTDLL_API virtual void genContacts(ICollisionGeometry* other, std::vector<IContact*>& o_list) const;
 
+		////////////////////// HELPERS ////////////////////
+		FROSTDLL_API float GetRadius() const;
+
 	protected:
 		float _radius;
 
@@ -48,3 +54,5 @@ namespace Frost
 		FROSTDLL_API virtual void genContacts(CollisionSphere* s, std::vector<IContact*>& o) const;
 	};
 }
+
+#endif

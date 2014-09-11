@@ -51,8 +51,8 @@ namespace Frost
 		FROSTDLL_API bool operator==(const FLOAT3& other);
 
 		///////////// OTHER VECTOR FUNCTIONS //////////////
-		FROSTDLL_API float Magnitude();
-		FROSTDLL_API float SquareMagnitude();
+		FROSTDLL_API float Magnitude() const;
+		FROSTDLL_API float SquareMagnitude() const;
 
 	private:
 	};

@@ -12,6 +12,9 @@
 //  that can absorb forces and process them.
 /////////////////////////////////////////
 
+#ifndef FROST_PHYSICS_OBJECT_H
+#define FROST_PHYSICS_OBJECT_H
+
 #include "Movable.h"
 
 namespace Frost
@@ -38,11 +41,20 @@ namespace Frost
 
 		//////////////////// PHYSICS FUNCTIONS //////////////////
 
+		FROSTDLL_API virtual void AddForceAtOrigin(const Vect3& forceToAdd_w) = 0;
+		FROSTDLL_API virtual void AddForceAtPoint(const Vect3& forceToAdd_w, const Vect3& bodyPoint) = 0;
+		FROSTDLL_API virtual void AddTorqueAtOrigin(const Vect3& torqueToAdd_w) = 0;
+
 		// Update the object to simulate one second having passed in the world
 		FROSTDLL_API virtual void Update(float timeElapsed) = 0;
 
 	private:
 		Vect3 _linearVelocity;
 		Vect3 _angularVelocity;
+
+		Vect3 _netForce;
+		Vect3 _netTorque;
 	};
 }
+
+#endif
