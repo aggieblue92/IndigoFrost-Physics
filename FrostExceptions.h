@@ -36,6 +36,9 @@ namespace Frost
 	// Singular matrix exception - thrown on attempting to
 	//  invert a singular matrix.
 	class SingularMatrixException {};
+
+	////////////// PHYSICS EXCEPTIONS ///////////////
+	class DuplicateActionException {};
 }
 
 #endif

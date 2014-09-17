@@ -9,12 +9,14 @@
 /////////////////////////////////////////
 // CollisionSphere: ICollisionGeometry object
 //  that represents a sphere.
+// Uses the BasicContact for collisions
 /////////////////////////////////////////
 
 #ifndef FROST_COLLISION_SPHERE_H
 #define FROST_COLLISION_SPHERE_H
 
 #include "ICollisionGeometry.h"
+#include "BasicContact.h"
 
 namespace Frost
 {
@@ -27,7 +29,7 @@ namespace Frost
 		FROSTDLL_API CollisionSphere(float radius);
 
 		// Construct a sphere with the given dimensions, position and orientation
-		FROSTDLL_API CollisionSphere(float radius, const FLOAT3& pos, const Quaternion& orientation);
+		FROSTDLL_API CollisionSphere(float radius, const FLOAT3& pos);
 
 		// Copy ctor
 		FROSTDLL_API CollisionSphere(const CollisionSphere& other);
@@ -47,11 +49,11 @@ namespace Frost
 		float _radius;
 
 	protected:
-		FROSTDLL_API virtual bool isTouching(CollisionBox* b) const;
-		FROSTDLL_API virtual void genContacts(CollisionBox* b, std::vector<IContact*>& o) const;
+		FROSTDLL_API virtual bool isTouchingB(CollisionBox* b) const;
+		FROSTDLL_API virtual void genContactsB(CollisionBox* b, std::vector<IContact*>& o) const;
 
-		FROSTDLL_API virtual bool isTouching(CollisionSphere* s) const;
-		FROSTDLL_API virtual void genContacts(CollisionSphere* s, std::vector<IContact*>& o) const;
+		FROSTDLL_API virtual bool isTouchingS(CollisionSphere* s) const;
+		FROSTDLL_API virtual void genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const;
 	};
 }
 

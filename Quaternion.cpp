@@ -84,6 +84,23 @@ Quaternion& Quaternion::operator*=(const FLOAT4& other)
 	return *this;
 }
 
+Quaternion& Quaternion::operator+=(const FLOAT3& other)
+{
+	if (other._x == other._y == other._z == 0.f) return *this;
+
+	Quaternion q(0.f,
+		other._x,
+		other._y,
+		other._z);
+	q *= *this;
+
+	_w += q._w * 0.5f;
+	_x += q._x * 0.5f;
+	_y += q._y * 0.5f;
+	_z += q._z * 0.5f;
+
+	return *this;
+}
 
 /////////////// QUATERNION FUNCS /////////////
 void Quaternion::GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const

@@ -53,6 +53,7 @@ namespace Frost
 				this->_z + o._z
 				);
 		}
+		FROSTDLL_API Quaternion& operator+=(const FLOAT3& other);
 
 		////////////////// QUATERNION FUNCS //////////////////
 		FROSTDLL_API void GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const;

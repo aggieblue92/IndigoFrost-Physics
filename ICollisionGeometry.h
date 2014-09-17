@@ -64,6 +64,10 @@ namespace Frost
 		FROSTDLL_API FROST_COLLISION_GEOMETRY_TYPE GetType();
 		FROSTDLL_API IPhysicsObject* GetAttachedObjectPtr() const;
 
+		// Attach an object to the collision geometry. Fails if
+		//  the collision geometry already has an attached object.
+		FROSTDLL_API void AttachObject(IPhysicsObject* toAttach);
+
 	protected:
 		FROST_COLLISION_GEOMETRY_TYPE _type;
 		IPhysicsObject* _attachedObject;

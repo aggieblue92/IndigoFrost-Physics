@@ -48,7 +48,7 @@ namespace Frost
 		FROSTDLL_API virtual void Move(const FLOAT3& moveAmount_world);
 		FROSTDLL_API virtual void Rotate(const Quaternion& rotateAmount_world);
 
-	private:
+	protected:
 		Vect3 _pos;
 		Quaternion _orientation;
 	};

@@ -48,7 +48,7 @@ namespace Frost
 		// Update the object to simulate one second having passed in the world
 		FROSTDLL_API virtual void Update(float timeElapsed) = 0;
 
-	private:
+	protected:
 		Vect3 _linearVelocity;
 		Vect3 _angularVelocity;
 

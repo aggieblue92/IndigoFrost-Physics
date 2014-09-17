@@ -142,17 +142,17 @@ inline float Vect3::SquareMagnitude() const
 }
 
 // Functions:
-inline float DotProduct(const Vect3& v1, const Vect3& v2)
+float Frost::DotProduct(const Vect3& v1, const Vect3& v2)
 {
 	return v1 * v2;
 }
 
-inline Vect3 CrossProduct(const Vect3& v1, const Vect3& v2)
+Vect3 Frost::CrossProduct(const Vect3& v1, const Vect3& v2)
 {
 	return v1 % v2;
 }
 
-inline Vect3 ComponentProduct(const Vect3& v1, const Vect3& v2)
+Vect3 Frost::ComponentProduct(const Vect3& v1, const Vect3& v2)
 {
 	return Vect3(v1._x * v2._x, v1._y * v2._y, v1._z * v2._z);
 }

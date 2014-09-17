@@ -33,3 +33,12 @@ IPhysicsObject* ICollisionGeometry::GetAttachedObjectPtr() const
 {
 	return _attachedObject;
 }
+
+void ICollisionGeometry::AttachObject(IPhysicsObject* t)
+{
+	if (_attachedObject == 0)
+		_attachedObject = t;
+	else
+		throw DuplicateActionException();
+	// TODO: Replace this line with a more meaningful exception
+}
