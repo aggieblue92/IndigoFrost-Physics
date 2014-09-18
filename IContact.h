@@ -27,6 +27,10 @@ namespace Frost
 		// Returns: True if resolution succeeds, false if not.
 		FROSTDLL_API virtual bool Resolve() = 0;
 
+		FROSTDLL_API Vect3 getCollisionPoint() const;
+		FROSTDLL_API Vect3Normal getContactNormal() const;
+		FROSTDLL_API float getContactMagnitude() const;
+
 	protected:
 		Vect3 _objCollisionPoint;
 

@@ -15,7 +15,7 @@ bool BasicContact::Resolve()
 	//  spring formula with a pretty rigid string.
 	// F = -kx
 
-	const float K = 350.f; // 35 N/m
+	const float K = 350.f; // 350 N/m
 
 	_affectedObject->AddForceAtPoint(
 		this->_contactNormal * this->_contactMagnitude * K * -1.f,

@@ -86,7 +86,7 @@ Quaternion& Quaternion::operator*=(const FLOAT4& other)
 
 Quaternion& Quaternion::operator+=(const FLOAT3& other)
 {
-	if (other._x == other._y == other._z == 0.f) return *this;
+	if (other._x == 0.f && other._y == 0.f && other._z == 0.f) return *this;
 
 	Quaternion q(0.f,
 		other._x,
@@ -98,6 +98,12 @@ Quaternion& Quaternion::operator+=(const FLOAT3& other)
 	_x += q._x * 0.5f;
 	_y += q._y * 0.5f;
 	_z += q._z * 0.5f;
+
+	float mag = this->Magnitude();
+	_w /= mag;
+	_x /= mag;
+	_y /= mag;
+	_z /= mag;
 
 	return *this;
 }

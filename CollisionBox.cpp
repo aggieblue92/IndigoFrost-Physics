@@ -71,7 +71,7 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	//  code across multiple threads.
 
 	////////////////// POINT-FACE DETECTION ////////////////
-	
+
 	// Gather qualifying points...
 	std::vector<Vect3> myQualifying_ws(0);
 	std::vector<Vect3> otherQualifying_ws(0);
@@ -80,7 +80,7 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	b->BlackMagic(b->GetTransformMatrix().GetInverse().TransformDirn(dirn_ws), otherQualifying_ws);
 
 	// Check qualifying points...
-	for (int i = 0; i < myQualifying_ws.size(); i++)
+	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
 	{
 		Vect3 checkPoint = b->GetTransformMatrix().GetInverse() * myQualifying_ws[i];
 		if ((fabs(checkPoint._x) <= b->getSize()._x) &&
@@ -92,7 +92,7 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 		}
 	}
 
-	for (int i = 0; i < otherQualifying_ws.size(); i++)
+	for (int i = 0; i < (int)otherQualifying_ws.size(); i++)
 	{
 		Vect3 checkPoint = this->GetTransformMatrix().GetInverse() * otherQualifying_ws[i];
 		if ((fabs(checkPoint._x) <= this->getSize()._x) &&
@@ -112,14 +112,16 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	BlackMagic(b, our_edge_list_ws, other_edge_list_ws);
 
 	// Check each edge against each other edge.
-	for (int i = 0; i < our_edge_list_ws.size(); i += 2)
+	for (int i = 0; i < (int)our_edge_list_ws.size(); i += 2)
 	{
-		for (int j = 0; j < other_edge_list_ws.size(); j += 2)
+		for (int j = 0; j < (int)other_edge_list_ws.size(); j += 2)
 		{
 			if (VirginSacrifices(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], b->GetAttachedObjectPtr()))
 				return true;
 		}
 	}
+
+	return false;
 }
 
 void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) const
@@ -146,47 +148,96 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 	b->BlackMagic(b->GetTransformMatrix().GetInverse().TransformDirn(dirn_ws), otherQualifying_ws);
 
 	// Check qualifying points...
-	if (this->GetAttachedObjectPtr())
+	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
 	{
-		for (int i = 0; i < myQualifying_ws.size(); i++)
+		Vect3 checkPoint = b->GetTransformMatrix().GetInverse() * myQualifying_ws[i];
+		if ((fabs(checkPoint._x) <= b->getSize()._x) &&
+			(fabs(checkPoint._y) <= b->getSize()._y) &&
+			(fabs(checkPoint._z) <= b->getSize()._z))
 		{
-			Vect3 checkPoint = b->GetTransformMatrix().GetInverse() * myQualifying_ws[i];
-			if ((fabs(checkPoint._x) <= b->getSize()._x) &&
-				(fabs(checkPoint._y) <= b->getSize()._y) &&
-				(fabs(checkPoint._z) <= b->getSize()._z))
-			{
-				// Collision at a point-face, point-edge, or point-point
-				//  Collision vector is direction to closest face.
-				Vect3 collision = Vect3(
-					(checkPoint._x > 0.f) ? b->getSize()._x - checkPoint._x : checkPoint._x + b->getSize()._x,
-					(checkPoint._y > 0.f) ? b->getSize()._y - checkPoint._y : checkPoint._y + b->getSize()._y,
-					(checkPoint._z > 0.f) ? b->getSize()._z - checkPoint._z : checkPoint._z + b->getSize()._z
-					);
+			// Collision at a point-face, point-edge, or point-point
+			//  Collision vector is direction to closest face.
+			Vect3 collision = Vect3(
+				(checkPoint._x > 0.f) ? b->getSize()._x - checkPoint._x : checkPoint._x + b->getSize()._x,
+				(checkPoint._y > 0.f) ? b->getSize()._y - checkPoint._y : checkPoint._y + b->getSize()._y,
+				(checkPoint._z > 0.f) ? b->getSize()._z - checkPoint._z : checkPoint._z + b->getSize()._z
+				);
 
-				// We'll choose direction of least penetration
-				if (collision._x < collision._y && collision._x < collision._z)
+			// We'll choose direction of least penetration
+			Vect3 collPt = b->GetTransformMatrix() * checkPoint;
+			Vect3 collDirn = ComponentProduct(
+				b->GetTransformMatrix().TransformDirn(collision),
+				(collision._x < collision._y && collision._x < collision._z) ? MathConstants::VECTOR_UNIT_X
+					: (collision._y < collision._z) ? MathConstants::VECTOR_UNIT_Y : MathConstants::VECTOR_UNIT_Z);
+			if (this->GetAttachedObjectPtr())
+			{
+				// Or is it b->getattached?
+				try
 				{
-					o.push_back(new BasicContact(
-						b->GetTransformMatrix() * checkPoint,
-						b->GetTransformMatrix().TransformDirn(Vect3(collision._x, 0.f, 0.f)),
-						this->GetAttachedObjectPtr()));
-					// Or is it b->GetAttachedObjectPtr()?
+					o.push_back(new BasicContact(collPt, collDirn, this->GetAttachedObjectPtr()));
+				}
+				catch (const ZeroMagnitudeException& zme)
+				{
+					// Instead push back a different kind of thing.
+				}
+			}
+			if (b->GetAttachedObjectPtr())
+			{
+				try
+				{
+					o.push_back(new BasicContact(collPt, collDirn * -1.f, b->GetAttachedObjectPtr()));
+				}
+				catch (const ZeroMagnitudeException& zme)
+				{
+					// Instead push back a different kind of thing.
 				}
 			}
 		}
 	}
 
-	if (b->GetAttachedObjectPtr())
+	for (int i = 0; i < (int)otherQualifying_ws.size(); i++)
 	{
-		for (int i = 0; i < otherQualifying_ws.size(); i++)
+		Vect3 checkPoint = this->GetTransformMatrix().GetInverse() * otherQualifying_ws[i];
+		if ((fabs(checkPoint._x) <= this->getSize()._x) &&
+			(fabs(checkPoint._y) <= this->getSize()._y) &&
+			(fabs(checkPoint._z) <= this->getSize()._z))
 		{
-			Vect3 checkPoint = this->GetTransformMatrix().GetInverse() * otherQualifying_ws[i];
-			if ((fabs(checkPoint._x) <= this->getSize()._x) &&
-				(fabs(checkPoint._y) <= this->getSize()._y) &&
-				(fabs(checkPoint._z) <= this->getSize()._z))
+			// Collision at a point-face, point-edge, or point-point
+			//  Collision vector is direction to closest face.
+			Vect3 collision = Vect3(
+				(checkPoint._x > 0.f) ? this->getSize()._x - checkPoint._x : checkPoint._x + this->getSize()._x,
+				(checkPoint._y > 0.f) ? this->getSize()._y - checkPoint._y : checkPoint._y + this->getSize()._y,
+				(checkPoint._z > 0.f) ? this->getSize()._z - checkPoint._z : checkPoint._z + this->getSize()._z
+				);
+
+			// We'll choose direction of least penetration
+			Vect3 collPt = this->GetTransformMatrix() * checkPoint;
+			Vect3 collDirn = ComponentProduct(
+				this->GetTransformMatrix().TransformDirn(collision),
+				(collision._x < collision._y && collision._x < collision._z) ? MathConstants::VECTOR_UNIT_X
+					: (collision._y < collision._z) ? MathConstants::VECTOR_UNIT_Y : MathConstants::VECTOR_UNIT_Z);
+			if (this->GetAttachedObjectPtr())
 			{
-				// Collision at a point-face, point-edge, or point-point
-				return true;
+				// Or is it this->getattached?
+				try
+				{
+					o.push_back(new BasicContact(collPt, collDirn * -1.f, this->GetAttachedObjectPtr()));
+				}
+				catch (const ZeroMagnitudeException& zme)
+				{
+					// Instead push back a different kind of thing.
+				}
+			}
+			if (b->GetAttachedObjectPtr())
+			{
+				try
+				{
+					o.push_back(new BasicContact(collPt, collDirn, b->GetAttachedObjectPtr()));
+				}
+				catch (const ZeroMagnitudeException& zme)
+				{
+					// Instead push back a different kind of contact (bumpcontact, whatever)
+				}
 			}
 		}
 	}
@@ -199,12 +250,11 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 	BlackMagic(b, our_edge_list_ws, other_edge_list_ws);
 
 	// Check each edge against each other edge.
-	for (int i = 0; i < our_edge_list_ws.size(); i += 2)
+	for (int i = 0; i < (int)our_edge_list_ws.size(); i += 2)
 	{
-		for (int j = 0; j < other_edge_list_ws.size(); j += 2)
+		for (int j = 0; j < (int)other_edge_list_ws.size(); j += 2)
 		{
-			if (VirginSacrifices(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], b->GetAttachedObjectPtr()))
-				return true;
+			VirginSacrifices(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], o, b->GetAttachedObjectPtr());
 		}
 	}
 }
@@ -293,7 +343,7 @@ void CollisionBox::BlackMagic(const Vect3Normal& dirn_ls, std::vector<Vect3>& o_
 			(i % 2 == 0 ? -1.f : 1.f) * _size._x,
 			((i / 2) % 2 == 0 ? -1.f : 1.f) * _size._y,
 			((i / 4) % 2 == 0 ? -1.f : 1.f) * _size._z);
-		
+
 		if (check_ls * dirn_ls > 0.f)
 		{
 			o_edgeList.push_back(this->GetTransformMatrix() * check_ls);
@@ -323,8 +373,8 @@ void CollisionBox::BlackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 				other->_size._x,
 				((i / 2) % 2 == 0 ? -1.f : 1.f) * other->_size._y,
 				(i % 2 == 0 ? -1.f : 1.f) * other->_size._z);
-			pt_2_ls = Vect3(-pt_1_ls._x, pt_1_ls._y, pt_2_ls._z);
-			opt_2_ls = Vect3(-opt_1_ls._x, opt_1_ls._y, opt_2_ls._z);
+			pt_2_ls = Vect3(-pt_1_ls._x, pt_1_ls._y, pt_1_ls._z);
+			opt_2_ls = Vect3(-opt_1_ls._x, opt_1_ls._y, opt_1_ls._z);
 		}
 		else if (i / 4 == 1)
 		{
@@ -337,8 +387,8 @@ void CollisionBox::BlackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 				((i / 2) % 2 == 0 ? -1.f : 1.f) * other->_size._x,
 				other->_size._y,
 				(i % 2 == 0 ? -1.f : 1.f) * other->_size._z);
-			pt_2_ls = Vect3(pt_1_ls._x, -pt_1_ls._y, pt_2_ls._z);
-			opt_2_ls = Vect3(opt_1_ls._x, -opt_1_ls._y, opt_2_ls._z);
+			pt_2_ls = Vect3(pt_1_ls._x, -pt_1_ls._y, pt_1_ls._z);
+			opt_2_ls = Vect3(opt_1_ls._x, -opt_1_ls._y, opt_1_ls._z);
 		}
 		else
 		{
@@ -351,8 +401,8 @@ void CollisionBox::BlackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 				((i / 2) % 2 == 0 ? -1.f : 1.f) * other->_size._x,
 				(i % 2 == 0 ? -1.f : 1.f) * other->_size._y,
 				other->_size._z);
-			pt_2_ls = Vect3(pt_1_ls._x, pt_1_ls._y, -pt_2_ls._z);
-			opt_2_ls = Vect3(opt_1_ls._x, opt_1_ls._y, -opt_2_ls._z);
+			pt_2_ls = Vect3(pt_1_ls._x, pt_1_ls._y, -pt_1_ls._z);
+			opt_2_ls = Vect3(opt_1_ls._x, opt_1_ls._y, -opt_1_ls._z);
 		}
 
 		// Local edges are selected. If both points are in direction of other cube,
@@ -430,7 +480,7 @@ void CollisionBox::VirginSacrifices(const Vect3Normal& dirn_ws, const Vect3& pt1
 	{
 		o_Contacts.push_back(this->SummonDemons(
 			pt11 + ourEdge * alpha1,
-			(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1),
+			(pt11 + ourEdge * alpha1) - (pt21 + otherEdge * alpha2),
 			_attachedObject));
 	}
 
@@ -438,7 +488,7 @@ void CollisionBox::VirginSacrifices(const Vect3Normal& dirn_ws, const Vect3& pt1
 	{
 		o_Contacts.push_back(this->SummonDemons(
 			pt21 + otherEdge * alpha2,
-			(pt11 + ourEdge * alpha1) - (pt21 + otherEdge * alpha2),
+			(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1),
 			otherObject));
 	}
 }
