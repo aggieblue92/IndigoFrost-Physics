@@ -10,6 +10,8 @@
 // ICollisionGeometry: Interface for collision
 //  geometry. Encapsulates all supported types.
 /////////////////////////////////////////
+// Hello Kam it's Elizabeth
+// Hello... sorry helping someone :P
 
 #ifndef FROST_COLLISION_GEOMETRY_INTERFACE_H
 #define FROST_COLLISION_GEOMETRY_INTERFACE_H

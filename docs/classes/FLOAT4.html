@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>Frost::FLOAT4</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				FLOAT4
+			</div>
+			<div class="Inheritance">
+				<ul>
+					<a href="FLOAT4.html"><li class="base">FLOAT4</li></a>
+				</ul>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>128-bit wide struct holding four floats, named <code>_x</code>, <code>_y</code>, <code>_z</code>, and <code>_w</code>. This class has no methods. Located in FloatStructs.h, under the namespace Frost.</p>
+				<p>Since this struct is 128-bit aligned, it can easily integrate into HLSL buffers. I'm assuming the same goes for OpenGL - but, you caught me, I'm a Microsoft fan ;)</p>
+				<p>The definition, found in FloatStructs.h, is:</p>
+				<p><code>struct FLOAT4 { float _x; float _y; float _z; float _w; };</code></p>
+			</div>
+			<div class="Properties">
+				<h1 class="Header">Properties:</h1>
+				<table class="PropertiesTable">
+					<tr class="Public">
+						<td class="propertyName">_x</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">First float in the structure (x/r component)</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_y</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">Second float in the structure (y/b component)</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_z</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">Third float in the structure (z/b component)</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_w</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">Fourth float in the structure (w/a component)</td>
+					</tr>
+				</table>
+			</div>
+			<div class="Methods">
+				<h1 class="Header">Methods:</h1>
+				<p>The <code>FLOAT4</code> struct has no methods.
+			</div>
+			<div class="Notes">
+				<h1 class="Header">Usage Notes:</h1>
+				<p>I built the <code>FLOAT3</code>, <code>FLOAT4</code> and <code>FLOAT4X4</code> structures to play nicely with similar mathematical structures in other libraries. <code>FLOAT4</code>, for instance, plays nicely with XNAMath's <code>XMFLOAT4</code> and Direct3D's <code>D3DXVECTOR4</code>.</p>
+				<p>Any other 128-bit float4 structure can be casted to a <code>FLOAT4</code> like so (though it is kind of hairy by itself):</p>
+				<p><code>FLOAT4 myFloat4 = *reinterpret_cast&lt;FLOAT4*&gt;(&amp;other_4_float_var);</code></p>
+			</div>
+		</div>
+	</body>
+</html>

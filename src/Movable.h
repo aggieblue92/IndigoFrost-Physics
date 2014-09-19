@@ -42,15 +42,19 @@ namespace Frost
 		FROSTDLL_API virtual Quaternion GetOrientation() const;
 		FROSTDLL_API virtual void SetPos(const Vect3& position);
 		FROSTDLL_API virtual void SetOrientation(const Quaternion& orientation);
+		FROSTDLL_API virtual Matrix GetTransformMatrix();
 		FROSTDLL_API virtual Matrix GetTransformMatrix() const;
 
 		//////////////// TRANSFORM OPS ////////////////////
 		FROSTDLL_API virtual void Move(const FLOAT3& moveAmount_world);
 		FROSTDLL_API virtual void Rotate(const Quaternion& rotateAmount_world);
 
-	protected:
+	private:
 		Vect3 _pos;
 		Quaternion _orientation;
+
+		bool _isDirty;
+		Matrix _transformMatrix;
 	};
 }
 

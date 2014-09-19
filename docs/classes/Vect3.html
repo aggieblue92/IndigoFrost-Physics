@@ -1,0 +1,329 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>Frost::Vect3</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				Vect3
+			</div>
+			<div class="Inheritance">
+				<ul>
+					<a href="FLOAT3.html"><li class="base">FLOAT3</li></a>
+					<li class="rightarrow">&rarr;</li>
+					<a href="Vect3.html"><li>Vect3</li></a>
+				</ul>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p><code>Vect3</code> holds data for a mathematical vector in 3D space. Being inherited from <code>FLOAT3</code>, it plays nicely with other 3D vector data types used in other libraries, like <code>XMFLOAT3</code> and <code>D3DXVECTOR3</code>.</p>
+				<p><code>Vect3</code> holds methods for performing regular vector mathematics functions, like the dot (or scalar) product, cross (or vector) product, computing the magnitude of the vector, the square magnitude (which is faster), etc.</p>
+				<p><code>Vect3</code> is held in Vect3.h</p>
+			</div>
+			<div class="Properties">
+				<h1 class="Header">Properties:</h1>
+				<table class="PropertiesTable">
+					<tr class="Public">
+						<td class="propertyName">_x</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">X component of the vector. Derived from FLOAT3</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_y</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">Y component of the vector. Derived from FLOAT3</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_z</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">Z component of the vector. Derived from FLOAT3</td>
+					</tr>
+				</table>
+			</div>
+			<div class="Methods">
+				<h1 class="Header">Methods:</h1>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3()</code></p>
+					<div class="collapsable" style="display:none">
+						<p>
+						Default constructor - initializes the vector to the zero vector (0, 0, 0)
+						</p>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3(float x, float y, float z)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Construct a Vect3 object, providing the x, y, and z coordinates.</p>
+						<table>
+							<tr>
+								<td class="paramName">x</td>
+								<td>x component of the vector</td>
+							</tr>
+							<tr>
+								<td class="paramName">y</td>
+								<td>y component of the vector</td>
+							</tr>
+							<tr>
+								<td class="paramName">z</td>
+								<td>z component of the vector</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3(const <a href="FLOAT3.html">FLOAT3</a>&amp; right)</code></p>
+					<div style="display:none">
+						<p>Construct a <code>Vect3</code> object with the values from a <code>FLOAT3</code> object (like another <code>Vect3</code>). <b>Acts as the copy constructor.</b></p>
+						<table>
+							<tr>
+								<td class="paramName">right</td>
+								<td>The <code>FLOAT3</code> object to copy values from.</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3(const Vect3&amp; right)</code></p>
+					<div style="display:none">
+						<p>Copy constructor</p>
+						<table>
+							<tr>
+								<td class="paramName">right</td>
+								<td>The <code>Vect3</code> object from which to copy values.</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3 operator+(const FLOAT3&amp; other) const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Add by component a 3D float structure to the Vect3 instance, return the sum.</p>
+						<p>Returns a new vector, representing the sum of the two vectors.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The FLOAT3 type (Vect3, Vect3Normal, FLOAT3, etc.) to add to the vector.</td>
+						</table>
+					</div>
+				</div>
+				<!-- operator- -->
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3 operator-(const FLOAT3&amp; other) const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Subtracts by component a 3D float structure to the Vect3 instance, return the difference.</p>
+						<p>Returns a new vector, representing the difference of the two vectors.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The FLOAT3 type (Vect3, Vect3Normal, FLOAT3, etc.) to subtract from the vector.</td>
+						</table>
+					</div>
+				</div>
+				<!-- operator* -->
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>float operator*(const FLOAT3&amp; other) const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Performs a scalar product (aka dot product) on the two vectors, returning the result. Mathematically, this is <code>scalar_product = x1*x2 + y1*y2 + z1*z2</code></p>
+						<p>Returns: The scalar product of the two vectors</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The other vector involved in the operaton.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3 operator%(const FLOAT3&amp; other) const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Performs a vector product (aka cross product) on the two vectors, returning the result. The resultant vector will be orthogonal to both vectors involved in the operation. This is frequently used in computing torque. This cross product assumes the right hand rule.</p>
+						<p>Returns: The vector product of the two vectors</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The other vector involved in the operaton.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3 operator*(float other) const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Multiplies the vector by a scalar value. Every component of the vector is multiplied by said scalar.</p>
+						<p>Returns: The instance vector scaled by the value <code>other</code></p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The scale to apply to the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3 operator/(float other) const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Multiplies the vector by the inverse of a scalar value. Every component of the vector is multiplied by said scalar inverse.</p>
+						<p>Returns: The instance vector scaled by the value <code>1.0f/other</code></p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The scale to invert and to apply to the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3&amp; operator+=(const FLOAT3&amp; other)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Adds together the instance vector and the vector specified in <code>other</code>, modifying the instance vector and returning it by reference.</p>
+						<p>Returns: A reference to the modified instance vector.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The vector which is to be added, by component, to the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3&amp; operator-=(const FLOAT3&amp; other)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Subtracts the vector specified in <code>other</code> from the instance vector, modifying the instance vector and returning it by reference.</p>
+						<p>Returns: A reference to the modified instance vector.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The vector which is to be subtracted, by component, from the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3&amp; operator*=(float other)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Multiplies every component in the instance vector by the value specified in <code>other</code>, and then returns a reference to the instance vector.</p>
+						<p>Returns: A reference to the modified instance vector.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The scalar by which to multiply the components of the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3&amp; operator/=(float other)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Divides every component in the instance vector by the value specified in <code>other</code>, and then returns a reference to the instance vector.</p>
+						<p>Returns: A reference to the modified instance vector.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The scalar by which to divide the components of the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>float operator[](int i) const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Returns by value the component at index <code>i</code> of the vector (x=0, y=1, z=2)</p>
+						<p>Returns: The specified component of the vector</p>
+						<p>Throws <code>IndexOutOfBoundsException</code> if <code>0&lt;=i&lt;=2</code> is not met.</p>
+						<table>
+							<tr>
+								<td class="paramName">i</td>
+								<td>0, 1, or 2, corresponding to x, y, and z, respectively.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>float&amp; operator[](int i)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Returns by reference the component at index <code>i</code> of the vector (x=0, y=1, z=2). This allows modification of the vector, and is the default version of this function to be called.</p>
+						<p>Returns: The specified component of the vector</p>
+						<p>Throws <code>IndexOutOfBoundsException</code> if <code>0&lt;=i&lt;=2</code> is not met.</p>
+						<table>
+							<tr>
+								<td class="paramName">i</td>
+								<td>0, 1, or 2, corresponding to x, y, and z, respectively.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>Vect3&amp; operator=(const FLOAT3&amp; other)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Assigns the value in <code>other</code> to the instance vector, and then returns by reference the instance vector.</p>
+						<p>Returns: A reference to the finished instance vector.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The vector which is to be copied into the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>bool operator==(const FLOAT3&amp; other)</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Compares the value in the instance vector to that specified in the <code>other</code> vector.</p>
+						<p>Returns: <code>true</code> if the two vectors have equivalent components, <code>false</code> otherwise.</p>
+						<table>
+							<tr>
+								<td class="paramName">other</td>
+								<td>The vector to compare, by component, to the instance vector.</td>
+						</table>
+					</div>
+				</div>
+				<!-- Vector Functions -->
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>float Magnitude() const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Returns the magnitude of the instance vector, but runs slower than <code>SquareMagnitude</code>. When possible, use <code>SquareMagnitude</code> instead (for comparing the magnitude of two vectors, for instance)</p>
+						<p>Returns: the magnitude of the instance vector.</p>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p><code>float SquareMagnitude() const</code></p>
+					<div class="collapsable" style="display:none">
+						<p>Runs faster than <code>Magnitude</code>
+						<p>Returns: the squared magnitude of the instance vector.</p>
+					</div>
+				</div>
+
+			</div>
+			<div class="Notes">
+				<h1 class="Header">Usage Notes:</h1>
+				<p>I personally like to construct this object like so:</p><p><code>Frost::Vect3 myVect({x, y, z});</code></p>
+				<p>
+				Also, there are pre-defined useful vectors under the MathHelpers namespace:
+					<ul>
+						<li><code>Frost::MathHelpers::VECTOR_UNIT_X</code></li>
+						<li><code>Frost::MathHelpers::VECTOR_UNIT_Y</code></li>
+						<li><code>Frost::MathHelpers::VECTOR_UNIT_Z</code></li>
+						<li><code>Frost::MathHelpers::VECTOR_ZERO</code></li>
+					</ul>
+				</p>
+				<p>If you would rather perform vector functions outside of an instance of a vector, they are provided in functions in the Frost namespace. Additionally, a <code>ComponentProduct</code> function is added, which performs per-component multiplication of two vectors. You may find that useful.</p>
+				<ul>
+					<li><code>float DotProduct(const Vect3&amp; v1, const Vect3&amp; v2);</code></li>
+					<li><code>Vect3 CrossProduct(const Vect3&amp; v1, const Vect3&amp; v2);</code></li>
+					<li><code>Vect3 ComponentProduct(const Vect3&amp; v1, const Vect3&amp; v2);</code></li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>

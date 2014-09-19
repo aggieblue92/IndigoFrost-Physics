@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>Indigo Frost Math Constants</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				Indigo Frost Math Constants List
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>Indigo Frost, by nature, is very mathematical. As such, certain mathematical constants have been defined for use in development, testing, and implementation.</p>
+				<p>All of these mathematical constants are found in FrostMath.h. Conviniently, FrostMath.h also includes all of the files in the math tier of the engine, so including FrostMath.h in your project gives you access to all of the mathematical classes that the engine uses.</p>
+				<p>All of these constants are found in the Frost::MathConstants namespace.</p>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Scalar Constants</h1>
+				<table>
+					<th>Constant</th><th>Value</th><th>Notes</th>
+					<tr>
+						<td><code>PI</code></td>
+						<td><code>3.141592654f</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>PI_DIV_2</code></td>
+						<td><code>1.5707963265f</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>PI_DIV_3</code></td>
+						<td><code>1.047197551f</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>PI_DIV_4</code></td>
+						<td><code>0.78539816325f</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>PI_MULT_2</code></td>
+						<td><code>6.283185306f</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>DEG_TO_RAD</code></td>
+						<td><code>PI / 180.f</code></td>
+						<td>Multiply an angle in degrees to get the value in radians.</td>
+					</tr>
+					<tr>
+						<td><code>RAD_TO_DEG</code></td>
+						<td><code>1.f / DEG_TO_RAD</code></td>
+						<td>Multiply a value in radians to get the angle in degrees.</td>
+					</tr>
+				</table>
+				<h1 class="Header">Vect3 Constants</h1>
+				<table>
+					<th>Constant</th><th>Value</th><th>Notes</th>
+					<tr>
+						<td><code>VECTOR_ZERO</code></td>
+						<td><code>&lt;0.f, 0.f, 0.f&gt;</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>VECTOR_ONE</code></td>
+						<td><code>&lt;1.f, 1.f, 1.f&gt;</code></td>
+						<td>I've found this useful in doing component-wise multiplication.</td>
+					</tr>
+					<tr>
+						<td><code>VECTOR_UNIT_X</code></td>
+						<td><code>&lt;1.f, 0.f, 0.f&gt;</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>VECTOR_UNIT_Y</code></td>
+						<td><code>&lt;0.f, 1.f, 0.f&gt;</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>VECTOR_UNIT_Z</code></td>
+						<td><code>&lt;0.f, 0.f, 1.f&gt;</code></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><code>QUATERNION_UNIT</code></td>
+						<td><code>1.f (+ 0i + 0j + 0k)</code></td>
+						<td><code>This isn't a Vect3, but it doesn't belong anywhere else... Unit quaternion, representing a zero rotation.</code></td>
+				</table>
+				<h1 class="Header">Matrix Constants</h1>
+				<table>
+					<th>Constant</th><th>Value</th><th>Notes</th>
+					<tr>
+						<td><code>MATRIX_IDENTITY</code></td>
+						<td><code>1 0 0 0<br />0 1 0 0<br />0 0 1 0<br />0 0 0 1</code></td>
+						<td>Identity matrix <code>I</code> - any matrix multiplied by this will be the same as it was before. Useful in testing.</td>
+					</tr>
+					<tr>
+						<td><code>MATRIX_ZERO</code></td>
+						<td><code>0 0 0 0<br />0 0 0 0<br />0 0 0 0<br />0 0 0 0</code></td>
+						<td>I'm really not sure why you'd need this. I might take it out.</td>
+					</tr>
+				</table>
+				<p>More constants may be added to this list, but I anticipate it will remain fairly static. All globally used mathematical constants should be placed in this file. Algorithm-specific constants may be placed externally.</p>
+			</div>
+		</div>
+	</body>
+</html>

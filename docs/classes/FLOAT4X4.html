@@ -1,0 +1,70 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>Frost::FLOAT4X4</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				FLOAT4X4
+			</div>
+			<div class="Inheritance">
+				<ul>
+					<a href="FLOAT4X4.html"><li class="base">FLOAT4X4</li></a>
+				</ul>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>512-bit wide struct holding four <code>FLOAT4</code>s, in union with a 4x4 array of floats, or 16 floats - whatever floats your boat, or whatever is convinient for you. This class has no methods, like <code>FLOAT4</code> and <code>FLOAT3</code>. Like those other two, it is located in FloatStructs.h.</p>
+				<p>This struct is 512-bit aligned, so it should fit nicely in with HLSL buffers.</p>
+				<p>The definition is:</p>
+				<code style="white-space: pre-wrap;">
+	struct FLOAT4X4
+	{
+		union
+		{
+			float m[4][4];
+			struct
+			{
+				float _11, _12, _13, _14;
+				float _21, _22, _23, _24;
+				float _31, _32, _33, _34;
+				float _41, _42, _43, _44;
+			};
+			FLOAT4 rows[4];
+		};
+	};</code>
+				<p>The matrix can be retrieved as a 2D array (<code>m</code>), 16 individual floats (<code>_11</code>, etc.) or as an array of the columns (<code>rows</code>). The union makes this possible.</p>
+			</div>
+			<div class="Properties">
+				<h1 class="Header">Properties:</h1>
+				<table class="PropertiesTable">
+					<tr class="Public">
+						<td class="propertyName">m</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">2D array, containing 4 rows and 4 columns, representing the struct as a matrix.</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_11, ..., _[m][n]</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">A 32-bit float representing the [m]th row and [n]th column of the matrix.</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">rows</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">An array of 4 <code>FLOAT4</code> objects, representing the struct as an array of row vectors.</td>
+					</tr>
+				</table>
+			</div>
+			<div class="Methods">
+				<h1 class="Header">Methods:</h1>
+				<p>This struct has no methods.</p>
+			</div>
+			<div class="Notes">
+				<h1 class="Header">Usage Notes:</h1>
+				<p>Like <code>FLOAT3</code>, <code>FLOAT4</code>, and the derived classes of such, I built this structure so that it and all immediately derived mathematical classes would play nicely with other libraries. I haven't tested this one as extensively as I have the other two, but so far conversions to and from the XNAMath library <code>MATRIX</code> class have been smooth, and likewise for loading into HLSL buffers using Direct3D 11.</p>
+			</div>
+		</div>
+	</body>
+</html>

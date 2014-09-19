@@ -88,11 +88,13 @@ Quaternion& Quaternion::operator+=(const FLOAT3& other)
 {
 	if (other._x == 0.f && other._y == 0.f && other._z == 0.f) return *this;
 
-	Quaternion q(0.f,
-		other._x,
-		other._y,
-		other._z);
-	q *= *this;
+	FLOAT4 q = { 0.f, other._x, other._y, other._z };
+
+	q._w = -this->_x * other._x - this->_y * other._y - this->_z * other._z;
+	q._x = this->_w * other._x + this->_y * other._z - this->_z * other._y;
+	q._y = this->_w * other._y + this->_z * other._x - this->_x * other._z;
+	q._z = this->_w * other._z + this->_x * other._y - this->_y * other._x;
+//	q *= *this;
 
 	_w += q._w * 0.5f;
 	_x += q._x * 0.5f;
@@ -106,6 +108,34 @@ Quaternion& Quaternion::operator+=(const FLOAT3& other)
 	_z /= mag;
 
 	return *this;
+}
+
+Quaternion Quaternion::operator+(const FLOAT3& other) const
+{
+	if (other._x == 0.f && other._y == 0.f && other._z == 0.f) return *this;
+
+	Quaternion toReturn(*this);
+
+	FLOAT4 q = { 0.f, other._x, other._y, other._z };
+
+	q._w = -this->_x * other._x - this->_y * other._y - this->_z * other._z;
+	q._x = this->_w * other._x + this->_y * other._z - this->_z * other._y;
+	q._y = this->_w * other._y + this->_z * other._x - this->_x * other._z;
+	q._z = this->_w * other._z + this->_x * other._y - this->_y * other._x;
+	//	q *= *this;
+
+	toReturn._w += q._w * 0.5f;
+	toReturn._x += q._x * 0.5f;
+	toReturn._y += q._y * 0.5f;
+	toReturn._z += q._z * 0.5f;
+
+	float mag = toReturn.Magnitude();
+	toReturn._w /= mag;
+	toReturn._x /= mag;
+	toReturn._y /= mag;
+	toReturn._z /= mag;
+
+	return toReturn;
 }
 
 /////////////// QUATERNION FUNCS /////////////

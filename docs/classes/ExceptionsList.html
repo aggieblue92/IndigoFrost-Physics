@@ -1,0 +1,49 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>Indigo Frost Generic Exceptions</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				Indigo Frost Exceptions List
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>Indigo Frost is a complicated tool, and as such is exception-driven in its error handling. These errors can be caught by the programmer in the case of deep involvement in the engine, or otherwise are handled by the management-tier classes.</p>
+				<p>All of these generic exceptions are contained in FrostExceptions.h, and are empty classes unless otherwise specified.</p>
+			</div>
+			<div>
+				<table>
+					<th>Exception Name</th><th>Description</th>
+					<tr>
+						<td><code>NotImplementedException</code></td>
+						<td>Thrown when a function is called that is not yet implemented in the engine. This mostly comes in handy in development, but may also be used when adding new types of collision geometry.</td>
+					</tr>
+					<tr>
+						<td><code>DivByZeroException</code></td>
+						<td>Thrown in places where dividing by zero is likely to occur (like vector normalization) upon an attempt to divide by zero. This catches such errors pre-OS code, and so the engine can continue running in the case of flukes.</td>
+					</tr>
+					<tr>
+						<td><code>IndexOutOfBoundsException</code></td>
+						<td>Contains one property - <code>int indexGiven</code>, which holds the index provided to a list structure that broke bounds constraints. The only constructor for this exception requires this number.</td>
+					</tr>
+					<tr>
+						<td><code>ZeroMagnitudeException</code></td>
+						<td>Derives from <code>DivByZeroException</code>. Happens when a normalized vector data structure (<code>Vect3Normal, Quaternion</code>) is assigned with no magnitude, and thus cannot be normalized.</td>
+					</tr>
+					<tr>
+						<td><code>SingularMatrixException</code></td>
+						<td>Thrown on attempting to invert a singular, or non-invertable, matrix. I predict the biggest cause of this exception will be invalid inertia tensors in developer-fed code to the engine. When I was designing the first round of this engine, my initial inertia tensor generating script always spit out singular matricies. Whoops.</td>
+					</tr>
+					<tr>
+						<td><code>DuplicateActionException</code></td>
+						<td>An action which must only occur once (such as assigning an <code>IPhysicsObject</code> to a <code>ICollisionGeometry</code> instance) has been attempted two or more times.</td>
+					</tr>
+				</table>
+				<p>I anticipate more entries to this list as the engine grows. Parts of the engine may specify their own exceptions as well, to be more specific. These exceptions are considered global, and are accessible to math, physics, and management tiers of the engine.</p>
+			</div>
+		</div>
+	</body>
+</html>

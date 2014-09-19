@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>Frost::Matrix</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				Matrix
+			</div>
+			<div class="Inheritance">
+				<ul>
+					<a href="FLOAT4X4.html"><li class="base">FLOAT4X4</li></a>
+					<li class="rightarrow">&rarr;</li>
+					<a href="Matrix.html"><li>Matrix</li></a>
+				</ul>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>Represents a 4x4 matrix, used to represent a linear transformation in 3D space, holding rotational and translational data. The upper-left 3x3 part of the matrix holds rotational information, the three upper values on the right column hold translational data, and the bottom row makes it a square matrix that can interact with Vect3 and Matrix instances.</p>
+			</div>
+			<div class="Properties">
+				<h1 class="Header">Properties:</h1>
+				<p>Matrix has no derived properties beyond those provided in <code><a href="FLOAT4X4.html">FLOAT4X4</a></code></p>
+			</div>
+			<div class="Methods">
+				<h1 class="Header">Methods:</h1>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<code><p>Matrix()</p></code>
+					<div class="collapsable" style="display:none">
+						<p>Default constructor - initializes the matrix to the identity matrix.</p>
+					</div>
+				</div>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<code><p>Matrix(const Matrix&amp; other)</p></code>
+					<div class="collapsable" style="display:none">
+						<p>Copy constructor - creates a <code>Matrix</code> instance from an existing one.</p>
+						<table>
+							<tr>
+								<td><code>Matrix other</code></td>
+								<td>The matrix to copy.</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="Notes">
+				<h1 class="Header">Usage Notes:</h1>
+				<p>When using DirectX, take care - Indigo Frost was written with right (column) vector multiplication in mind, but DirectX uses left (row) vector multiplication. You may have to transpose vectors before using them in certain situations with DirectX objects.</p>
+			</div>
+		</div>
+	</body>
+</html>

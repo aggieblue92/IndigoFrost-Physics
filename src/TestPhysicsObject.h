@@ -39,7 +39,7 @@ namespace Frost
 		FROSTDLL_API virtual void AddForceAtOrigin(const Vect3& forceToAdd_w);
 
 		// Adds a force to the object at a non-origin point
-		FROSTDLL_API virtual void AddForceAtPoint(const Vect3& forceToAdd_w, const Vect3& bodyPoint);
+		FROSTDLL_API virtual void AddForceAtPoint(const Vect3& forceToAdd_w, const Vect3& pt_world);
 
 		// Adds a torque to the object at the origin point.
 		FROSTDLL_API virtual void AddTorqueAtOrigin(const Vect3& torqueToAdd_w);

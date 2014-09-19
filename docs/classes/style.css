@@ -1,0 +1,153 @@
+div
+{
+	border-radius: 5px;
+	padding: 3px;
+	margin: 5px 0px;
+}
+
+div.wrapper
+{
+	margin-right: auto;
+	margin-left: auto;
+	background-color: #fafaff;
+	width: 900px;
+	height: 100%;
+}
+
+div.ClassName
+{
+	width: 100%;
+	height: auto;
+	
+	/* IE10 Consumer Preview */ 
+	background-image: -ms-linear-gradient(top left, #4F3D86 0%, #00A3EF 100%);
+
+	/* Mozilla Firefox */ 
+	background-image: -moz-linear-gradient(top left, #4F3D86 0%, #00A3EF 100%);
+
+	/* Opera */ 
+	background-image: -o-linear-gradient(top left, #4F3D86 0%, #00A3EF 100%);
+
+	/* Webkit (Safari/Chrome 10) */ 
+	background-image: -webkit-gradient(linear, left top, right bottom, color-stop(0, #4F3D86), color-stop(1, #00A3EF));
+
+	/* Webkit (Chrome 11+) */ 
+	background-image: -webkit-linear-gradient(top left, #4F3D86 0%, #00A3EF 100%);
+
+	/* W3C Markup, IE10 Release Preview */ 
+	background-image: linear-gradient(to bottom right, #4F3D86 0%, #00A3EF 100%);
+
+	color: white;
+	text-align: center;
+	font-size: 22pt;
+}
+
+div.Inheritance
+{
+	width: 100%;
+	height: auto;
+	text-align: center;
+	font-size: 16pt;
+}
+
+div.Inheritance a
+{
+	text-decoration: none;
+	color: inherit;
+}
+
+div.Inheritance ul li
+{
+	border-radius: 15px;
+	background-color: #CCFF66;
+	display: inline-block;
+	vertical-align: middle;
+	width: 150px;
+	height: 75px;
+	line-height: 75px;
+	border: 1px solid black;
+}
+
+div.Inheritance ul li.rightarrow
+{
+	background-color: inherit;
+	width: 18px;
+	border: none;
+}
+
+h1.Header
+{
+	font-size: 18pt;
+	text-align: left;
+	text-indent: 45px
+}
+
+div.Summary p
+{
+	text-indent: 30px;
+}
+
+div table
+{
+	border: 2px solid black;
+	border-radius: 3px;
+	width: 100%;
+}
+
+div.Properties table td
+{
+	padding: 2px 10px;
+}
+
+div.Properties table td.propertyName
+{
+	width: 1%;
+	white-space: nowrap;
+	font-family: consolas, monospace;
+}
+
+div.Properties table td.propertyFlags
+{
+	width: 1%;
+	white-space: nowrap;
+}
+
+.Private
+{
+	background-color: #FF8585;
+}
+
+.Protected
+{
+	background-color: #FFECA3;
+}
+
+.Public
+{
+	background-color: inherit;
+}
+
+div.Methods div.Method
+{
+	border: 1px solid black;
+	border-radius: 8px;
+	padding: 0px 10px 0px 10px;
+}
+
+div.Methods table tr td
+{
+	padding: 2px 10px;
+}
+
+div.Methods table tr td.paramName
+{
+	width: 1%;
+	white-space: nowrap;
+	font-family: consolas, monospace;
+	border-right: 2px solid black;
+}
+
+div.Notes p
+{
+	text-indent: 30px;
+}

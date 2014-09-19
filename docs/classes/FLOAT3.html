@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>Frost::FLOAT3</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				FLOAT3
+			</div>
+			<div class="Inheritance">
+				<ul>
+					<a href="FLOAT3.html"><li>FLOAT3</li></a>
+				</ul>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>96-bit wide struct holding three floats, named <code>_x</code>, <code>_y</code>, and <code>_z</code>. This class has no methods. Located in FloatStructs.h, under the namespace Frost.</p>
+				<p>The definition, as found in FloatStructs.h, is:</p>
+				<p><code>	struct FLOAT3
+			{
+			float _x;
+			float _y;
+			float _z;
+			};</code></p>
+			</div>
+			<div class="Properties">
+				<h1 class="Header">Properties:</h1>
+				<table class="PropertiesTable">
+					<tr class="Public">
+						<td class="propertyName">_x</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">First float in the structure (x component)</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_y</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">Second float in the structure (y component)</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">_z</td>
+						<td class="propertyFlags"></td>
+						<td class="propertyDesc">Third float in the structure (z component)</td>
+					</tr>
+				</table>
+			</div>
+			<div class="Methods">
+				<h1 class="Header">Methods:</h1>
+				The <code>FLOAT3</code> struct has no methods.
+			</div>
+			<div class="Notes">
+				<h1 class="Header">Usage Notes:</h1>
+				<p>The <code>FLOAT3</code> structure was built to make derived classes play nicely
+				with each other, as well as external structures like XMMath's <code>XMFLOAT3</code> and Direct3D's <code>D3DXVECTOR3</code>. Any other 96-bit float3 structure can be (I don't know if I'd reccomend this) casted to a <code>FLOAT3</code> as such:</p>
+				<p><code>FLOAT3 myFloat = *reinterpret_cast&lt;FLOAT3*&gt;(&amp;other_3_float_var);</code></p>
+			</div>
+		</div>
+	</body>
+</html>

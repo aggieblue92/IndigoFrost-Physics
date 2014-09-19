@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>CLASS_NAME</title>
+		<script>
+			function ExpandCollapse(toExpandOrCollapse)
+			{
+				var t = document.getElementById(toExpandOrCollapse);
+				if(t.style.display == 'none')
+				{
+					t.style.display = '';
+				}
+				else
+				{
+					t.style.display = 'none';
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				CLASS_NAME
+			</div>
+			<div class="Inheritance">
+				<ul>
+					<li class="base">BASE</li>
+					<li class="rightarrow">&rarr;</li>
+					<li>DERIVED</li>
+				</ul>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>CLASS_DESCRIPTION</p>
+			</div>
+			<div class="Properties">
+				<h1 class="Header">Properties:</h1>
+				<table class="PropertiesTable">
+					<tr class="Private">
+						<td class="propertyName">PROPERTY_NAME</td>
+						<td class="propertyFlags">PROPERTY_FLAGS</td>
+						<td class="propertyDesc">PROPERTY_DESC</td>
+					</tr>
+					<tr class="Protected">
+						<td class="propertyName">PROPERTY_NAME</td>
+						<td class="propertyFlags">PROPERTY_FLAGS</td>
+						<td class="propertyDesc">PROPERTY_DESC</td>
+					</tr>
+					<tr class="Public">
+						<td class="propertyName">PROPERTY_NAME</td>
+						<td class="propertyFlags">PROPERTY_FLAGS</td>
+						<td class="propertyDesc">PROPERTY_DESC</td>
+					</tr>
+				</table>
+			</div>
+			<div class="Methods">
+				<h1 class="Header">Methods:</h1>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p>METHOD_PROTOTYPE</p>
+					<div class="collapsable" style="display:none">
+						<table>
+							<tr class="Public">
+								<td class="paramName">PARAM_NAME</td>
+								<td>PARAM_DESC</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="Notes">
+				<h1 class="Header">Usage Notes:</h1>
+				<p>Insert additional notes here...</p>
+			</div>
+		</div>
+	</body>
+</html>
