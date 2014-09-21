@@ -17,7 +17,7 @@ bool BasicContact::Resolve()
 
 	const float K = 350.f; // 350 N/m
 
-	_affectedObject->AddForceAtPoint(
+	_affectedObject->addForceAtPoint(
 		this->_contactNormal * this->_contactMagnitude * K * -1.f,
 		this->_objCollisionPoint);
 

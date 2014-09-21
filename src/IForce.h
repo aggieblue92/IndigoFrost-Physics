@@ -1,11 +1,3 @@
-#ifndef FROSTDLL_API
-#ifdef _WINDLL
-#define FROSTDLL_API __declspec(dllexport)
-#else
-#define FROSTDLL_API __declspec(dllimport)
-#endif
-#endif
-
 #ifndef FROST_IFORCE_H
 #define FROST_IFORCE_H
 

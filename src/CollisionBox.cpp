@@ -176,7 +176,7 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 				{
 					o.push_back(new BasicContact(collPt, collDirn, this->GetAttachedObjectPtr()));
 				}
-				catch (const ZeroMagnitudeException& zme)
+				catch (const ZeroMagnitudeException&)
 				{
 					// Instead push back a different kind of thing.
 				}
@@ -187,7 +187,7 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 				{
 					o.push_back(new BasicContact(collPt, collDirn * -1.f, b->GetAttachedObjectPtr()));
 				}
-				catch (const ZeroMagnitudeException& zme)
+				catch (const ZeroMagnitudeException&)
 				{
 					// Instead push back a different kind of thing.
 				}
@@ -223,7 +223,7 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 				{
 					o.push_back(new BasicContact(collPt, collDirn * -1.f, this->GetAttachedObjectPtr()));
 				}
-				catch (const ZeroMagnitudeException& zme)
+				catch (const ZeroMagnitudeException&)
 				{
 					// Instead push back a different kind of thing.
 				}
@@ -234,7 +234,7 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 				{
 					o.push_back(new BasicContact(collPt, collDirn, b->GetAttachedObjectPtr()));
 				}
-				catch (const ZeroMagnitudeException& zme)
+				catch (const ZeroMagnitudeException&)
 				{
 					// Instead push back a different kind of contact (bumpcontact, whatever)
 				}

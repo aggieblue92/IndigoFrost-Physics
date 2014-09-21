@@ -1,12 +1,3 @@
-#ifndef FROSTDLL_API
-#ifdef _WINDLL
-#define FROSTDLL_API __declspec(dllexport)
-#else
-#define FROSTDLL_API __declspec(dllimport)
-#endif
-#endif
-
-
 #ifndef FROST_EXCEPTIONS_H
 #define FROST_EXCEPTIONS_H
 
@@ -26,7 +17,7 @@ namespace Frost
 	{
 	public:
 		int indexGiven;
-		FROSTDLL_API IndexOutOfBoundsException(int i) : indexGiven(i) {}
+		IndexOutOfBoundsException(int i) : indexGiven(i) {}
 	};
 
 	// Zero magnitude exception - a normalized vector object

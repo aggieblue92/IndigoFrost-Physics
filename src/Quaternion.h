@@ -1,11 +1,3 @@
-#ifndef FROSTDLL_API
-#ifdef _WINDLL
-#define FROSTDLL_API __declspec(dllexport)
-#else
-#define FROSTDLL_API __declspec(dllimport)
-#endif
-#endif
-
 /////////////////////////////////////////
 // Quaternion: A 4-d vector class, with
 //  all the additional bells and whistles
@@ -28,23 +20,23 @@ namespace Frost
 		/////////////////// CTORS //////////////////////
 
 		// Default ctor - initialize with no rotation
-		FROSTDLL_API Quaternion();
+		Quaternion();
 
 		// Initialize values manually
-		FROSTDLL_API Quaternion(float r, float i, float j, float k);
+		Quaternion(float r, float i, float j, float k);
 
 		// Initialize from another R32G32B32A32_FLOAT structure
-		FROSTDLL_API Quaternion(const FLOAT4& other);
+		Quaternion(const FLOAT4& other);
 
 		// Initialize from an axis and an angle
-		FROSTDLL_API Quaternion(const FLOAT3& axis, float angle);
+		Quaternion(const FLOAT3& axis, float angle);
 
 		///////////// OPERATOR OVERLOADS /////////////
-		FROSTDLL_API Quaternion& operator=(const FLOAT4& other);
-		FROSTDLL_API Quaternion& operator=(const Quaternion& other);
-		FROSTDLL_API Quaternion operator*(const FLOAT4& other) const;
-		FROSTDLL_API Quaternion& operator*=(const FLOAT4& other);
-		FROSTDLL_API Quaternion operator+(const FLOAT4& o) const
+		Quaternion& operator=(const FLOAT4& other);
+		Quaternion& operator=(const Quaternion& other);
+		Quaternion operator*(const FLOAT4& other) const;
+		Quaternion& operator*=(const FLOAT4& other);
+		Quaternion operator+(const FLOAT4& o) const
 		{
 			return Quaternion(
 				this->_w + o._w,
@@ -53,11 +45,11 @@ namespace Frost
 				this->_z + o._z
 				);
 		}
-		FROSTDLL_API Quaternion& operator+=(const FLOAT3& other);
-		FROSTDLL_API Quaternion operator+(const FLOAT3& other) const;
+		Quaternion& operator+=(const FLOAT3& other);
+		Quaternion operator+(const FLOAT3& other) const;
 
 		////////////////// QUATERNION FUNCS //////////////////
-		FROSTDLL_API void GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const;
+		void GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const;
 	private:
 		float Magnitude();
 	};

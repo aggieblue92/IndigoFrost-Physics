@@ -20,14 +20,14 @@ TestPhysicsObject::TestPhysicsObject(float invMass, const Matrix& invInertiaTens
 {}
 
 // Adds a force to the object at the origin point (no angular acc. component)
-void TestPhysicsObject::AddForceAtOrigin(const Vect3& forceToAdd_w)
+void TestPhysicsObject::addForceAtOrigin(const Vect3& forceToAdd_w)
 {
 	// TODO: Make sure we want to use WORLD forces.
 	this->_netForce += forceToAdd_w;
 }
 
 // Adds a force to the object at a non-origin point
-void TestPhysicsObject::AddForceAtPoint(const Vect3& forceToAdd_w, const Vect3& pt_world)
+void TestPhysicsObject::addForceAtPoint(const Vect3& forceToAdd_w, const Vect3& pt_world)
 {
 	// Break up force into parallel and perpendicular components...
 	Vect3Normal armNormal = pt_world - this->GetPos();
@@ -36,12 +36,12 @@ void TestPhysicsObject::AddForceAtPoint(const Vect3& forceToAdd_w, const Vect3& 
 
 	// TODO: Test that the force and torque take all the
 	//  force, but don't go over anything...
-	AddForceAtOrigin(originWorldForce);
-	AddTorqueAtOrigin(originWorldTorque);
+	addForceAtOrigin(originWorldForce);
+	addTorqueAtOrigin(originWorldTorque);
 }
 
 // Adds a torque to the object at the origin point.
-void TestPhysicsObject::AddTorqueAtOrigin(const Vect3& torqueToAdd_w)
+void TestPhysicsObject::addTorqueAtOrigin(const Vect3& torqueToAdd_w)
 {
 	this->_netTorque += torqueToAdd_w;
 }
@@ -61,6 +61,4 @@ void TestPhysicsObject::Update(float timeElapsed)
 
 	SetPos(GetPos() + (_linearVelocity * timeElapsed));
 	SetOrientation(GetOrientation() + (_angularVelocity * timeElapsed));
-
-	// Update derived data here, when you actually have it...
 }
