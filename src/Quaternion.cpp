@@ -1,4 +1,5 @@
 #include "Quaternion.h"
+#include <cmath>
 using namespace Frost;
 
 Quaternion::Quaternion()
@@ -42,10 +43,10 @@ Quaternion::Quaternion(const FLOAT3& axis, float angle)
 	// Use the definition of a rotation quaternion...
 	Vect3Normal axis_n(axis);
 	angle /= 2.f;
-	_w = std::cosf(angle);
-	_x = axis_n._x * std::sinf(angle);
-	_y = axis_n._y * std::sinf(angle);
-	_z = axis_n._z * std::sinf(angle);
+	_w = std::cos(angle);
+	_x = axis_n._x * std::sin(angle);
+	_y = axis_n._y * std::sin(angle);
+	_z = axis_n._z * std::sin(angle);
 }
 
 ///////////// OPERATOR OVERLOADS /////////////
@@ -141,7 +142,7 @@ Quaternion Quaternion::operator+(const FLOAT3& other) const
 /////////////// QUATERNION FUNCS /////////////
 void Quaternion::GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const
 {
-	o_Angle = 2.f * std::acosf(_w);
+	o_Angle = 2.f * std::acos(_w);
 	float sin_half_angle = std::sin(o_Angle / 2.f);
 	o_Axis = Vect3Normal(
 		this->_x / sin_half_angle,

@@ -5,12 +5,12 @@ using namespace Frost;
 #define CLAMP(x, min, max)	x < min ? min : (x > max ? max : x)
 
 CollisionSphere::CollisionSphere(float radius)
-: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE::SPHERE)
+: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
 , _radius(radius)
 {}
 
 CollisionSphere::CollisionSphere(float radius, const FLOAT3& pos)
-: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE::SPHERE, pos, MathConstants::QUATERNION_UNIT)
+: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_SPHERE, pos, MathConstants::QUATERNION_UNIT)
 , _radius(radius)
 {}
 
@@ -21,11 +21,11 @@ CollisionSphere::CollisionSphere(const CollisionSphere& other)
 
 bool CollisionSphere::isTouching(ICollisionGeometry* other) const
 {
-	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::BOX)
+	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
 	{
 		return isTouchingB((CollisionBox*)other);
 	}
-	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::SPHERE)
+	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
 	{
 		return isTouchingS((CollisionSphere*)other);
 	}
@@ -37,11 +37,11 @@ bool CollisionSphere::isTouching(ICollisionGeometry* other) const
 
 void CollisionSphere::genContacts(ICollisionGeometry* other, std::vector<IContact*>& o_list) const
 {
-	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::BOX)
+	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
 	{
 		genContactsB((CollisionBox*)other, o_list);
 	}
-	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::SPHERE)
+	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
 	{
 		genContactsS((CollisionSphere*)other, o_list);
 	}

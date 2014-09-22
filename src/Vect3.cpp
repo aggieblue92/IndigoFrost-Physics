@@ -1,4 +1,5 @@
 #include "Vect3.h"
+#include <cmath>
 using namespace Frost;
 
 Vect3::Vect3()

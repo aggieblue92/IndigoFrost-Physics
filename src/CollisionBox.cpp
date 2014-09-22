@@ -5,17 +5,17 @@ using namespace Frost;
 #define CLAMP(x, min, max)	x < min ? min : (x > max ? max : x)
 
 CollisionBox::CollisionBox(const FLOAT3& size)
-: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE::BOX)
+: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_BOX)
 , _size(size)
 {}
 
 CollisionBox::CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation)
-: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE::BOX, position, orientation)
+: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_BOX, position, orientation)
 , _size(size)
 {}
 
 CollisionBox::CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation, IPhysicsObject* toAttach)
-: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE::BOX, position, orientation, toAttach)
+: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_BOX, position, orientation, toAttach)
 , _size(size)
 {}
 
@@ -26,11 +26,11 @@ CollisionBox::CollisionBox(const CollisionBox& o)
 
 bool CollisionBox::isTouching(ICollisionGeometry* other) const
 {
-	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::BOX)
+	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
 	{
 		return isTouchingB((CollisionBox*)other);
 	}
-	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::SPHERE)
+	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
 	{
 		return isTouchingS((CollisionSphere*)other);
 	}
@@ -42,11 +42,11 @@ bool CollisionBox::isTouching(ICollisionGeometry* other) const
 
 void CollisionBox::genContacts(ICollisionGeometry* other, std::vector<IContact*>& o_cl) const
 {
-	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::BOX)
+	if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
 	{
 		genContactsB((CollisionBox*)other, o_cl);
 	}
-	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE::SPHERE)
+	else if (other->GetType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
 	{
 		genContactsS((CollisionSphere*)other, o_cl);
 	}

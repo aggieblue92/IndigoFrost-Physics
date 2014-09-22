@@ -25,11 +25,12 @@ namespace Frost
 		// From a movable (no motion)
 		IPhysicsObject(const Movable& inMovable);
 
-		// From a position, orientation
-		IPhysicsObject(const FLOAT3& pos, const Quaternion& orientation);
-
-		// From a position, orientation, velocity, rotation
-		IPhysicsObject(const FLOAT3& pos, const Quaternion& orientation, const FLOAT3& linearVelocity, const FLOAT3& rotationVelocity);
+		// Full constructor
+		IPhysicsObject(const FLOAT3& pos, const Quaternion& orientation,
+			const Vect3& linearVelocity = MathConstants::VECTOR_ZERO,
+			const Vect3& angularVelocity = MathConstants::VECTOR_ZERO,
+			float invMass = 0.f,
+			const Matrix& invInertiaTensor = MathConstants::MATRIX_ZERO);
 
 		//////////////////// PHYSICS FUNCTIONS //////////////////
 
@@ -38,7 +39,17 @@ namespace Frost
 		virtual void addTorqueAtOrigin(const Vect3& torqueToAdd_w) = 0;
 
 		/////////////////////// ACCESSORS ///////////////////////
-		
+		Vect3 getLinearVelocity() const;
+		void setLinearVelocity(const FLOAT3& newLinearVelocity);
+		Vect3 getAngularVelocity() const;
+		void setAngularVelocity(const FLOAT3& newAngularVelocity);
+		Vect3 getNetForce() const;
+		Vect3 getNetTorque() const;
+
+		float getInverseMass() const;
+		void setInverseMass(float newInverseMass);
+		Matrix getInverseInertiaTensor() const;
+		void setInverseInertiaTensor(const Matrix& newVal);
 
 		// Update the object to simulate one second having passed in the world
 		virtual void Update(float timeElapsed) = 0;
@@ -49,6 +60,9 @@ namespace Frost
 
 		Vect3 _netForce;
 		Vect3 _netTorque;
+
+		float _invMass;
+		Matrix _invInertiaTensor;
 	};
 }
 

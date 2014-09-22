@@ -10,7 +10,6 @@
 #include "FloatStructs.h"
 #include "FrostExceptions.h"
 #include "Vect3Normal.h"
-#include <cmath>
 
 namespace Frost
 {

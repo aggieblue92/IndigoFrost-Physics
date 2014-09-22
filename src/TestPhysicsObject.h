@@ -9,7 +9,7 @@
 #include "IPhysicsObject.h"
 
 namespace Frost
-{
+{	
 	class TestPhysicsObject : public IPhysicsObject
 	{
 	public:
@@ -39,10 +39,6 @@ namespace Frost
 		// Updates the object by clearing all accumulated forces and
 		//  applying them to the momentum of the object.
 		virtual void Update(float timeElapsed);
-
-	protected:
-		float _invMass;
-		Matrix _invInertiaTensor;
 	};
 }
 

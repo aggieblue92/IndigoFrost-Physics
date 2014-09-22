@@ -3,20 +3,14 @@ using namespace Frost;
 
 TestPhysicsObject::TestPhysicsObject(float invMass, const Matrix& invInertiaTensor)
 : IPhysicsObject()
-, _invMass(invMass)
-, _invInertiaTensor(invInertiaTensor)
 {}
 
 TestPhysicsObject::TestPhysicsObject(const TestPhysicsObject& o)
 : IPhysicsObject(o)
-, _invMass(o._invMass)
-, _invInertiaTensor(o._invInertiaTensor)
 {}
 
 TestPhysicsObject::TestPhysicsObject(float invMass, const Matrix& invInertiaTensor, const FLOAT3& pos, const Quaternion& orientation, const FLOAT3& linearVelocity, const FLOAT3& angularVelocity)
-: IPhysicsObject(pos, orientation, linearVelocity, angularVelocity)
-, _invMass(invMass)
-, _invInertiaTensor(invInertiaTensor)
+: IPhysicsObject(pos, orientation, linearVelocity, angularVelocity, invMass, invInertiaTensor)
 {}
 
 // Adds a force to the object at the origin point (no angular acc. component)

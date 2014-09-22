@@ -6,7 +6,6 @@
 #ifndef FROST_MATH_VECT3_H
 #define FROST_MATH_VECT3_H
 
-#include <cmath>
 #include "FloatStructs.h"
 #include "FrostExceptions.h"
 
