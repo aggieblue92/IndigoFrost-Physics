@@ -1,9 +1,13 @@
 #include "IPhysicsNode.h"
 using namespace Frost;
 
-IPhysicsNode::IPhysicsNode(IPhysicsObject* ao, std::string name)
+IPhysicsNode::IPhysicsNode(IPhysicsObject* ao, Collidable* c, std::string name)
 : _obj(ao)
 , _name(name)
+, _collidableData(c)
+{}
+
+IPhysicsNode::~IPhysicsNode()
 {}
 
 IPhysicsNode::operator Frost::IPhysicsObject*()
@@ -19,6 +23,11 @@ std::string IPhysicsNode::getName() const
 IPhysicsObject* IPhysicsNode::getPhysicsObject()
 {
 	return _obj;
+}
+
+Collidable* IPhysicsNode::getCollidableData()
+{
+	return _collidableData;
 }
 
 void IPhysicsNode::setName(std::string newName)

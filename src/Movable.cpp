@@ -54,6 +54,13 @@ void Movable::SetOrientation(const Quaternion& orientation)
 	_isDirty = true;
 }
 
+void Movable::setTransformMatrix(const Matrix& transformMatrix)
+{
+	_transformMatrix = transformMatrix;
+	_transformMatrix.getOrientationAndPosition(_pos, _orientation);
+	_isDirty = false;
+}
+
 Matrix Movable::GetTransformMatrix()
 {
 	if (_isDirty)

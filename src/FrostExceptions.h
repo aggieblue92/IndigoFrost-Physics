@@ -30,6 +30,8 @@ namespace Frost
 
 	////////////// PHYSICS EXCEPTIONS ///////////////
 	class DuplicateActionException {};
+	class NullObjectException {};
+	class InvalidOperationException {};
 }
 
 #endif

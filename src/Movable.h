@@ -34,6 +34,7 @@ namespace Frost
 		virtual Quaternion GetOrientation() const;
 		virtual void SetPos(const Vect3& position);
 		virtual void SetOrientation(const Quaternion& orientation);
+		virtual void setTransformMatrix(const Matrix& transformMatrix);
 		virtual Matrix GetTransformMatrix();
 		virtual Matrix GetTransformMatrix() const;
 

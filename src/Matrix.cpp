@@ -1,4 +1,5 @@
 #include "Matrix.h"
+#include <cmath>
 using namespace Frost;
 
 Matrix::Matrix()
@@ -234,7 +235,7 @@ Matrix Matrix::GetInverse() const
 		m[3][0] * m[1][1] * m[2][2] +
 		m[3][0] * m[1][2] * m[2][1];
 
-	inv[0][1]= -m[0][1] * m[2][2] * m[3][3] +
+	inv[0][1] = -m[0][1] * m[2][2] * m[3][3] +
 		m[0][1] * m[2][3] * m[3][2] +
 		m[2][1] * m[0][2] * m[3][3] -
 		m[2][1] * m[0][3] * m[3][2] -
@@ -372,4 +373,62 @@ Vect3Normal Matrix::TransformNormal(const FLOAT3& o) const
 		_21 * o._x + _22 * o._y + _23 * o._z,
 		_31 * o._x + _32 * o._y + _33 * o._z
 		);
+}
+
+void Matrix::getOrientationAndPosition(Vect3& o_pos, Quaternion& o_orientation) const
+{
+	o_pos = getPosition();
+	o_orientation = getOrientation();
+}
+
+Quaternion Matrix::getOrientation() const
+{
+	// Orientation algorithm taken from http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+	float trace = _11 + _22 + _33;
+
+	if (trace > 0.f)
+	{
+		float S = 0.5f / std::sqrt(trace + 1.f);
+		return Quaternion(
+			0.25f / S,
+			(_23 - _32) * S,
+			(_31 - _13) * S,
+			(_12 - _21) * S
+			);
+	}
+	else if ((_11 > _22) && (_11 > _33))
+	{
+		float S = std::sqrt(1.f + _11 - _22 - _33) * 2.f;
+		return Quaternion(
+			(_23 - _32) / S,
+			0.25f * S,
+			(_21 + _12) / S,
+			(_31 + _13) / S
+			);
+	}
+	else if (_22 > _33)
+	{
+		float S = std::sqrt(1.f + _22 - _11 - _33) * 2.f;
+		return Quaternion(
+			(_31 - _13) / S,
+			(_21 + _12) / S,
+			0.25f * S,
+			(_32 + _23) / S
+			);
+	}
+	else
+	{
+		float S = std::sqrt(1.f + _33 - _11 - _22) * 2.f;
+		return Quaternion(
+			(_12 - _21) / S,
+			(_31 + _13) / S,
+			(_32 + _23) / S,
+			0.25f * S
+			);
+	}
+}
+
+Vect3 Matrix::getPosition() const
+{
+	return Vect3(_14, _24, _34);
 }

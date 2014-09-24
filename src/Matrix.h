@@ -50,11 +50,9 @@ namespace Frost
 		// Returns the inverse of the given matrix
 		Matrix GetInverse() const;
 		Matrix GetTranspose() const;
-		/*void GetRotationAndTranslation(Quaternion& o_Rotation, FLOAT3& o_Translation);
-		void GetRotation(Quaternion& o_Rotation);
-		void GetTranslation(FLOAT3& o_Translation);*/
-		// Matrix GetPerspectiveFovLH(AspectRatio, Whatever);
-		// Matrix GetViewMatrix(LookAt, Up, Whatever);
+		void getOrientationAndPosition(Vect3& o_pos, Quaternion& o_orientation) const;
+		Quaternion getOrientation() const;
+		Vect3 getPosition() const;
 
 		/////////////////// TRANSFORMATION FUNCTIONS /////////////
 
