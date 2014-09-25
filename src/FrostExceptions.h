@@ -32,6 +32,7 @@ namespace Frost
 	class DuplicateActionException {};
 	class NullObjectException {};
 	class InvalidOperationException {};
+	class OutOfBoundsException {};
 }
 
 #endif

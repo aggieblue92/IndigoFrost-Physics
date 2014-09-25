@@ -100,13 +100,16 @@ void BVHNode::updateBoundingVolumes()
 		_right->updateBoundingVolumes();
 	}
 
-	if (isLeaf())
+	if (_volume != 0)
 	{
-		*_volume = BoundingSphere(*_collidableData);
-	}
-	else
-	{
-		*_volume = BoundingSphere::getNewBoundingSphere(*_left->_volume, *_right->_volume);
+		if (isLeaf())
+		{
+			*_volume = BoundingSphere(*_collidableData);
+		}
+		else
+		{
+			*_volume = BoundingSphere::getNewBoundingSphere(*_left->_volume, *_right->_volume);
+		}
 	}
 }
 

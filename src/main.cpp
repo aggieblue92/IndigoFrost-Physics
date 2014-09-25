@@ -37,32 +37,7 @@ std::ostream& operator<<(std::ostream& o, const Frost::BoundingSphere& b)
 
 int main()
 {
-	Frost::WorldManager root;
-	root.attachCollisionManager(new Frost::BVHTree);
-
-	root.addObject(new Frost::TestPhysicsObject(1.f, Frost::MathConstants::MATRIX_IDENTITY,
-		{ 1.f, 0.f, 0.f }, Frost::MathConstants::QUATERNION_UNIT,
-		{ 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f }),
-		new Frost::Collidable(),
-		"Sphere1");
-	root.getObjectByName("Sphere1")->getCollidableData()->addCollisionObject(new Frost::CollisionSphere(1.f), Frost::MathConstants::MATRIX_IDENTITY);
-	root.addObject(new Frost::TestPhysicsObject(1.f, Frost::MathConstants::MATRIX_IDENTITY,
-		{ -1.f, 0.f, 0.f }, Frost::MathConstants::QUATERNION_UNIT,
-		{ 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f }),
-		new Frost::Collidable(),
-		"Sphere2");
-	root.getObjectByName("Sphere2")->getCollidableData()->addCollisionObject(new Frost::CollisionSphere(1.f), Frost::MathConstants::MATRIX_IDENTITY);
-
-	auto now = std::chrono::system_clock::now();
-	for (int i = 0; i < 50; i++)
-	{
-		root.update(0.001f);
-	}
-	auto later = std::chrono::system_clock::now();
-
-	std::cout << "Operation finished in:" << std::endl;
-	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(later - now).count() << " milliseconds" << std::endl;
-	std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(later - now).count() << " nanoseconds" << std::endl;
-
+	std::cout << "Hello, Indigo Frost!" << std::endl;
+	std::cin.ignore();
 	return 0;
 }

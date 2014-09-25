@@ -4,11 +4,6 @@ using namespace Frost;
 
 #define CLAMP(x, min, max)	x < min ? min : (x > max ? max : x)
 
-CollisionSphere::CollisionSphere(float radius)
-: ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
-, _radius(radius)
-{}
-
 CollisionSphere::CollisionSphere(float radius, const FLOAT3& pos)
 : ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_SPHERE, pos, MathConstants::QUATERNION_UNIT)
 , _radius(radius)

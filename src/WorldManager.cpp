@@ -15,6 +15,26 @@ WorldManager::WorldManager()
 	nInstances++;
 }
 
+WorldManager::WorldManager(FROST_COLLISION_MANAGER cmt)
+: _masterContactList(0)
+, _forces()
+, _collisionManager(0)
+{
+	if (nInstances > 0)
+		throw DuplicateActionException();
+
+	switch (cmt)
+	{
+	case FROST_COLLISION_MANAGER_BVHTREE:
+		_collisionManager = new BVHTree();
+		break;
+	default:
+		throw NotImplementedException();
+	}
+
+	nInstances++;
+}
+
 WorldManager::~WorldManager()
 {
 	while (_masterContactList.size() > 0)
@@ -22,6 +42,17 @@ WorldManager::~WorldManager()
 		delete *_masterContactList.begin();
 		*_masterContactList.begin() = 0;
 		_masterContactList.erase(_masterContactList.begin());
+	}
+	if (_collisionManager != 0)
+	{
+		delete _collisionManager;
+		_collisionManager = 0;
+	}
+	while (this->_allManagedObjects.size() > 0)
+	{
+		delete *_allManagedObjects.begin();
+		*_allManagedObjects.begin() = 0;
+		_allManagedObjects.erase(_allManagedObjects.begin());
 	}
 	nInstances--;
 }
@@ -38,7 +69,7 @@ void WorldManager::update(float timeElapsed)
 
 	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
 	{
-		(*i)->getPhysicsObject()->Update(timeElapsed);
+		(*i)->getPhysicsObject()->update(timeElapsed);
 	}
 
 	_collisionManager->genContacts(_masterContactList);
@@ -52,7 +83,7 @@ void WorldManager::update(float timeElapsed)
 	}
 }
 
-IPhysicsNode* WorldManager::addObject(IPhysicsObject* objectToAdd, std::string name)
+IPhysicsNode* WorldManager::addObject(IPhysicsObject* objectToAdd, Collidable* collisionData, std::string name)
 {
 	// Make sure the name does not exist...
 	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
@@ -63,8 +94,17 @@ IPhysicsNode* WorldManager::addObject(IPhysicsObject* objectToAdd, std::string n
 		}
 	}
 
-	IPhysicsNode* nodeToAdd = new IPhysicsNode(objectToAdd, name);
-	_collisionManager->addPhysicsNode(nodeToAdd);
+	if (collisionData != 0 && collisionData->getAttachedObject() == 0)
+	{
+		collisionData->attachObject(objectToAdd);
+	}
+
+	IPhysicsNode* nodeToAdd = new IPhysicsNode(objectToAdd, collisionData, name);
+	if (collisionData != 0)
+	{
+		_collisionManager->addPhysicsNode(nodeToAdd);
+	}
+
 	_allManagedObjects.push_back(nodeToAdd);
 
 	return nodeToAdd;
@@ -81,6 +121,11 @@ IPhysicsNode* WorldManager::getObjectByName(std::string name)
 	}
 
 	throw ObjectDoesNotExistException(name);
+}
+
+IPhysicsNode* WorldManager::operator[](std::string name)
+{
+	return getObjectByName(name);
 }
 
 void WorldManager::addForce(IForce* f, IPhysicsNode* o)

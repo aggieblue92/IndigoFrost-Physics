@@ -17,9 +17,6 @@ namespace Frost
 	public:
 		/////////////////// CTORS //////////////////////
 
-		// Construct a sphere with the given radius
-		CollisionSphere(float radius);
-
 		// Construct a sphere with the given dimensions, position and orientation
 		CollisionSphere(float radius, const FLOAT3& pos);
 

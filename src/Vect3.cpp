@@ -123,7 +123,7 @@ Vect3& Vect3::operator=(const FLOAT3& o)
 	return *this;
 }
 
-bool Vect3::operator==(const FLOAT3& o)
+bool Vect3::operator==(const FLOAT3& o) const
 {
 	return
 		this->_x == o._x &&

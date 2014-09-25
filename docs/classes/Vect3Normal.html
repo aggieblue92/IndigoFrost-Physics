@@ -20,7 +20,8 @@
 			</div>
 			<div class="Summary">
 				<h1 class="Header">Summary</h1>
-				<p><code>Vect3Normal</code> is simply an extension of <code>Vect3</code>, with the only difference being that it is guaranteed to be a normal vector (have a magnitude of 1.0). Any time a function is called that can modify the <code>Vect3Normal</code> instance, the normalization process is performed. So, any time you use it in your code, you are <i>guaranteed</i> a normal vector. This is especially useful in vector mathematics.</p>
+				<p><code>Vect3Normal</code> is simply an extension of <code>Vect3</code>, with the only difference being that it is guaranteed to be a normal vector (have a magnitude of 1.0). Any time a function is called that can modify the <code>Vect3Normal</code> instance, the normalization process is performed. So, any time you use it in your code, you are <i>guaranteed</i> a normal vector
+                (except in one instance, outlined in the notes below). This is especially useful in vector mathematics.</p>
 				<p><code>Vect3Normal</code> is held in Vect3Normal.h</p>
 			</div>
 			<div class="Properties">
@@ -45,22 +46,133 @@
 			</div>
 			<div class="Methods">
 				<h1 class="Header">Methods:</h1>
-				<div class="Method"
-					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
-					<p>METHOD_PROTOTYPE</p>
-					<div style="display:none">
-						<table>
-							<tr class="Public">
-								<td class="paramName">PARAM_NAME</td>
-								<td>PARAM_DESC</td>
-							</tr>
-						</table>
-					</div>
-				</div>
+                <!-- CTORS -->
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal()</code></p>
+                    <div style="display:none">
+                        <p>Default constructor - initializes to the <code>Frost::MathConstants::VECTOR_UNIT_X</code> vector.</p>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal(float x, float y, float z)</code></p>
+                    <div style="display:none">
+                        <p>Constructs a normal vector pointing in the direction provided</p>
+                        <table>
+                            <tr class="Public">
+                                <td class="paramName"><code>x</code></td>
+                                <td>X component of the unscaled vector.</td>
+                            </tr>
+                            <tr class="Public">
+                                <td class="paramName"><code>y</code></td>
+                                <td>Y component of the unscaled vector.</td>
+                            </tr>
+                            <tr class="Public">
+                                <td class="paramName"><code>z</code></td>
+                                <td>Z component of the unscaled vector.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal(const FLOAT3&amp; right)</code></p>
+                    <div style="display:none">
+                        <p>Constructs a normal vector pointing in the direction provided</p>
+                        <table>
+                            <tr class="Public">
+                                <td class="paramName"><code>right</code></td>
+                                <td>The vector to copy (and then normalize)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal(const Vect3&amp; right)</code></p>
+                    <div style="display:none">
+                        <p>Constructs a normal vector pointing in the direction provided</p>
+                        <table>
+                            <tr class="Public">
+                                <td class="paramName"><code>right</code></td>
+                                <td><code>Vect3</code> object to copy, and then normalize</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal(const Vect3Normal&amp; right)</code></p>
+                    <div style="display:none">
+                        <p>Copy constructor for <code>Vect3Normal</code>. Faster than the other
+                        constructors, because no normalization is performed here.</p>
+                        <table>
+                            <tr class="Public">
+                                <td class="paramName"><code>right</code></td>
+                                <td>Copies the <code>Vect3Normal</code> instance provided</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal&amp; operator=(const FLOAT3&amp; other)</code></p>
+                    <div style="display:none">
+                        <p>Assignment operator - assigns <code>other</code> to the
+                        current <code>Vect3Normal</code> instance, and returns a reference
+                        to <code>this</code>.</p>
+                        <table>
+                            <tr class="Public">
+                                <td class="paramName">other</td>
+                                <td>3D float object to copy into <code>this</code></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal&amp; operator=(const Vect3Normal&amp; other)</code></p>
+                    <div style="display:none">
+                        <p>
+                            Assignment operator - assigns <code>other</code> to the
+                            current <code>Vect3Normal</code> instance, and returns a reference
+                            to <code>this</code>. Faster than assignment of regular <code>FLOAT3</code>
+                            because no normalization is performed here.
+                        </p>
+                        <table>
+                            <tr class="Public">
+                                <td class="paramName">other</td>
+                                <td>3D normalized vector object to copy into <code>this</code></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 			</div>
 			<div class="Notes">
 				<h1 class="Header">Usage Notes:</h1>
-				<p>Insert additional notes here...</p>
+				<p>
+                    You'll notice in Vect3Normal.h, there are some operators defined in the
+                    <code>private:</code> section of the class. They are all marked by comments
+                    specifying <code>FORBIDDEN!</code> This is because these operations (namely
+                    +=, /=, */, and -=) involve modifying the existing <code>Vect3</code> object,
+                    which will almost always result in an invalid <code>Vect3Normal</code> object,
+                    and almost never makes sense to do anyways.
+                </p>
+                <p>
+                    All assignment operations perform normalization as part of the process, and all
+                    arithmatic operations are derived from <code>Vect3</code>. As such, so long as you
+                    are <b>not directly modifying the member data</b> of the class, there is no possible
+                    way to disturb the normal status of the <code>Vect3Normal</code> object.
+                </p>
+                <p>
+                    Again: <b>it is possible to corrupt the data by directly modifying <code>_x, _y,</code> or <code>_z</code>.</b>
+                </p>
+                <p>
+                    Notice: The <code>Frost::MathConstants::VECTOR_UNIT_*</code> objects are <code>Vect3</code> instances,
+                    even though they are all normal vectors. This is for ease of assignment into <code>Vect3</code>
+                    objects, which by far are more commonly used in outward-facing code.
+                </p>
 			</div>
 		</div>
 	</body>

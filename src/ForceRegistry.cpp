@@ -40,6 +40,6 @@ void ForceRegistry::UpdateForces(float timeElapsed)
 {
 	for (auto i = _forcesList.begin(); i < _forcesList.end(); ++i)
 	{
-		i->_force->ApplyForce((IPhysicsObject*)i->_obj, timeElapsed);
+		i->_force->ApplyForce(i->_obj->getPhysicsObject(), timeElapsed);
 	}
 }

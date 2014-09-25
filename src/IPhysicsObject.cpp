@@ -72,6 +72,18 @@ float IPhysicsObject::getInverseMass() const
 	return _invMass;
 }
 
+float IPhysicsObject::getMass() const
+{
+	if (_invMass == 0.f)
+	{
+		throw DivByZeroException();
+	}
+	else
+	{
+		return 1.f / _invMass;
+	}
+}
+
 void IPhysicsObject::setInverseMass(float newInverseMass)
 {
 	_invMass = newInverseMass;

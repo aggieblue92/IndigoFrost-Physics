@@ -11,6 +11,7 @@
 #include "IForce.h"
 #include "IPhysicsNode.h"
 #include "ICollisionManager.h"
+#include "BVHTree.h"
 
 namespace Frost
 {
@@ -21,20 +22,30 @@ namespace Frost
 		ObjectDoesNotExistException(std::string n) : name(n) {}
 	};
 
+	// As different collision management schemes are added to the engine,
+	//  include different collision manager types here.
+	enum FROST_COLLISION_MANAGER
+	{
+		FROST_COLLISION_MANAGER_BVHTREE
+	};
+
 	class WorldManager
 	{
 	public:
 		WorldManager();
+		WorldManager(FROST_COLLISION_MANAGER collisionManagerType);
 		~WorldManager();
 
 		// Another moment ticks by in eternity...
 		virtual void update(float timeElapsed);
 
 		// Add an object to the managed system.
-		IPhysicsNode* addObject(IPhysicsObject* objectToAdd, std::string name = "");
+		IPhysicsNode* addObject(IPhysicsObject* objectToAdd, Collidable* collisionData, std::string name = "");
 
 		// Get an object, by name, from the managed system
 		IPhysicsNode* getObjectByName(std::string name);
+
+		IPhysicsNode* operator[](std::string name);
 
 		// Add a force to the system, to an object
 		void addForce(IForce* forceToAdd, IPhysicsNode* objectToAffect);

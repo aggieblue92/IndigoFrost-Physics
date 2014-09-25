@@ -47,12 +47,13 @@ namespace Frost
 		Vect3 getNetTorque() const;
 
 		float getInverseMass() const;
+		float getMass() const;
 		void setInverseMass(float newInverseMass);
 		Matrix getInverseInertiaTensor() const;
 		void setInverseInertiaTensor(const Matrix& newVal);
 
 		// Update the object to simulate one second having passed in the world
-		virtual void Update(float timeElapsed) = 0;
+		virtual void update(float timeElapsed) = 0;
 
 	protected:
 		Vect3 _linearVelocity;
