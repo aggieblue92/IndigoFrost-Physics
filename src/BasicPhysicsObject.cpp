@@ -56,11 +56,11 @@ void BasicPhysicsObject::update(float dt)
 	Vect3 frameTorque = _invInertiaTensor * _netTorque;
 
 	_linearVelocity += frameAcc * dt;
-	_angularVelocity += frameAcc * dt;
+	_angularVelocity += frameTorque * dt;
 
 	// Impose drag...
-	_linearVelocity *= std::pow(_linearDrag, dt);
-	_angularVelocity *= std::pow(_angularDrag, dt);
+	_linearVelocity *= std::pow((1.f - _linearDrag), dt);
+	_angularVelocity *= std::pow((1.f - _angularDrag), dt);
 
 	_netForce = MathConstants::VECTOR_ZERO;
 	_netTorque = MathConstants::VECTOR_ZERO;

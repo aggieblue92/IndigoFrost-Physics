@@ -5,6 +5,7 @@ Collidable::Collidable()
 : _collisionGeometryList(0)
 , _collisionGeometryTransforms(0)
 , _attachedObject(0)
+, _isDirty(true)
 {}
 
 Collidable::Collidable(IPhysicsObject* objToAttach)
@@ -31,6 +32,7 @@ void Collidable::attachObject(IPhysicsObject* toAttach)
 	}
 	else
 	{
+		_isDirty = true;
 		_attachedObject = toAttach;
 	}
 }
@@ -81,6 +83,7 @@ void Collidable::addCollisionObject(ICollisionGeometry* toAdd, const Matrix& t)
 	}
 	else
 	{
+		_isDirty = true;
 		_collisionGeometryList.push_back(toAdd);
 		_collisionGeometryTransforms.push_back(t);
 	}
@@ -95,6 +98,7 @@ void Collidable::removeCollisionObject(int index)
 	}
 	else
 	{
+		_isDirty = true;
 		delete _collisionGeometryList[index];
 		_collisionGeometryList[index] = 0;
 		_collisionGeometryList.erase(_collisionGeometryList.begin() + index);
@@ -127,6 +131,10 @@ bool Collidable::isTouching(Collidable* other)
 
 void Collidable::genContacts(Collidable* other, std::vector<IContact*>& o)
 {
+	// First off, update collision geometry transform matrices to the appropriate spots:
+	this->updateMatrices();
+	other->updateMatrices();
+
 	for (auto i = _collisionGeometryList.begin(); i < _collisionGeometryList.end(); ++i)
 	{
 		for (auto j = other->_collisionGeometryList.begin();
@@ -157,6 +165,16 @@ void Collidable::updateMatrices()
 				* _attachedObject->GetTransformMatrix());
 		}
 	}
+}
+
+bool Collidable::isDirty() const
+{
+	return _isDirty;
+}
+
+void Collidable::clean()
+{
+	_isDirty = false;
 }
 
 int Collidable::getNumObjects() const

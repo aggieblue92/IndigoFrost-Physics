@@ -77,9 +77,12 @@ void WorldManager::update(float timeElapsed)
 	// TODO: In the future, you should always have a thread running that updates
 	//  all this, and then just query it at the frame.
 	// Right now, just handle all contacts.
-	for (auto i = _masterContactList.begin(); i < _masterContactList.end(); ++i)
+	while (_masterContactList.size() > 0u)
 	{
-		(*i)->Resolve();
+		_masterContactList[0u]->Resolve();
+		delete _masterContactList[0u];
+		_masterContactList[0u] = 0;
+		_masterContactList.erase(_masterContactList.begin());
 	}
 }
 

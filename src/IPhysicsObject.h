@@ -54,6 +54,7 @@ namespace Frost
 
 		// Update the object to simulate one second having passed in the world
 		virtual void update(float timeElapsed) = 0;
+		virtual void impulse(const Vect3& applicationPoint, const Vect3& distanceToMove) = 0;
 
 	protected:
 		Vect3 _linearVelocity;

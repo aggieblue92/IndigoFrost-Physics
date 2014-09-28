@@ -28,24 +28,337 @@
 				<h1 class="Header">Methods:</h1>
 				<div class="Method"
 					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
-					<code><p>Matrix()</p></code>
+					<p><code>Matrix()</code></p>
 					<div class="collapsable" style="display:none">
 						<p>Default constructor - initializes the matrix to the identity matrix.</p>
 					</div>
 				</div>
 				<div class="Method"
 					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
-					<code><p>Matrix(const Matrix&amp; other)</p></code>
+					<p><code>Matrix(const Matrix&amp; other)</code></p>
 					<div class="collapsable" style="display:none">
 						<p>Copy constructor - creates a <code>Matrix</code> instance from an existing one.</p>
 						<table>
 							<tr>
-								<td><code>Matrix other</code></td>
+								<td><code>other</code></td>
 								<td>The matrix to copy.</td>
 							</tr>
 						</table>
 					</div>
 				</div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix(const FLOAT4X4&amp; other)</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>Copy constructor - creates a <code>Matrix</code> instance from an existing
+                        <code>FLOAT4X4</code> object. <b>Take care when using this with other system types</b> -
+                        Indigo Frost uses right-hand vector multiplication, whereas some may use left-hand.</p>
+                        <table>
+                            <tr>
+                                <td><code>other</code></td>
+                                <td>The matrix to copy.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix(const FLOAT4X4&amp; other)</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Copy constructor - creates a <code>Matrix</code> instance from an existing
+                            <code>FLOAT4X4</code> object. <b>Take care when using this with other system types</b> -
+                            Indigo Frost uses right-hand vector multiplication, whereas some may use left-hand.
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>other</code></td>
+                                <td>The matrix to copy.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix(const FLOAT4&amp; col1, const FLOAT4&amp; col2, const FLOAT4&amp; col3, const FLOAT4&amp; col4)</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Creates a <code>Matrix</code> object, given the four columns of that matrix. Be careful - if you're using
+                            { val, val, val, val } syntax for initializing those <code>FLOAT4</code> objects, you may be tempted to
+                            initialize the rows instead of the columns. <i>Resist this temptation!</i>
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>col1</code></td>
+                                <td>The first column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>col2</code></td>
+                                <td>The second column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>col3</code></td>
+                                <td>The third column in the matrix being formed</td>
+                            <tr>
+                                <td><code>col4</code></td>
+                                <td>The fourth column in the matrix being formed</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24, float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44)</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Creates a <code>Matrix</code> object, defining every single element individually of that matrix. Pretty tedious.
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>m11</code></td>
+                                <td>The first value in the first column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m12</code></td>
+                                <td>The first value in the second column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m13</code></td>
+                                <td>The first column in the third column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m14</code></td>
+                                <td>The first column in the fourth column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m21</code></td>
+                                <td>The second value in the first column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m22</code></td>
+                                <td>The second value in the second column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m23</code></td>
+                                <td>The second column in the third column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m24</code></td>
+                                <td>The second column in the fourth column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m31</code></td>
+                                <td>The third value in the first column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m32</code></td>
+                                <td>The third value in the second column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m33</code></td>
+                                <td>The third column in the third column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m34</code></td>
+                                <td>The third column in the fourth column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m41</code></td>
+                                <td>The fourth value in the first column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m42</code></td>
+                                <td>The fourth value in the second column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m43</code></td>
+                                <td>The fourth column in the third column in the matrix being formed</td>
+                            </tr>
+                            <tr>
+                                <td><code>m44</code></td>
+                                <td>The fourth column in the fourth column in the matrix being formed</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix(const Quaternion&amp; quat)</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Creates a rotation matrix that represents the same rotation that the given
+                            <code>Quaternion</code> object represents.
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>quat</code></td>
+                                <td>A quaternion representing an orientation in 3D space.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix(const Vect3&amp; translation)</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Creates a transformation matrix that performs a translation. The translation
+                            to perform is given by the provided <code>Vect3</code> object
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>translation</code></td>
+                                <td>A 3D vector representing a translation in 3D space</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix(const Quaternion&amp; rotation, const FLOAT3&amp; translation)</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Creates a transformation matrix comprised of the given orientation and translation in
+                            3D space. Fun fact - rotation matrices only affect the upper-left 3X3 part of the matrix,
+                            while translations only affect the top 3 values in the fourth column. So this is a glorified
+                            method that just combines the results of <code>Matrix(const Quaternion&)</code> and <code>Matrix(const Vect3&)</code>.
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>rotation</code></td>
+                                <td>A quaternion representing an orientation in 3D space.</td>
+                            </tr>
+                            <tr>
+                                <td><code>translation</code></td>
+                                <td>A 3D vector representing a translation in 3D space</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- TODO: Finish operator overloads -->
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix GetInverse() const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Returns the inverse of the matrix object.
+                            <br />
+                            This is useful because if a matrix represents a transformation
+                            in 3D space, then the inverse of that matrix represents the opposite
+                            transformation - i.e., how to un-do that transformation.
+                        </p>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Matrix GetTranspose() const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Returns the transpose of the matrix object.
+                            <br />
+                            At the time of writing this physics engine, one of the optimizations
+                            I did <i>not</i> do is take advantage of the fact that for a rotational
+                            matrix with no translation information, the inverse of that matrix is simply
+                            its transpose. Linear algebra voodo.
+                        </p>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>void getOrientationAndPosition(Vect3&amp; o_pos, Quaternion&amp; o_orientation) const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Decomposes the matrix into a rotation and a translation, and then assigns those
+                            values to the passed parameters. Think of it as the inverse function to the
+                            <code>Matrix(const Quaternion&amp;, const FLOAT3&amp;)</code> constructor.
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>o_pos</code></td>
+                                <td>A <code>Vect3</code> object that will be assigned the translation associated with this matrix</td>
+                            </tr>
+                            <tr>
+                                <td><code>o_orientation</code></td>
+                                <td>A <code>Quaternion</code> object that will be assigned the rotation associated with this matrix</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Quaternion getOrientation() const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Returns the orientation that is associated with this matrix. A matrix formed from the
+                            returned quaternion would be (floating point error aside) identical to this matrix,
+                            assuming this matrix held no translational data.
+                        </p>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3 getPosition() const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Returns the position that is associated with this matrix. A matrix formed from the returned
+                            vector would be (floating point error aside) identical to this matrix, assuming this matrix
+                            held no rotational data.
+                        </p>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>FLOAT3 TransformCoord(const FLOAT3&amp; coord) const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Transforms a <b>coordinate</b> vector - includes all rotation and translation operations when
+                            dealing with the vector. <i>Use this for dealing with <b>points</b> you wish to transform between spaces.</i>
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>coord</code></td>
+                                <td>The point to transform by this <code>Matrix</code> object.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>FLOAT3 TransformDirn(const FLOAT3&amp; dirn) const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Transforms a <b>direction</b> vector - includes only rotational operations when
+                            dealing with the vector. <i>Use this for dealing with <b>directions</b> you wish to transform between spaces.</i>
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>dirn</code></td>
+                                <td>The direction to transform by this <code>Matrix</code> object.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="Method"
+                     onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+                    <p><code>Vect3Normal TransformNormal(const FLOAT3&amp; dirn) const</code></p>
+                    <div class="collapsable" style="display:none">
+                        <p>
+                            Does the exact same thing as the above function, but since it returns a <code>Vect3Normal</code>
+                            object, the returned direction will be a unit vector. In reality, this function is just taking up
+                            a few extra lines of code, but who knows? Somebody might use it!
+                        </p>
+                        <p>
+                            Note to reader - I know that's a terrible reason to include functionality. That's "feature creep" even at this
+                            low level of the engine. I would not be surprised if this function is retired.
+                        </p>
+                        <table>
+                            <tr>
+                                <td><code>dirn</code></td>
+                                <td>The direction to transform by this <code>Matrix</code> object.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 			</div>
 			<div class="Notes">
 				<h1 class="Header">Usage Notes:</h1>

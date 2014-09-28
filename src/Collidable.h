@@ -2,7 +2,7 @@
 #define FROST_COLLIDABLE_INTERFACE_H
 
 /////////////////////////////////////////
-// ICollidable: Represents an object with
+// Collidable: Represents an object with
 //  collision geometry
 /////////////////////////////////////////
 
@@ -32,12 +32,16 @@ namespace Frost
 		virtual bool isTouching(Collidable* other);
 		virtual void genContacts(Collidable* other, std::vector<IContact*>& o_contactList);
 
+		bool isDirty() const;
+		void clean();
+
 		int getNumObjects() const;
 
 	protected:
 		std::vector<ICollisionGeometry*> _collisionGeometryList;
 		std::vector<Matrix> _collisionGeometryTransforms;
 		IPhysicsObject* _attachedObject;
+		bool _isDirty;
 
 	private:
 		void updateMatrices();

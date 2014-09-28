@@ -6,7 +6,6 @@
 //  should follow.
 /////////////////////////////////////////
 
-#include "Vect3.h"
 #include "IPhysicsObject.h"
 
 namespace Frost

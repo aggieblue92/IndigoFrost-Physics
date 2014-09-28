@@ -17,8 +17,8 @@ namespace Frost
 	public:
 		/////////////////// CTORS //////////////////////
 
-		// Construct a sphere with the given dimensions, position and orientation
-		CollisionSphere(float radius, const FLOAT3& pos);
+		// Construct a sphere with the given dimensions, position and attached object
+		CollisionSphere(float radius, const FLOAT3& pos, IPhysicsObject* attachedObject);
 
 		// Copy ctor
 		CollisionSphere(const CollisionSphere& other);
@@ -36,7 +36,6 @@ namespace Frost
 
 	protected:
 		float _radius;
-		float _collisionResolutionConstant;
 
 	protected:
 		virtual bool isTouchingB(CollisionBox* b) const;
@@ -44,6 +43,9 @@ namespace Frost
 
 		virtual bool isTouchingS(CollisionSphere* s) const;
 		virtual void genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const;
+
+	private:
+		virtual IContact* SummonDemons(const Vect3&, const Vect3&, IPhysicsObject*) const;
 	};
 }
 

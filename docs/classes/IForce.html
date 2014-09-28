@@ -1,0 +1,90 @@
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" type="text/css" />
+		<title>IForce</title>
+		<script src="jshelper.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="ClassName">
+				IForce
+			</div>
+			<div class="Inheritance">
+				<ul>
+					<li class="base">IForce</li>
+				</ul>
+			</div>
+			<div class="Summary">
+				<h1 class="Header">Summary</h1>
+				<p>
+                    This documentation page is the high school English teacher of documentation pages, because the amount
+                    of description that goes into the <code>IForce</code> class will certainly be <i>more lengthy than
+                    the class itself.</i> Also, it makes a metaphor.
+                </p>
+                <p>
+                    Joking aside, the <code>IForce</code> class is an interface from which all forces in the Indigo Frost
+                    physics engine derive. It contains only one method, <code>ApplyForce</code>, which is used to apply the
+                    actions caused by that force to a given <code>IPhysicsObject</code> instance. The <code>IPhysicsObject</code>
+                    instance is a parameter to that method instead of a property of the class, because one force may act on
+                    multiple objects identically (e.g., gravity) or transferred between objects (e.g., a slight speedup to
+                    a character who is 'it' in a tag-like game).
+                </p>
+                <p>
+                    This is where a good chunk of the extending of the Indigo Frost physics engine will go for your own game
+                    engine. Indigo Frost comes with a suite of generic forces (springs, gravity, etc.) but all internal
+                    application of forces uses nothing more specific than this interfaces. As such, forces unique to your
+                    game can be implemented simply by extending this class.
+                </p>
+			</div>
+			<div class="Properties">
+				<h1 class="Header">Properties:</h1>
+                <p>
+                    This class is purely an interface, and has no associated properties.
+                </p>
+			</div>
+			<div class="Methods">
+				<h1 class="Header">Methods:</h1>
+				<div class="Method"
+					onclick="ExpandCollapse(this.getElementsByTagName('div')[0]);">
+					<p>virtual void ApplyForce(IPhysicsObject* affectedPhysicsObject, float duration) = 0</p>
+					<div class="collapsable" style="display:none">
+                        <p>Apply the force, which was active over the given period of time, to the specified
+                        <code>IPhysicsObject</code> instance. See notes section below for more details.</p>
+						<table>
+							<tr class="Public">
+								<td class="paramName">affectedPhysicsObject</td>
+								<td>The object which will be affected by this force.</td>
+							</tr>
+                            <tr class="Public">
+                                <td class="paramName">duration</td>
+                                <td>The time that has elapsed since the force was last applied to the specified object,
+                                or in other words, the time elapsed since the last frame.</td>
+                            </tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="Notes">
+				<h1 class="Header">Usage Notes:</h1>
+                <p>Most likely, the <code>duration</code> parameter of the <code>ApplyForce</code> function will be
+                ignored, since it is a parameter of the methods of <code>IPhysicsObject</code> that have to deal with
+                calculating changes in velocity and position of the attached object (see the below note). However, the
+                parameter exists for forces that are variable with time.</p>
+				<p>Implementations of <code>IForce</code> will probably use the <code>addForceAtOrigin</code>,
+                <code>addForceAtPoint</code>, and <code>addTorqueAtOrigin</code> methods of the <code>IPhysicsObject</code>
+                class. Use of the <code>impulse</code> member is also possible and likely.</p>
+                <p>In this version of Indigo Frost, this function is a <code>void</code> function. I have played with
+                the idea of making it return a <code>bool</code> instead, returning <code>false</code> when the force has
+                been spent, and the manager is free to remove it from the system (for temporary forces). However, I decided
+                not to. You may consider changing this if you dive deep under the hood of Indigo Frost for your own project.</p>
+                <p><b>Be careful</b> when programming your own forces into the engine - remember that at the heart of a real-time
+                physics engine, an integral that represents the derivation of an object's position from its velocity and
+                velocity from its acceleration is represented as a Riemann sum. For most cases, with a time difference per frame
+                of between 0.01 and 0.05 ms, this is fine - but if you aren't careful, forces can easily become wildly inaccurate.
+                The classic example is in springs - if damping is not applied to the system, and a spring is simply given the
+                Hooke's law formula, the spring will display a larger displacement per oscillation, and eventually spring off into
+                infinity. <i>This is bad.</i></p>
+			</div>
+		</div>
+	</body>
+</html>
