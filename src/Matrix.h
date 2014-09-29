@@ -56,9 +56,9 @@ namespace Frost
 
 		/////////////////// TRANSFORMATION FUNCTIONS /////////////
 
-		// Transform a coordinate - includes rotation, translation
+		// Transform a coordinate - includes scaling, rotation, translation
 		FLOAT3 TransformCoord(const FLOAT3& coord) const;
-		// Transform a direction - includes rotation
+		// Transform a direction - includes scaling, rotation
 		FLOAT3 TransformDirn(const FLOAT3& dirn) const;
 		// Transform a unit direction
 		Vect3Normal TransformNormal(const FLOAT3& dirn) const;

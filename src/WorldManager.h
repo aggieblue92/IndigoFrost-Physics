@@ -48,9 +48,11 @@ namespace Frost
 		IPhysicsNode* operator[](std::string name);
 
 		// Add a force to the system, to an object
+		void addForce(const IForce& forceToAdd, IPhysicsNode* objectToAffect);
 		void addForce(IForce* forceToAdd, IPhysicsNode* objectToAffect);
 
 		// Add a force to tye system, to an object by string name
+		void addForce(const IForce& forceToAdd, std::string objectToAffect);
 		void addForce(IForce* forceToAdd, std::string objectToAffect);
 
 		// Attach a collision manager to the world manager class
@@ -59,7 +61,8 @@ namespace Frost
 
 	protected:
 		ICollisionManager* _collisionManager;
-		ForceRegistry _forces;
+		ForceRegistry _internalForces;
+		ForceRegistry _externalForces;
 		std::vector<IPhysicsNode*> _allManagedObjects;
 
 	private:

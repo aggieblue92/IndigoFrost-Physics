@@ -15,7 +15,9 @@ namespace Frost
 	{
 	public:
 		PlayerMotionForce(const Vect3& maxVelocity, float accTime);
+		PlayerMotionForce(const PlayerMotionForce& o);
 		virtual void ApplyForce(IPhysicsObject* affectedPhysicsObject, float duration);
+		virtual IForce* getNewForcePtr() const;
 
 		void setDirectionAndSpeed(const Vect3& dirn, float speed);
 		void setMaxVelocity(float maxVelocity);

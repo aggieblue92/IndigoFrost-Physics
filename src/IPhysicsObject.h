@@ -52,10 +52,16 @@ namespace Frost
 		Matrix getInverseInertiaTensor() const;
 		void setInverseInertiaTensor(const Matrix& newVal);
 
+		bool isMutable() const;
+
 		// Update the object to simulate one second having passed in the world
 		virtual void update(float timeElapsed) = 0;
+
+		// Impulse: Move a point on an object a distance in a direction, via linear and angular
+		//  motion. Think of it as a 'blink'
 		virtual void impulse(const Vect3& applicationPoint, const Vect3& distanceToMove) = 0;
 
+		void clearForces();
 	protected:
 		Vect3 _linearVelocity;
 		Vect3 _angularVelocity;
@@ -65,6 +71,10 @@ namespace Frost
 
 		float _invMass;
 		Matrix _invInertiaTensor;
+
+		bool _forcesCurrent;
+		Vect3 _lastForce;
+		Vect3 _lastTorque;
 	};
 }
 

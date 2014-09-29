@@ -59,7 +59,7 @@ namespace Frost
 		void BlackMagic(CollisionBox*, std::vector<Vect3>&, std::vector<Vect3>&) const;
 		void VirginSacrifices(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&, IPhysicsObject* otherObject) const;
 		bool VirginSacrifices(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, IPhysicsObject* otherObject) const;
-		virtual Frost::IContact* SummonDemons(const Vect3&, const Vect3&, IPhysicsObject*) const;
+		virtual IContact* SummonDemons(const Vect3&, const Vect3&, IPhysicsObject*, IPhysicsObject*) const;
 	};
 }
 

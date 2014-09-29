@@ -6,7 +6,8 @@ int WorldManager::nInstances = 0;
 
 WorldManager::WorldManager()
 : _masterContactList(0)
-, _forces()
+, _internalForces()
+, _externalForces()
 , _collisionManager(0)
 {
 	if (nInstances > 0)
@@ -17,7 +18,8 @@ WorldManager::WorldManager()
 
 WorldManager::WorldManager(FROST_COLLISION_MANAGER cmt)
 : _masterContactList(0)
-, _forces()
+, _internalForces()
+, _externalForces()
 , _collisionManager(0)
 {
 	if (nInstances > 0)
@@ -54,6 +56,12 @@ WorldManager::~WorldManager()
 		*_allManagedObjects.begin() = 0;
 		_allManagedObjects.erase(_allManagedObjects.begin());
 	}
+	for (unsigned int i = 0u; i < _internalForces.size(); ++i)
+	{
+		delete _internalForces[i]._force;
+		_internalForces[i]._force = 0;
+	}
+	_internalForces.ClearRegistry();
 	nInstances--;
 }
 
@@ -65,7 +73,8 @@ void WorldManager::update(float timeElapsed)
 	}
 
 	_collisionManager->update(timeElapsed);
-	_forces.UpdateForces(timeElapsed);
+	_internalForces.UpdateForces(timeElapsed);
+	_externalForces.UpdateForces(timeElapsed);
 
 	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
 	{
@@ -79,7 +88,7 @@ void WorldManager::update(float timeElapsed)
 	// Right now, just handle all contacts.
 	while (_masterContactList.size() > 0u)
 	{
-		_masterContactList[0u]->Resolve();
+		_masterContactList[0u]->Resolve(timeElapsed);
 		delete _masterContactList[0u];
 		_masterContactList[0u] = 0;
 		_masterContactList.erase(_masterContactList.begin());
@@ -131,14 +140,24 @@ IPhysicsNode* WorldManager::operator[](std::string name)
 	return getObjectByName(name);
 }
 
-void WorldManager::addForce(IForce* f, IPhysicsNode* o)
+void WorldManager::addForce(const IForce& f, IPhysicsNode* o)
 {
-	_forces.Add(f, o);
+	_internalForces.Add(f.getNewForcePtr(), o);
 }
 
-void WorldManager::addForce(IForce* f, std::string o)
+void WorldManager::addForce(IForce* f, IPhysicsNode* o)
 {
-	_forces.Add(f, getObjectByName(o));
+	_externalForces.Add(f, o);
+}
+
+void WorldManager::addForce(const IForce& forceToAdd, std::string o)
+{
+	_internalForces.Add(forceToAdd.getNewForcePtr(), getObjectByName(o));
+}
+
+void WorldManager::addForce(IForce* forceToAdd, std::string o)
+{
+	_externalForces.Add(forceToAdd, getObjectByName(o));
 }
 
 void WorldManager::attachCollisionManager(ICollisionManager* t)

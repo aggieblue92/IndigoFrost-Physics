@@ -28,6 +28,7 @@ namespace Frost
 		virtual void addTorqueAtOrigin(const Vect3& torqueToAdd_w);
 
 		virtual void update(float timeElapsed);
+		virtual void impulse(const Vect3& applicationPoint, const Vect3& distance);
 
 		float getLinearDrag() const;
 		float getAngularDrag() const;

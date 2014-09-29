@@ -98,29 +98,29 @@ void CollisionSphere::genContactsB(CollisionBox* b, std::vector<IContact*>& o) c
 
 	// Now we have the closest point on the box.
 	//  If it's closer than the radius, we have a contact
-	if ((closestBoxPoint - transformedSpherePosition).SquareMagnitude() < this->GetRadius() * this->GetRadius())
+	if ((closestBoxPoint - transformedSpherePosition).SquareMagnitude() < this->GetRadius() * this->GetRadius()
+		&& ((closestBoxPoint - transformedSpherePosition).SquareMagnitude() > 0.f))
 	{
 		// Box contact data: Contact is under the surface of the sphere, pointing directly out.
-		Vect3 collisionPoint_l = (Vect3Normal(closestBoxPoint - this->GetPos()) * this->GetRadius()) + this->GetPos();
+		Vect3Normal d = (closestBoxPoint - transformedSpherePosition);
+		Vect3 collisionPoint_l = transformedSpherePosition + d * _radius;
+		Vect3 penetration_l = closestBoxPoint - collisionPoint_l;
+		Vect3 collisionPoint_w = b->GetTransformMatrix() * collisionPoint_l;
+		Vect3 penetration_w = b->GetTransformMatrix().TransformDirn(penetration_l);
+		/*Vect3 collisionPoint_l = (Vect3Normal(closestBoxPoint - this->GetPos()) * this->GetRadius()) + this->GetPos();
 		Vect3 collisionPoint_w = b->GetTransformMatrix() * (closestBoxPoint - transformedSpherePosition);
-		Vect3 penetration_w = (Vect3Normal(collisionPoint_w - this->GetPos()) * this->GetRadius()) - collisionPoint_w;
-		if (b->GetAttachedObjectPtr() != 0)
-		{
-			o.push_back(SummonDemons(
-				collisionPoint_w,
-				penetration_w,
-				b->GetAttachedObjectPtr()));
-		}
+		Vect3 penetration_w = (Vect3Normal(collisionPoint_w - this->GetPos()) * this->GetRadius()) - collisionPoint_w;*/
+		o.push_back(this->SummonDemons(
+			collisionPoint_w,
+			penetration_w,
+			b->GetAttachedObjectPtr(), _attachedObject));
 
 		// Sphere contact data: Exact opposite of the box contact.
-		if (this->GetAttachedObjectPtr() != 0)
-		{
-			penetration_w *= -1.f;
-			o.push_back(SummonDemons(
-				collisionPoint_w,
-				penetration_w,
-				this->GetAttachedObjectPtr()));
-		}
+		penetration_w *= -1.f;
+		o.push_back(this->SummonDemons(
+			collisionPoint_w,
+			penetration_w,
+			this->GetAttachedObjectPtr(), b->GetAttachedObjectPtr()));
 	}
 }
 
@@ -165,18 +165,12 @@ void CollisionSphere::genContactsS(CollisionSphere* s, std::vector<IContact*>& o
 			- (this->GetPos() + directionNormal * this->GetRadius()))
 			* 0.5f
 			+ (this->GetPos() + directionNormal * this->GetRadius());
-		if (s->GetAttachedObjectPtr())
-		{
-			o.push_back(SummonDemons(contactPoint, directionNormal * contactMagnitude * -1.f, s->GetAttachedObjectPtr()));
-		}
-		if (this->GetAttachedObjectPtr())
-		{
-			o.push_back(SummonDemons(contactPoint, directionNormal * contactMagnitude, this->GetAttachedObjectPtr()));
-		}
+		o.push_back(SummonDemons(contactPoint, directionNormal * contactMagnitude * -1.f, s->GetAttachedObjectPtr(), _attachedObject));
+		o.push_back(SummonDemons(contactPoint, directionNormal * contactMagnitude, this->GetAttachedObjectPtr(), s->GetAttachedObjectPtr()));
 	}
 }
 
-IContact* CollisionSphere::SummonDemons(const Vect3& pt, const Vect3& pen, IPhysicsObject* obj) const
+IContact* CollisionSphere::SummonDemons(const Vect3& pt, const Vect3& pen, IPhysicsObject* obj, IPhysicsObject* oobj) const
 {
 	// This function is here so that overriding this class is easier - all contact generation
 	//  goes in here, though the information is generated outside of the function

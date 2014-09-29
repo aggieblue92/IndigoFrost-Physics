@@ -10,7 +10,9 @@ namespace Frost
 	public:
 		AnchoredSpringForce(const Vect3& worldAnchor, const Vect3& localConnectionPoint,
 			float springConstant, float restLength);
+		AnchoredSpringForce(const AnchoredSpringForce& o);
 		virtual void ApplyForce(IPhysicsObject* affected, float timeDuration);
+		virtual IForce* getNewForcePtr() const;
 
 	private:
 		Vect3 _anchor_world;

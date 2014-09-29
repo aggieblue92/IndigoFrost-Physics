@@ -8,6 +8,12 @@ PlayerMotionForce::PlayerMotionForce(const Vect3& maxVelocity, float accTime)
 , _timeToMaxSpeed(accTime)
 {}
 
+PlayerMotionForce::PlayerMotionForce(const PlayerMotionForce& o)
+: _direction(o._direction)
+, _speed(o._speed)
+, _timeToMaxSpeed(o._timeToMaxSpeed)
+{}
+
 void PlayerMotionForce::setDirectionAndSpeed(const Vect3& dirn, float speed)
 {
 	try
@@ -87,4 +93,9 @@ void PlayerMotionForce::ApplyForce(IPhysicsObject* me, float dt)
 	//  no matter what the mass of the object... We gave
 	//  time to acceleration, not a force value, no?
 	me->addForceAtOrigin(acc / me->getInverseMass());
+}
+
+IForce* PlayerMotionForce::getNewForcePtr() const
+{
+	return new PlayerMotionForce(*this);
 }

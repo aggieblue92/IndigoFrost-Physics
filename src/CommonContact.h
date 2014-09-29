@@ -15,12 +15,13 @@ namespace Frost
 	class CommonContact : public IContact
 	{
 	public:
-		CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, IPhysicsObject* receivingObject);
+		CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, IPhysicsObject* receivingObject, IPhysicsObject* otherObject);
 
-		virtual bool Resolve();
+		virtual bool Resolve(float dt);
 
 	protected:
 		IPhysicsObject* _affectedObject;
+		IPhysicsObject* _otherObject;
 		float _bounciness;
 		float _friction;
 	};

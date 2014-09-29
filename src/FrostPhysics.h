@@ -2,13 +2,20 @@
 #define FROST_PHYSICS_COLLECTION_H
 
 // Base...
-#include "BasicContact.h"
-#include "CollisionBox.h"
-#include "CollisionSphere.h"
 #include "IPhysicsObject.h"
 #include "Collidable.h"
 
-// Implementations...
+// Contacts...
+#include "BasicContact.h"
+#include "CommonContact.h"
+
+// Collision Objects...
+#include "CollisionBox.h"
+#include "CollisionSphere.h"
+#include "CommonCollisionBox.h"
+#include "CommonCollisionSphere.h"
+
+// Physics Objects...
 #include "BasicPhysicsObject.h"
 
 #endif

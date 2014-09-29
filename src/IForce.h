@@ -6,6 +6,7 @@
 //  should follow.
 /////////////////////////////////////////
 
+#include "Vect3.h"
 #include "IPhysicsObject.h"
 
 namespace Frost
@@ -14,6 +15,7 @@ namespace Frost
 	{
 	public:
 		virtual void ApplyForce(IPhysicsObject* affectedPhysicsObject, float duration) = 0;
+		virtual IForce* getNewForcePtr() const = 0;
 	};
 }
 

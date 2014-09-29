@@ -45,7 +45,7 @@ namespace Frost
 		virtual void genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const;
 
 	private:
-		virtual IContact* SummonDemons(const Vect3&, const Vect3&, IPhysicsObject*) const;
+		virtual IContact* SummonDemons(const Vect3&, const Vect3&, IPhysicsObject*, IPhysicsObject*) const;
 	};
 }
 

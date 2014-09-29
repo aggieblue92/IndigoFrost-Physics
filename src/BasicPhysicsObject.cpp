@@ -28,23 +28,34 @@ BasicPhysicsObject::BasicPhysicsObject(const BasicPhysicsObject& o)
 
 void BasicPhysicsObject::addForceAtOrigin(const Vect3& f_w)
 {
+	_forcesCurrent = true;
 	_netForce += f_w;
 }
 
 void BasicPhysicsObject::addForceAtPoint(const Vect3& f_w, const Vect3& pt_world)
 {
+	_forcesCurrent = true;
 	// Break up force into parallel and perpendicular components.
-	Vect3Normal armNormal = pt_world - GetPos();
-	Vect3 originWorldForce = armNormal * (f_w * armNormal);
-	Vect3 originWorldTorque = CrossProduct(f_w, armNormal);
+	try
+	{
+		Vect3Normal armNormal = pt_world - GetPos();
+		Vect3 originWorldForce = armNormal * (f_w * armNormal);
+		Vect3 originWorldTorque = CrossProduct(f_w, armNormal);
 
-	// TODO: Ensure that originWorldForce + originWorldTorque equal pt_world - GetPos()
-	addForceAtOrigin(originWorldForce);
-	addTorqueAtOrigin(originWorldTorque);
+		addForceAtOrigin(originWorldForce);
+		addTorqueAtOrigin(originWorldTorque);
+	}
+	catch (ZeroMagnitudeException)
+	{
+		// The force is actually being applied at the origin... So just
+		//  apply it at the origin.
+		addForceAtOrigin(f_w);
+	}
 }
 
 void BasicPhysicsObject::addTorqueAtOrigin(const Vect3& t_w)
 {
+	_forcesCurrent;
 	_netTorque += t_w;
 }
 
@@ -52,6 +63,10 @@ void BasicPhysicsObject::addTorqueAtOrigin(const Vect3& t_w)
 //  and applying them to the linear and angular velocity of the object.
 void BasicPhysicsObject::update(float dt)
 {
+	_forcesCurrent = false;
+	_lastForce = _netForce;
+	_lastTorque = _netTorque;
+
 	Vect3 frameAcc = _netForce * _invMass;
 	Vect3 frameTorque = _invInertiaTensor * _netTorque;
 
@@ -67,6 +82,16 @@ void BasicPhysicsObject::update(float dt)
 
 	SetPos(GetPos() + (_linearVelocity * dt));
 	SetOrientation(GetOrientation() + (_angularVelocity * dt));
+}
+
+void BasicPhysicsObject::impulse(const Vect3& applicationPoint, const Vect3& distance)
+{
+	Vect3Normal armNormal = applicationPoint - GetPos();
+	Vect3 worldLinearMotion = armNormal * (distance * armNormal);
+	Vect3 worldAngularMotion = CrossProduct(distance, armNormal);
+
+	Move(worldLinearMotion);
+	SetOrientation(GetOrientation() + worldAngularMotion);
 }
 
 float BasicPhysicsObject::getLinearDrag() const

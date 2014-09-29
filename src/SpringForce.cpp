@@ -18,6 +18,14 @@ SpringForce::SpringForce(const Vect3& lcp,
 	}
 }
 
+SpringForce::SpringForce(const SpringForce& o)
+: _otherLocalConnectionPoint(o._otherLocalConnectionPoint)
+, _restLength(o._restLength)
+, _springConstant(o._springConstant)
+, _otherObjectInvolved(o._otherObjectInvolved)
+, _localConnectionPoint(o._localConnectionPoint)
+{}
+
 void SpringForce::ApplyForce(IPhysicsObject* me, float dt)
 {
 	// Calculate the two ends in world space
@@ -33,4 +41,9 @@ void SpringForce::ApplyForce(IPhysicsObject* me, float dt)
 	// Calculate the final force and apply it
 	me->addForceAtPoint(Vect3Normal(distance) * magnitude, lws);
 	_otherObjectInvolved->addForceAtPoint(Vect3Normal(distance) * -magnitude, rhs);
+}
+
+IForce* SpringForce::getNewForcePtr() const
+{
+	return new SpringForce(*this);
 }

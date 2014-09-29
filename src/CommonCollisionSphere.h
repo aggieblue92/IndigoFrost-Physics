@@ -22,7 +22,7 @@ namespace Frost
 		float _bouncinessCoefficient;
 
 	private:
-		virtual IContact* SummonDemons(const Vect3& pt, const Vect3& pen, IPhysicsObject* other_obj);
+		virtual IContact* SummonDemons(const Vect3& pt, const Vect3& pen, IPhysicsObject* thisObject, IPhysicsObject* other_obj) const;
 	};
 }
 

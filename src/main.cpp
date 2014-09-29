@@ -37,7 +37,14 @@ std::ostream& operator<<(std::ostream& o, const Frost::BoundingSphere& b)
 
 int main()
 {
-	std::cout << "Hello, Indigo Frost!" << std::endl;
+	Frost::Vect3 angularVelocity = Frost::Vect3Normal(1.f, 0.f, 0.f);
+	Frost::Vect3 collisionArm = Frost::Vect3Normal(1.f, 0.f, 0.f);
+	Frost::Vect3 instSpeedOfRotation = Frost::CrossProduct(angularVelocity, collisionArm);
+
+	std::cout << "Angular Velocity: " << angularVelocity << " (" << angularVelocity.Magnitude() << ")" << std::endl;
+	std::cout << "Collision Arm: " << collisionArm << " (" << collisionArm.Magnitude() << ")" << std::endl;
+	std::cout << "Instantaneous Speed: " << instSpeedOfRotation << " (" << instSpeedOfRotation.Magnitude() << ")" << std::endl;
+
 	std::cin.ignore();
 	return 0;
 }

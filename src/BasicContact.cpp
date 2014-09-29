@@ -6,13 +6,13 @@ BasicContact::BasicContact(const Vect3& objPt, const Vect3& penetration, IPhysic
 , _affectedObject(receivingObject)
 {}
 
-bool BasicContact::Resolve()
+bool BasicContact::Resolve(float dt)
 {
 	// If there is no attached object, GTFO
 	if (_affectedObject == 0) return true;
 
 	// Otherwise, handle it using the super simple
-	//  spring formula with a pretty rigid string.
+	//  spring formula with a pretty rigid spring.
 	// F = -kx
 
 	const float K = 350.f; // 350 N/m

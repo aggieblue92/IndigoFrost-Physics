@@ -157,3 +157,8 @@ Vect3 Frost::ComponentProduct(const Vect3& v1, const Vect3& v2)
 {
 	return Vect3(v1._x * v2._x, v1._y * v2._y, v1._z * v2._z);
 }
+
+Vect3 Frost::operator*(float n, const Vect3& o)
+{
+	return o * n;
+}

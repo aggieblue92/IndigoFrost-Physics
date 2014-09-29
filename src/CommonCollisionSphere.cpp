@@ -14,7 +14,7 @@ CommonCollisionSphere::CommonCollisionSphere(const CommonCollisionSphere& o)
 , _bouncinessCoefficient(o._bouncinessCoefficient)
 {}
 
-IContact* CommonCollisionSphere::SummonDemons(const Vect3& pt_w, const Vect3& pen, IPhysicsObject* otherObj)
+IContact* CommonCollisionSphere::SummonDemons(const Vect3& pt_w, const Vect3& pen, IPhysicsObject* thisObj, IPhysicsObject* otherObj) const
 {
-	return new CommonContact(pt_w, pen, _bouncinessCoefficient, _frictionCoefficient, otherObj);
+	return new CommonContact(pt_w, pen, _bouncinessCoefficient, _frictionCoefficient, thisObj, otherObj);
 }

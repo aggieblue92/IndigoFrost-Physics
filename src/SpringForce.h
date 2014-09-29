@@ -19,8 +19,10 @@ namespace Frost
 			const Vect3& otherConnectionPoint,
 			float springConstant,
 			float restLength);
+		SpringForce(const SpringForce& o);
 
 		virtual void ApplyForce(IPhysicsObject* affectedPhysicsObject, float duration);
+		virtual IForce* getNewForcePtr() const;
 
 	private:
 		IPhysicsObject* _otherObjectInvolved;

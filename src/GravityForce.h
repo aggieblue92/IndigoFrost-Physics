@@ -15,8 +15,13 @@ namespace Frost
 		// gravityMagnitude: Acceleration due to gravity (m/s^2)
 		GravityForce(const Vect3Normal& gravityDirection, float gravityMagnitude);
 
+		GravityForce(const GravityForce& o);
+
 		// Apply the force of gravity to the specified object.
 		virtual void ApplyForce(IPhysicsObject* affectedObject, float duration);
+
+		// Get a pointer to a new gravity force object, the same as this one.
+		virtual IForce* getNewForcePtr() const;
 
 		// Sets the value of acceleration due to gravity
 		void setMagnitude(float newMagnitude);

@@ -17,7 +17,7 @@ namespace Frost
 
 		// This method resolves or suggests a resolution between the objects in collision.
 		// Returns: True if resolution succeeds, false if not.
-		virtual bool Resolve() = 0;
+		virtual bool Resolve(float dt) = 0;
 
 		Vect3 getCollisionPoint() const;
 		Vect3Normal getContactNormal() const;

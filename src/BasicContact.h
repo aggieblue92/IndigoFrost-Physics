@@ -16,7 +16,7 @@ namespace Frost
 	public:
 		BasicContact(const Vect3& objPt, const Vect3& penetration, IPhysicsObject* receivingObject);
 
-		virtual bool Resolve();
+		virtual bool Resolve(float dt);
 
 	protected:
 		IPhysicsObject* _affectedObject;

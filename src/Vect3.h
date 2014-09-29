@@ -56,6 +56,8 @@ namespace Frost
 
 	// Perform a component-wise multiplication on the two specified vectors
 	Vect3 ComponentProduct(const Vect3& v1, const Vect3& v2);
+
+	Vect3 operator*(float n, const Vect3& o);
 }
 
 #endif

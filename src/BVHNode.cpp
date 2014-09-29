@@ -34,7 +34,7 @@ BVHNode::~BVHNode()
 BVHNode* BVHNode::insert(Collidable* toAttach, std::string name)
 {
 	// If tree is empty, make this the new root
-	if (_collidableData == 0)
+	if (_volume == 0)
 	{
 		if (toAttach == 0)
 			throw NullObjectException();
@@ -44,7 +44,8 @@ BVHNode* BVHNode::insert(Collidable* toAttach, std::string name)
 
 		_obj = toAttach->getAttachedObject();
 		_collidableData = toAttach;
-		
+		_volume = new BoundingSphere(*toAttach);
+
 		_name = name;
 	}
 
@@ -56,7 +57,6 @@ BVHNode* BVHNode::insert(Collidable* toAttach, std::string name)
 		_right = new BVHNode(toAttach, name);
 		_collidableData = 0;
 		_obj = 0;
-
 	}
 
 	else

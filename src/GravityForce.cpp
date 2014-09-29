@@ -11,6 +11,11 @@ GravityForce::GravityForce(const Vect3Normal& dirn, float mag)
 , _gravityDirection(dirn)
 {}
 
+GravityForce::GravityForce(const GravityForce& o)
+: _gravityAcceleration(o._gravityAcceleration)
+, _gravityDirection(o._gravityDirection)
+{}
+
 void GravityForce::setMagnitude(float nm)
 {
 	_gravityAcceleration = nm;
@@ -37,4 +42,9 @@ void GravityForce::ApplyForce(IPhysicsObject* affectedObject, float duration)
 		return;
 	else
 		affectedObject->addForceAtOrigin(_gravityDirection * _gravityAcceleration * (1.f / affectedObject->getInverseMass()));
+}
+
+IForce* GravityForce::getNewForcePtr() const
+{
+	return new GravityForce(*this);
 }

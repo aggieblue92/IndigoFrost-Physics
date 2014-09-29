@@ -7,6 +7,11 @@ IPhysicsObject::IPhysicsObject()
 , _angularVelocity(0.f, 0.f, 0.f)
 , _invMass(0.f)
 , _invInertiaTensor(MathConstants::MATRIX_ZERO)
+, _netForce(0.f, 0.f, 0.f)
+, _netTorque(0.f, 0.f, 0.f)
+, _lastForce(0.f, 0.f, 0.f)
+, _lastTorque(0.f, 0.f, 0.f)
+, _forcesCurrent(true)
 {}
 
 IPhysicsObject::IPhysicsObject(const IPhysicsObject& toCopy)
@@ -15,6 +20,11 @@ IPhysicsObject::IPhysicsObject(const IPhysicsObject& toCopy)
 , _angularVelocity(toCopy._angularVelocity)
 , _invMass(toCopy._invMass)
 , _invInertiaTensor(toCopy._invInertiaTensor)
+, _netForce(toCopy._netForce)
+, _netTorque(toCopy._netTorque)
+, _lastForce(toCopy._lastForce)
+, _lastTorque(toCopy._lastTorque)
+, _forcesCurrent(toCopy._forcesCurrent)
 {}
 
 IPhysicsObject::IPhysicsObject(const Movable& inMovable)
@@ -23,6 +33,11 @@ IPhysicsObject::IPhysicsObject(const Movable& inMovable)
 , _angularVelocity(0.f, 0.f, 0.f)
 , _invMass(0.f)
 , _invInertiaTensor(MathConstants::MATRIX_ZERO)
+, _netForce(0.f, 0.f, 0.f)
+, _netTorque(0.f, 0.f, 0.f)
+, _lastForce(0.f, 0.f, 0.f)
+, _lastTorque(0.f, 0.f, 0.f)
+, _forcesCurrent(true)
 {}
 
 IPhysicsObject::IPhysicsObject(const FLOAT3& pos, const Quaternion& quat,
@@ -35,6 +50,11 @@ IPhysicsObject::IPhysicsObject(const FLOAT3& pos, const Quaternion& quat,
 , _angularVelocity(angVel)
 , _invMass(invMass)
 , _invInertiaTensor(invIT)
+, _netForce(0.f, 0.f, 0.f)
+, _netTorque(0.f, 0.f, 0.f)
+, _lastForce(0.f, 0.f, 0.f)
+, _lastTorque(0.f, 0.f, 0.f)
+, _forcesCurrent(true)
 {}
 
 Vect3 IPhysicsObject::getLinearVelocity() const
@@ -59,12 +79,18 @@ void IPhysicsObject::setAngularVelocity(const FLOAT3& newAngularVelocity)
 
 Vect3 IPhysicsObject::getNetForce() const
 {
-	return _netForce;
+	if (_forcesCurrent)
+		return _netForce;
+	else
+		return _lastForce;
 }
 
 Vect3 IPhysicsObject::getNetTorque() const
 {
-	return _netTorque;
+	if (_forcesCurrent)
+		return _netTorque;
+	else
+		return _lastTorque;
 }
 
 float IPhysicsObject::getInverseMass() const
@@ -97,4 +123,18 @@ Matrix IPhysicsObject::getInverseInertiaTensor() const
 void IPhysicsObject::setInverseInertiaTensor(const Matrix& n)
 {
 	_invInertiaTensor = n;
+}
+
+bool IPhysicsObject::isMutable() const
+{
+	return _invMass != 0.f;
+}
+
+void IPhysicsObject::clearForces()
+{
+	_lastForce = _netForce;
+	_lastTorque = _netTorque;
+	_forcesCurrent = false;
+	_netForce = MathConstants::VECTOR_ZERO;
+	_netTorque = MathConstants::VECTOR_ZERO;
 }

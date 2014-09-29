@@ -28,6 +28,16 @@ bool ForceRegistry::Remove(IForce* force, IPhysicsNode* pn)
 	return toReturn;
 }
 
+unsigned int ForceRegistry::size() const
+{
+	return _forcesList.size();
+}
+
+ForceEntry& ForceRegistry::operator[](unsigned int i)
+{
+	return _forcesList[i];
+}
+
 void ForceRegistry::ClearRegistry()
 {
 	while (_forcesList.size() > 0)

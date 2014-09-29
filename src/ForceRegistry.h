@@ -27,6 +27,10 @@ namespace Frost
 		//  Set either value to 0 to specify that it applies to all objects of that type in the registry.
 		bool Remove(IForce* force, IPhysicsNode* physicsObject);
 
+		unsigned int size() const;
+
+		ForceEntry& operator[](unsigned int i);
+
 		void ClearRegistry();
 
 		void UpdateForces(float timeElapsed);

@@ -305,25 +305,24 @@ void CollisionBox::genContactsS(CollisionSphere* s, std::vector<IContact*>& o) c
 	if ((closestBoxPoint - transformedSpherePosition).SquareMagnitude() <= s->GetRadius() * s->GetRadius())
 	{
 		// Box contact data: contact is under the surface of the sphere, pointing directly out.
-		Vect3 collisionPoint_w = this->GetTransformMatrix() * (closestBoxPoint - transformedSpherePosition);
-		Vect3 penetration_w = (Vect3Normal(collisionPoint_w - s->GetPos()) * s->GetRadius()) - collisionPoint_w;
-		if (this->GetAttachedObjectPtr() != 0)
-		{
-			o.push_back(new BasicContact(
+		Vect3Normal d = (closestBoxPoint - transformedSpherePosition);
+		Vect3 collisionPoint_l = transformedSpherePosition + d * s->GetRadius();
+		Vect3 penetration_l = closestBoxPoint - collisionPoint_l;
+		Vect3 collisionPoint_w = GetTransformMatrix() * collisionPoint_l;
+		Vect3 penetration_w = GetTransformMatrix().TransformDirn(penetration_l);
+			o.push_back(SummonDemons(
 				collisionPoint_w,
 				penetration_w,
-				this->GetAttachedObjectPtr()));
-		}
+				_attachedObject,
+				s->GetAttachedObjectPtr()));
 
 		// Sphere contact data: Exact opposite of the box contact data
-		if (s->GetAttachedObjectPtr() != 0)
-		{
-			penetration_w *= -1.f;
-			o.push_back(new BasicContact(
-				collisionPoint_w,
-				penetration_w,
-				s->GetAttachedObjectPtr()));
-		}
+		penetration_w *= -1.f;
+		o.push_back(SummonDemons(
+			collisionPoint_w,
+			penetration_w,
+			s->GetAttachedObjectPtr(),
+			_attachedObject));
 	}
 }
 
@@ -476,21 +475,15 @@ void CollisionBox::VirginSacrifices(const Vect3Normal& dirn_ws, const Vect3& pt1
 	if (edgeDistance_ws * dirn_ws > 0.f) return;
 
 	// They are within bounds. Generate contact...
-	if (_attachedObject != 0)
-	{
-		o_Contacts.push_back(this->SummonDemons(
-			pt11 + ourEdge * alpha1,
-			(pt11 + ourEdge * alpha1) - (pt21 + otherEdge * alpha2),
-			_attachedObject));
-	}
+	o_Contacts.push_back(this->SummonDemons(
+		pt11 + ourEdge * alpha1,
+		(pt11 + ourEdge * alpha1) - (pt21 + otherEdge * alpha2),
+		_attachedObject, otherObject));
 
-	if (otherObject != 0)
-	{
-		o_Contacts.push_back(this->SummonDemons(
-			pt21 + otherEdge * alpha2,
-			(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1),
-			otherObject));
-	}
+	o_Contacts.push_back(this->SummonDemons(
+		pt21 + otherEdge * alpha2,
+		(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1),
+		otherObject, _attachedObject));
 }
 
 bool CollisionBox::VirginSacrifices(const Vect3Normal& dirn_ws, const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, IPhysicsObject* otherObject) const
@@ -549,7 +542,7 @@ bool CollisionBox::VirginSacrifices(const Vect3Normal& dirn_ws, const Vect3& pt1
 	return true;
 }
 
-IContact* CollisionBox::SummonDemons(const Vect3& point, const Vect3& penetration, IPhysicsObject* afObj) const
+IContact* CollisionBox::SummonDemons(const Vect3& point, const Vect3& penetration, IPhysicsObject* afObj, IPhysicsObject* oobj) const
 {
 	// Return a contact object.
 	//  This will be called by 'Virgin Sacrifices'
