@@ -1,4 +1,4 @@
-Release 0.2:
+---Release 0.2:
 -Changed structure of engine
 -Base is complete, can be used for physics applications.
 -There is not much past the base - needs lots more work to be useful in actual applications!
