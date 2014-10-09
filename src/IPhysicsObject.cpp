@@ -1,3 +1,28 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "IPhysicsObject.h"
 using namespace Frost;
 
@@ -9,9 +34,6 @@ IPhysicsObject::IPhysicsObject()
 , _invInertiaTensor(MathConstants::MATRIX_ZERO)
 , _netForce(0.f, 0.f, 0.f)
 , _netTorque(0.f, 0.f, 0.f)
-, _lastForce(0.f, 0.f, 0.f)
-, _lastTorque(0.f, 0.f, 0.f)
-, _forcesCurrent(true)
 {}
 
 IPhysicsObject::IPhysicsObject(const IPhysicsObject& toCopy)
@@ -22,9 +44,6 @@ IPhysicsObject::IPhysicsObject(const IPhysicsObject& toCopy)
 , _invInertiaTensor(toCopy._invInertiaTensor)
 , _netForce(toCopy._netForce)
 , _netTorque(toCopy._netTorque)
-, _lastForce(toCopy._lastForce)
-, _lastTorque(toCopy._lastTorque)
-, _forcesCurrent(toCopy._forcesCurrent)
 {}
 
 IPhysicsObject::IPhysicsObject(const Movable& inMovable)
@@ -35,9 +54,6 @@ IPhysicsObject::IPhysicsObject(const Movable& inMovable)
 , _invInertiaTensor(MathConstants::MATRIX_ZERO)
 , _netForce(0.f, 0.f, 0.f)
 , _netTorque(0.f, 0.f, 0.f)
-, _lastForce(0.f, 0.f, 0.f)
-, _lastTorque(0.f, 0.f, 0.f)
-, _forcesCurrent(true)
 {}
 
 IPhysicsObject::IPhysicsObject(const FLOAT3& pos, const Quaternion& quat,
@@ -52,9 +68,6 @@ IPhysicsObject::IPhysicsObject(const FLOAT3& pos, const Quaternion& quat,
 , _invInertiaTensor(invIT)
 , _netForce(0.f, 0.f, 0.f)
 , _netTorque(0.f, 0.f, 0.f)
-, _lastForce(0.f, 0.f, 0.f)
-, _lastTorque(0.f, 0.f, 0.f)
-, _forcesCurrent(true)
 {}
 
 Vect3 IPhysicsObject::getLinearVelocity() const
@@ -79,18 +92,12 @@ void IPhysicsObject::setAngularVelocity(const FLOAT3& newAngularVelocity)
 
 Vect3 IPhysicsObject::getNetForce() const
 {
-	if (_forcesCurrent)
-		return _netForce;
-	else
-		return _lastForce;
+	return _netForce;
 }
 
 Vect3 IPhysicsObject::getNetTorque() const
 {
-	if (_forcesCurrent)
-		return _netTorque;
-	else
-		return _lastTorque;
+	return _netForce;
 }
 
 float IPhysicsObject::getInverseMass() const
@@ -128,13 +135,4 @@ void IPhysicsObject::setInverseInertiaTensor(const Matrix& n)
 bool IPhysicsObject::isMutable() const
 {
 	return _invMass != 0.f;
-}
-
-void IPhysicsObject::clearForces()
-{
-	_lastForce = _netForce;
-	_lastTorque = _netTorque;
-	_forcesCurrent = false;
-	_netForce = MathConstants::VECTOR_ZERO;
-	_netTorque = MathConstants::VECTOR_ZERO;
 }

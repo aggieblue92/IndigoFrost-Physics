@@ -1,3 +1,28 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 /////////////////////////////////////////
 // CollisionBox: ICollisionGeometry object
 //  that represents a box.
@@ -55,11 +80,11 @@ namespace Frost
 		//  honestly say that the system was powered by black magic and virgin sacrifices.
 		// Now, I can. These functions are used in what forms the meat and potatoes of the
 		//  collision resolution in the physics engine.
-		void BlackMagic(const Vect3Normal&, std::vector<Vect3>&) const;
-		void BlackMagic(CollisionBox*, std::vector<Vect3>&, std::vector<Vect3>&) const;
-		void VirginSacrifices(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&, IPhysicsObject* otherObject) const;
-		bool VirginSacrifices(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, IPhysicsObject* otherObject) const;
-		virtual IContact* SummonDemons(const Vect3&, const Vect3&, IPhysicsObject*, IPhysicsObject*) const;
+		void blackMagic(const Vect3Normal&, std::vector<Vect3>&) const;
+		void blackMagic(CollisionBox*, std::vector<Vect3>&, std::vector<Vect3>&) const;
+		void performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&, IPhysicsObject* otherObject) const;
+		bool performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, IPhysicsObject* otherObject) const;
+		virtual IContact* summonDemons(const Vect3&, const Vect3&, IPhysicsObject*, IPhysicsObject*) const;
 	};
 }
 

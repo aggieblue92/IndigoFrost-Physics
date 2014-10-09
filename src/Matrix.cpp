@@ -1,3 +1,28 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "Matrix.h"
 #include <cmath>
 using namespace Frost;
@@ -153,10 +178,10 @@ Matrix Matrix::operator*(const FLOAT4X4& o) const
 	return toReturn;
 }
 
-FLOAT3 Matrix::operator*(const FLOAT3& o) const
+Vect3 Matrix::operator*(const FLOAT3& o) const
 {
 	// Same principle, but this time with only a col to return...
-	FLOAT3 toReturn;
+	Vect3 toReturn;
 	toReturn._x = _11 * o._x + _12 * o._y + _13 * o._z + _14;
 	toReturn._y = _21 * o._x + _22 * o._y + _23 * o._z + _24;
 	toReturn._z = _31 * o._x + _32 * o._y + _33 * o._z + _34;
@@ -201,7 +226,7 @@ bool Matrix::operator==(const FLOAT4X4& o) const
 }
 
 //////////////// OTHER MATRIX FUNCTIONS ////////////////
-Matrix Matrix::GetInverse() const
+Matrix Matrix::getInverse() const
 {
 	// Source: http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
 	Matrix toReturn;
@@ -335,7 +360,7 @@ Matrix Matrix::GetInverse() const
 	return toReturn;
 }
 
-Matrix Matrix::GetTranspose() const
+Matrix Matrix::getTranspose() const
 {
 	Matrix toReturn;
 	for (int i = 0; i < 4; i++)
@@ -348,7 +373,7 @@ Matrix Matrix::GetTranspose() const
 	return toReturn;
 }
 
-FLOAT3 Matrix::TransformCoord(const FLOAT3& o) const
+Vect3 Matrix::transformCoord(const FLOAT3& o) const
 {
 	return Vect3(
 		_11 * o._x + _12 * o._y + _13 * o._z + _14,
@@ -357,7 +382,7 @@ FLOAT3 Matrix::TransformCoord(const FLOAT3& o) const
 		);
 }
 
-FLOAT3 Matrix::TransformDirn(const FLOAT3& o) const
+Vect3 Matrix::transformDirn(const FLOAT3& o) const
 {
 	return Vect3(
 		_11 * o._x + _12 * o._y + _13 * o._z,
@@ -366,7 +391,7 @@ FLOAT3 Matrix::TransformDirn(const FLOAT3& o) const
 		);
 }
 
-Vect3Normal Matrix::TransformNormal(const FLOAT3& o) const
+Vect3Normal Matrix::transformNormal(const FLOAT3& o) const
 {
 	return Vect3Normal(
 		_11 * o._x + _12 * o._y + _13 * o._z,

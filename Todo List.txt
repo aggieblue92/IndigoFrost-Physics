@@ -1,0 +1,12 @@
+----------------------------------------BLATANT ERRORS---------------------------------------
+-Friction on CommonContact is really messed up.
+
+--------------------------------------STRUCTURE CHANGES--------------------------------------
+-ICollisionGeometry implementations affect themselves and the other object - what about BasicCollisionGeometry versus CommonCollisionGeometry mismatch?
+-ICollisionGeometry implementations use a getType(), which screams bad design.
+
+------------------------------------------COSMETICS------------------------------------------
+-Creation of collidables is not very smooth - make a file format and tool, perhaps?
+
+---------------------------------------------MISC--------------------------------------------
+-CollisionBox: You're catching zero magnitude exceptions for contacts in the case of no interpenetration - instead, you could create and apply a NoInterpenetrationContact or something?

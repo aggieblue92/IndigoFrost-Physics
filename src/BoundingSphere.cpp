@@ -1,3 +1,28 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "BoundingSphere.h"
 #include "CollisionSphere.h"
 #include "CollisionBox.h"
@@ -37,7 +62,7 @@ BoundingSphere::BoundingSphere(const Collidable& c)
 	}
 	else
 	{
-		objOrigin = c.getAttachedObject()->GetPos();
+		objOrigin = c.getAttachedObject()->getPos();
 	}
 
 	for (int i = 0; i < c.getNumObjects(); ++i)
@@ -48,20 +73,20 @@ BoundingSphere::BoundingSphere(const Collidable& c)
 		//  Get the extra distance, which is the distance from the rigid body origin to the
 		//  collision geometry origin. Both are in world space.
 		float extraDistance =
-			(c.getCollisionObject(i)->GetPos() - objOrigin).Magnitude();
+			(c.getCollisionObject(i)->getPos() - objOrigin).magnitude();
 
-		switch (c.getCollisionObject(i)->GetType())
+		switch (c.getCollisionObject(i)->getType())
 		{
 		case FROST_COLLISION_GEOMETRY_TYPE_SPHERE:
-			if (furthestDistance < ((CollisionSphere*)c.getCollisionObject(i))->GetRadius() + extraDistance)
+			if (furthestDistance < ((CollisionSphere*)c.getCollisionObject(i))->getRadius() + extraDistance)
 			{
-				furthestDistance = ((CollisionSphere*)c.getCollisionObject(i))->GetRadius() + extraDistance;
+				furthestDistance = ((CollisionSphere*)c.getCollisionObject(i))->getRadius() + extraDistance;
 			}
 			break;
 		case FROST_COLLISION_GEOMETRY_TYPE_BOX:
-			if (furthestDistance < ((CollisionBox*)c.getCollisionObject(i))->getSize().Magnitude() + extraDistance)
+			if (furthestDistance < ((CollisionBox*)c.getCollisionObject(i))->getSize().magnitude() + extraDistance)
 			{
-				furthestDistance = ((CollisionBox*)c.getCollisionObject(i))->getSize().Magnitude() + extraDistance;
+				furthestDistance = ((CollisionBox*)c.getCollisionObject(i))->getSize().magnitude() + extraDistance;
 			}
 			break;
 		default: 
@@ -96,7 +121,7 @@ float BoundingSphere::getRadius() const
 
 bool BoundingSphere::isColliding(const Vect3& pt) const
 {
-	return ((pt - _pos).SquareMagnitude() < (_radius * _radius));
+	return ((pt - _pos).squareMagnitude() < (_radius * _radius));
 }
 
 bool BoundingSphere::isColliding(const BoundingSphere& o) const
@@ -105,7 +130,7 @@ bool BoundingSphere::isColliding(const BoundingSphere& o) const
 	float sqDist = (_radius + o._radius);
 	sqDist *= sqDist;
 
-	return (o._pos - _pos).SquareMagnitude() < sqDist;
+	return (o._pos - _pos).squareMagnitude() < sqDist;
 }
 
 float BoundingSphere::getVolume() const
@@ -119,7 +144,7 @@ float BoundingSphere::getNewRadius(const BoundingSphere& toAdd) const{
 	Vect3Normal n = dist;
 
 	// Find interpenetration amount
-	float penetration = toAdd._radius + _radius - dist.Magnitude();
+	float penetration = toAdd._radius + _radius - dist.magnitude();
 	if (penetration <= 0.f) penetration = 0.f;
 	dist -= n * penetration;
 
@@ -127,7 +152,7 @@ float BoundingSphere::getNewRadius(const BoundingSphere& toAdd) const{
 	dist = dist + n * (toAdd._radius + _radius);
 
 	// New radius is simply the magnitude of the midpoint
-	return (dist * 0.5f).Magnitude();
+	return (dist * 0.5f).magnitude();
 }
 
 BoundingSphere BoundingSphere::getNewBoundingSphere(const BoundingSphere& b1, const BoundingSphere& b2)
@@ -153,7 +178,7 @@ BoundingSphere BoundingSphere::getNewBoundingSphere(const BoundingSphere& b1, co
 	Vect3 tail = b1.getPos() - (normal * b1.getRadius());
 
 	Vect3 midpoint = (b2.getPos() + (normal * b2.getRadius()) + tail) / 2.f;
-	float radius = (midpoint - tail).Magnitude();
+	float radius = (midpoint - tail).magnitude();
 
 	return BoundingSphere(midpoint, radius);
 }

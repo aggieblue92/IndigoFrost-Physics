@@ -1,3 +1,28 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "WorldManager.h"
 #include <thread>
 using namespace Frost;
@@ -61,7 +86,7 @@ WorldManager::~WorldManager()
 		delete _internalForces[i]._force;
 		_internalForces[i]._force = 0;
 	}
-	_internalForces.ClearRegistry();
+	_internalForces.clearRegistry();
 	nInstances--;
 }
 
@@ -73,14 +98,12 @@ void WorldManager::update(float timeElapsed)
 	}
 
 	_collisionManager->update(timeElapsed);
-	_internalForces.UpdateForces(timeElapsed);
-	_externalForces.UpdateForces(timeElapsed);
+	_internalForces.updateForces(timeElapsed);
+	_externalForces.updateForces(timeElapsed);
 
-	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
-	{
-		(*i)->getPhysicsObject()->update(timeElapsed);
-	}
-
+	// Important: With the current implementation (I say that because I don't like it),
+	//  contacts must be resolved before physics objects can be updated. This is because
+	//  contacts may add forces to the object, and may look at forces in the object.
 	_collisionManager->genContacts(_masterContactList);
 
 	// TODO: In the future, you should always have a thread running that updates
@@ -88,10 +111,15 @@ void WorldManager::update(float timeElapsed)
 	// Right now, just handle all contacts.
 	while (_masterContactList.size() > 0u)
 	{
-		_masterContactList[0u]->Resolve(timeElapsed);
+		_masterContactList[0u]->resolve(timeElapsed);
 		delete _masterContactList[0u];
 		_masterContactList[0u] = 0;
 		_masterContactList.erase(_masterContactList.begin());
+	}
+
+	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
+	{
+		(*i)->getPhysicsObject()->update(timeElapsed);
 	}
 }
 
@@ -142,22 +170,22 @@ IPhysicsNode* WorldManager::operator[](std::string name)
 
 void WorldManager::addForce(const IForce& f, IPhysicsNode* o)
 {
-	_internalForces.Add(f.getNewForcePtr(), o);
+	_internalForces.add(f.getNewForcePtr(), o);
 }
 
 void WorldManager::addForce(IForce* f, IPhysicsNode* o)
 {
-	_externalForces.Add(f, o);
+	_externalForces.add(f, o);
 }
 
 void WorldManager::addForce(const IForce& forceToAdd, std::string o)
 {
-	_internalForces.Add(forceToAdd.getNewForcePtr(), getObjectByName(o));
+	_internalForces.add(forceToAdd.getNewForcePtr(), getObjectByName(o));
 }
 
 void WorldManager::addForce(IForce* forceToAdd, std::string o)
 {
-	_externalForces.Add(forceToAdd, getObjectByName(o));
+	_externalForces.add(forceToAdd, getObjectByName(o));
 }
 
 void WorldManager::attachCollisionManager(ICollisionManager* t)

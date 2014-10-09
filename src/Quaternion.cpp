@@ -1,3 +1,28 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "Quaternion.h"
 #include <cmath>
 using namespace Frost;
@@ -16,7 +41,7 @@ Quaternion::Quaternion(float r, float i, float j, float k)
 	_y = j;
 	_z = k;
 	_w = r;
-	float d = Magnitude();
+	float d = magnitude();
 
 	_x = i / d;
 	_y = j / d;
@@ -30,7 +55,7 @@ Quaternion::Quaternion(const FLOAT4& o)
 	this->_y = o._y;
 	this->_z = o._z;
 	this->_w = o._w;
-	float d = Magnitude();
+	float d = magnitude();
 
 	_x /= d;
 	_y /= d;
@@ -52,7 +77,7 @@ Quaternion::Quaternion(const FLOAT3& axis, float angle)
 ///////////// OPERATOR OVERLOADS /////////////
 Quaternion& Quaternion::operator=(const FLOAT4& o)
 {
-	float mag = Magnitude();
+	float mag = magnitude();
 	this->_x = o._x / mag;
 	this->_y = o._y / mag;
 	this->_z = o._z / mag;
@@ -102,7 +127,7 @@ Quaternion& Quaternion::operator+=(const FLOAT3& other)
 	_y += q._y * 0.5f;
 	_z += q._z * 0.5f;
 
-	float mag = this->Magnitude();
+	float mag = this->magnitude();
 	_w /= mag;
 	_x /= mag;
 	_y /= mag;
@@ -130,7 +155,7 @@ Quaternion Quaternion::operator+(const FLOAT3& other) const
 	toReturn._y += q._y * 0.5f;
 	toReturn._z += q._z * 0.5f;
 
-	float mag = toReturn.Magnitude();
+	float mag = toReturn.magnitude();
 	toReturn._w /= mag;
 	toReturn._x /= mag;
 	toReturn._y /= mag;
@@ -140,7 +165,7 @@ Quaternion Quaternion::operator+(const FLOAT3& other) const
 }
 
 /////////////// QUATERNION FUNCS /////////////
-void Quaternion::GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const
+void Quaternion::getAxisAngle(FLOAT3& o_Axis, float& o_Angle) const
 {
 	o_Angle = 2.f * std::acos(_w);
 	float sin_half_angle = std::sin(o_Angle / 2.f);
@@ -150,7 +175,7 @@ void Quaternion::GetAxisAngle(FLOAT3& o_Axis, float& o_Angle) const
 		this->_z / sin_half_angle);
 }
 
-inline float Quaternion::Magnitude()
+inline float Quaternion::magnitude()
 {
 	float toReturn = std::sqrt(_x * _x + _y * _y + _z * _z + _w * _w);
 	if (toReturn == 0.f) throw ZeroMagnitudeException();

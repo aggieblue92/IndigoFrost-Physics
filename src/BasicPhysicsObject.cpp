@@ -1,3 +1,28 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "BasicPhysicsObject.h"
 #include <cmath>
 using namespace Frost;
@@ -28,17 +53,15 @@ BasicPhysicsObject::BasicPhysicsObject(const BasicPhysicsObject& o)
 
 void BasicPhysicsObject::addForceAtOrigin(const Vect3& f_w)
 {
-	_forcesCurrent = true;
 	_netForce += f_w;
 }
 
 void BasicPhysicsObject::addForceAtPoint(const Vect3& f_w, const Vect3& pt_world)
 {
-	_forcesCurrent = true;
 	// Break up force into parallel and perpendicular components.
 	try
 	{
-		Vect3Normal armNormal = pt_world - GetPos();
+		Vect3Normal armNormal = pt_world - getPos();
 		Vect3 originWorldForce = armNormal * (f_w * armNormal);
 		Vect3 originWorldTorque = CrossProduct(f_w, armNormal);
 
@@ -55,7 +78,6 @@ void BasicPhysicsObject::addForceAtPoint(const Vect3& f_w, const Vect3& pt_world
 
 void BasicPhysicsObject::addTorqueAtOrigin(const Vect3& t_w)
 {
-	_forcesCurrent;
 	_netTorque += t_w;
 }
 
@@ -63,10 +85,6 @@ void BasicPhysicsObject::addTorqueAtOrigin(const Vect3& t_w)
 //  and applying them to the linear and angular velocity of the object.
 void BasicPhysicsObject::update(float dt)
 {
-	_forcesCurrent = false;
-	_lastForce = _netForce;
-	_lastTorque = _netTorque;
-
 	Vect3 frameAcc = _netForce * _invMass;
 	Vect3 frameTorque = _invInertiaTensor * _netTorque;
 
@@ -80,18 +98,18 @@ void BasicPhysicsObject::update(float dt)
 	_netForce = MathConstants::VECTOR_ZERO;
 	_netTorque = MathConstants::VECTOR_ZERO;
 
-	SetPos(GetPos() + (_linearVelocity * dt));
-	SetOrientation(GetOrientation() + (_angularVelocity * dt));
+	setPos(getPos() + (_linearVelocity * dt));
+	setOrientation(getOrientation() + (_angularVelocity * dt));
 }
 
 void BasicPhysicsObject::impulse(const Vect3& applicationPoint, const Vect3& distance)
 {
-	Vect3Normal armNormal = applicationPoint - GetPos();
+	Vect3Normal armNormal = applicationPoint - getPos();
 	Vect3 worldLinearMotion = armNormal * (distance * armNormal);
 	Vect3 worldAngularMotion = CrossProduct(distance, armNormal);
 
-	Move(worldLinearMotion);
-	SetOrientation(GetOrientation() + worldAngularMotion);
+	move(worldLinearMotion);
+	setOrientation(getOrientation() + worldAngularMotion);
 }
 
 float BasicPhysicsObject::getLinearDrag() const
