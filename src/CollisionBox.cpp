@@ -199,7 +199,9 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 				// Or is it b->getattached?
 				try
 				{
-					o.push_back(new BasicContact(collPt, collDirn, this->getAttachedObjectPtr()));
+					o.push_back(
+						summonDemons(collPt, collDirn, getAttachedObjectPtr(), b->getAttachedObjectPtr()));
+					//o.push_back(new BasicContact(collPt, collDirn, this->getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
 				{
@@ -210,7 +212,9 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 			{
 				try
 				{
-					o.push_back(new BasicContact(collPt, collDirn * -1.f, b->getAttachedObjectPtr()));
+					o.push_back(
+						b->summonDemons(collPt, collDirn * -1.f, b->getAttachedObjectPtr(), getAttachedObjectPtr()));
+					//o.push_back(new BasicContact(collPt, collDirn * -1.f, b->getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
 				{
@@ -246,7 +250,9 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 				// Or is it this->getattached?
 				try
 				{
-					o.push_back(new BasicContact(collPt, collDirn * -1.f, this->getAttachedObjectPtr()));
+					o.push_back(
+						summonDemons(collPt, collDirn * -1.f, getAttachedObjectPtr(), b->getAttachedObjectPtr()));
+					//o.push_back(new BasicContact(collPt, collDirn * -1.f, this->getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
 				{
@@ -257,7 +263,9 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 			{
 				try
 				{
-					o.push_back(new BasicContact(collPt, collDirn, b->getAttachedObjectPtr()));
+					o.push_back(
+						b->summonDemons(collPt, collDirn, b->getAttachedObjectPtr(), getAttachedObjectPtr()));
+					//o.push_back(new BasicContact(collPt, collDirn, b->getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
 				{
@@ -279,7 +287,7 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 	{
 		for (int j = 0; j < (int)other_edge_list_ws.size(); j += 2)
 		{
-			performDarkRitual(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], o, b->getAttachedObjectPtr());
+			performDarkRitual(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], o, b->getAttachedObjectPtr(), b);
 		}
 	}
 }
@@ -343,7 +351,7 @@ void CollisionBox::genContactsS(CollisionSphere* s, std::vector<IContact*>& o) c
 
 		// Sphere contact data: Exact opposite of the box contact data
 		penetration_w *= -1.f;
-		o.push_back(summonDemons(
+		o.push_back(s->summonDemons(
 			collisionPoint_w,
 			penetration_w,
 			s->getAttachedObjectPtr(),
@@ -448,7 +456,7 @@ void CollisionBox::blackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 	}
 }
 
-void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, std::vector<IContact*>& o_Contacts, IPhysicsObject* otherObject) const
+void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, std::vector<IContact*>& o_Contacts, IPhysicsObject* otherObject, CollisionBox* ob) const
 {
 	// Find the edge vectors...
 	Vect3 ourEdge = pt12 - pt11;
@@ -476,7 +484,9 @@ void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 
 	// First off, check the case where the lines are parallel - i.e., if the first
 	//  matrix is singular. In this case, just pick any a_1, solve for a_2.
-	if (ourEdge * ourEdge + otherEdge * otherEdge == ourEdge * otherEdge * 2.f)
+	//if (ourEdge * ourEdge + otherEdge * otherEdge == ourEdge * otherEdge * 2.f)
+	if (Vect3Normal(ourEdge) == Vect3Normal(otherEdge)
+		|| Vect3Normal(ourEdge) == Vect3Normal(otherEdge) * -1.f)
 	{
 		alpha1 = 0.5f;
 		alpha2 = (((pt11 - pt21) * ourEdge) + (ourEdge * ourEdge * alpha1)) / (otherEdge * ourEdge);
@@ -505,7 +515,7 @@ void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 		(pt11 + ourEdge * alpha1) - (pt21 + otherEdge * alpha2),
 		_attachedObject, otherObject));
 
-	o_Contacts.push_back(this->summonDemons(
+	o_Contacts.push_back(ob->summonDemons(
 		pt21 + otherEdge * alpha2,
 		(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1),
 		otherObject, _attachedObject));
@@ -539,7 +549,9 @@ bool CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 
 	// First off, check the case where the lines are parallel - i.e., if the first
 	//  matrix is singular. In this case, just pick any a_1, solve for a_2.
-	if (ourEdge * ourEdge + otherEdge * otherEdge == ourEdge * otherEdge * 2.f)
+	//if (ourEdge * ourEdge + otherEdge * otherEdge == ourEdge * otherEdge * 2.f)
+	if (Vect3Normal(ourEdge) == Vect3Normal(otherEdge)
+		|| Vect3Normal(ourEdge) == Vect3Normal(otherEdge) * -1.f)
 	{
 		alpha1 = 0.5f;
 		alpha2 = (((pt11 - pt21) * ourEdge) + (ourEdge * ourEdge * alpha1)) / (otherEdge * ourEdge);
@@ -570,7 +582,6 @@ bool CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 IContact* CollisionBox::summonDemons(const Vect3& point, const Vect3& penetration, IPhysicsObject* afObj, IPhysicsObject* oobj) const
 {
 	// Return a contact object.
-	//  This will be called by 'Virgin Sacrifices'
 	// This function is virtual to allow for derived classes to make fancier contacts.
 	return new BasicContact(point, penetration, afObj);
 }

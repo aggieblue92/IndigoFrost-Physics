@@ -23,6 +23,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
 /////////////////////////////////////////
 // CollisionBox: ICollisionGeometry object
 //  that represents a box.
@@ -39,6 +40,8 @@ namespace Frost
 {
 	class CollisionBox : public ICollisionGeometry
 	{
+		friend class CollisionSphere;
+
 	public:
 		/////////////////// CTORS //////////////////////
 
@@ -82,7 +85,7 @@ namespace Frost
 		//  collision resolution in the physics engine.
 		void blackMagic(const Vect3Normal&, std::vector<Vect3>&) const;
 		void blackMagic(CollisionBox*, std::vector<Vect3>&, std::vector<Vect3>&) const;
-		void performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&, IPhysicsObject* otherObject) const;
+		void performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&, IPhysicsObject* otherObject, CollisionBox* oBox) const;
 		bool performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, IPhysicsObject* otherObject) const;
 		virtual IContact* summonDemons(const Vect3&, const Vect3&, IPhysicsObject*, IPhysicsObject*) const;
 	};
