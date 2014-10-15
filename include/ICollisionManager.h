@@ -1,0 +1,52 @@
+/*
+This source file is part of the Indigo Frost physics engine
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Kamaron Peterson (aggieblue92)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+#ifndef FROST_COLLISION_MANAGER_INTERFACE_H
+#define FROST_COLLISION_MANAGER_INTERFACE_H
+
+#include "IPhysicsNode.h"
+#include "IContact.h"
+#include <vector>
+
+/////////////////////////////////////////
+// ICollisionManager: All physics nodes
+//  are added via this interface, and
+//  gross collision detection is done here.
+/////////////////////////////////////////
+
+namespace Frost
+{
+	class ICollisionManager
+	{
+	public:
+		virtual void addPhysicsNode(IPhysicsNode*) = 0;
+		virtual void removePhysicsNode(IPhysicsNode*) = 0;
+		virtual void removePhysicsNode(std::string) = 0;
+		virtual void genContacts(std::vector<IContact*>&) = 0;
+
+		virtual void update(float) = 0;
+	};
+}
+
+#endif
