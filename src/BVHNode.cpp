@@ -52,7 +52,6 @@ BVHNode::~BVHNode()
 	
 	delete _volume; 
 	_volume = 0;
-	IPhysicsNode::~IPhysicsNode();
 }
 
 BVHNode* BVHNode::insert(Collidable* toAttach, std::string name)

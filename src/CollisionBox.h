@@ -35,6 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "ICollisionGeometry.h"
 #include "BasicContact.h"
+#include <cmath>
 
 namespace Frost
 {
@@ -72,11 +73,25 @@ namespace Frost
 		Vect3 _size; // Halfsize of the box
 
 	protected:
+	public:
 		virtual bool isTouchingB(CollisionBox* b) const;
 		virtual void genContactsB(CollisionBox* b, std::vector<IContact*>& o) const;
 
 		virtual bool isTouchingS(CollisionSphere* s) const;
 		virtual void genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const;
+
+		// This code is all used in box-box collisions...
+		enum COLLISION_BOX_FACE
+		{
+			COLLISION_BOX_FACE_X_POS,
+			COLLISION_BOX_FACE_X_NEG,
+			COLLISION_BOX_FACE_Y_POS,
+			COLLISION_BOX_FACE_Y_NEG,
+			COLLISION_BOX_FACE_Z_POS,
+			COLLISION_BOX_FACE_Z_NEG
+		};
+
+		COLLISION_BOX_FACE getFaceDirectionOfLocalPoint(const Vect3& pt_l) const;
 
 	private:
 		// Dear reader: I'm so sorry. But, I've always wanted to make something where I could

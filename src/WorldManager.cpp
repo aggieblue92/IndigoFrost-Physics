@@ -105,6 +105,16 @@ void WorldManager::update(float timeElapsed)
 	//  contacts may add forces to the object, and may look at forces in the object.
 	_collisionManager->genContacts(_masterContactList);
 
+	// <DEBUG>
+	while (_masterContactList.size() > 0u)
+	{
+		delete _masterContactList[0u];
+		_masterContactList[0u] = 0;
+		_masterContactList.erase(_masterContactList.begin());
+	}
+	_collisionManager->genContacts(_masterContactList);
+	// </DEBUG>
+
 	// TODO: In the future, you should always have a thread running that updates
 	//  all this, and then just query it at the frame.
 	// Right now, just handle all contacts.
@@ -133,6 +143,8 @@ IPhysicsNode* WorldManager::addObject(IPhysicsObject* objectToAdd, Collidable* c
 		}
 	}
 
+	// TODO: Change this whole function to not even take in collision data as a parameter,
+	//  instead attach it later to physics objects if desired. At least overload it that way.
 	if (collisionData != 0 && collisionData->getAttachedObject() == 0)
 	{
 		collisionData->attachObject(objectToAdd);
@@ -151,6 +163,11 @@ IPhysicsNode* WorldManager::addObject(IPhysicsObject* objectToAdd, Collidable* c
 
 IPhysicsNode* WorldManager::getObjectByName(std::string name)
 {
+	if (name == "")
+	{
+		throw ObjectDoesNotExistException(name);
+	}
+
 	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
 	{
 		if ((*i)->getName() == name)

@@ -172,12 +172,21 @@ BoundingSphere BoundingSphere::getNewBoundingSphere(const BoundingSphere& b1, co
 	//// New location is dist / 2 + tail
 	//return BoundingSphere((dist * 0.5f) + tail, (dist).Magnitude());
 
-	Vect3 dist = b2.getPos() - b1.getPos();
-	Vect3Normal normal = dist;
-	Vect3 tail = b1.getPos() - (normal * b1.getRadius());
+	try
+	{
+		Vect3 dist = b2.getPos() - b1.getPos();
+		Vect3Normal normal = dist;
+		Vect3 tail = b1.getPos() - (normal * b1.getRadius());
 
-	Vect3 midpoint = (b2.getPos() + (normal * b2.getRadius()) + tail) / 2.f;
-	float radius = (midpoint - tail).magnitude();
+		Vect3 midpoint = (b2.getPos() + (normal * b2.getRadius()) + tail) / 2.f;
+		float radius = (midpoint - tail).magnitude();
 
-	return BoundingSphere(midpoint, radius);
+		return BoundingSphere(midpoint, radius);
+	}
+	catch (ZeroMagnitudeException&)
+	{
+		// There is no distance between the objects - so the bounding sphere is at the origin, with the
+		//  larger of the two radii as the radius.
+		return BoundingSphere(b1.getPos(), (b1.getRadius() > b2.getRadius()) ? b1.getRadius() : b2.getRadius());
+	}
 }

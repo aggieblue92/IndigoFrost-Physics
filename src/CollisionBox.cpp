@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "CollisionBox.h"
 #include "CollisionSphere.h"
+#include <tuple>
 using namespace Frost;
 
 #define CLAMP(x, min, max)	x < min ? min : (x > max ? max : x)
@@ -108,9 +109,9 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
 	{
 		Vect3 checkPoint = b->getTransformMatrix().getInverse() * myQualifying_ws[i];
-		if ((abs(checkPoint._x) <= b->getSize()._x) &&
-			(abs(checkPoint._y) <= b->getSize()._y) &&
-			(abs(checkPoint._z) <= b->getSize()._z))
+		if ((std::abs(checkPoint._x) <= b->getSize()._x) &&
+			(std::abs(checkPoint._y) <= b->getSize()._y) &&
+			(std::abs(checkPoint._z) <= b->getSize()._z))
 		{
 			// Collision at a point-face, point-edge, or point-point
 			return true;
@@ -120,9 +121,9 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	for (int i = 0; i < (int)otherQualifying_ws.size(); i++)
 	{
 		Vect3 checkPoint = this->getTransformMatrix().getInverse() * otherQualifying_ws[i];
-		if ((abs(checkPoint._x) <= this->getSize()._x) &&
-			(abs(checkPoint._y) <= this->getSize()._y) &&
-			(abs(checkPoint._z) <= this->getSize()._z))
+		if ((std::abs(checkPoint._x) <= this->getSize()._x) &&
+			(std::abs(checkPoint._y) <= this->getSize()._y) &&
+			(std::abs(checkPoint._z) <= this->getSize()._z))
 		{
 			// Collision at a point-face, point-edge, or point-point
 			return true;
@@ -176,9 +177,9 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
 	{
 		Vect3 checkPoint = b->getTransformMatrix().getInverse() * myQualifying_ws[i];
-		if ((abs(checkPoint._x) <= b->getSize()._x) &&
-			(abs(checkPoint._y) <= b->getSize()._y) &&
-			(abs(checkPoint._z) <= b->getSize()._z))
+		if ((std::abs(checkPoint._x) <= b->getSize()._x) &&
+			(std::abs(checkPoint._y) <= b->getSize()._y) &&
+			(std::abs(checkPoint._z) <= b->getSize()._z))
 		{
 			// Collision at a point-face, point-edge, or point-point
 			//  Collision vector is direction to closest face.
@@ -227,9 +228,9 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 	for (int i = 0; i < (int)otherQualifying_ws.size(); i++)
 	{
 		Vect3 checkPoint = this->getTransformMatrix().getInverse() * otherQualifying_ws[i];
-		if ((abs(checkPoint._x) <= this->getSize()._x) &&
-			(abs(checkPoint._y) <= this->getSize()._y) &&
-			(abs(checkPoint._z) <= this->getSize()._z))
+		if ((std::abs(checkPoint._x) <= this->getSize()._x) &&
+			(std::abs(checkPoint._y) <= this->getSize()._y) &&
+			(std::abs(checkPoint._z) <= this->getSize()._z))
 		{
 			// Collision at a point-face, point-edge, or point-point
 			//  Collision vector is direction to closest face.
@@ -359,6 +360,36 @@ void CollisionBox::genContactsS(CollisionSphere* s, std::vector<IContact*>& o) c
 	}
 }
 
+CollisionBox::COLLISION_BOX_FACE CollisionBox::getFaceDirectionOfLocalPoint(const Vect3& pt_l) const
+{
+	// Find the point on the surface of the box...
+	Vect3 closestPoint = pt_l;
+	closestPoint._x = CLAMP(closestPoint._x, -_size._x, _size._x);
+	closestPoint._y = CLAMP(closestPoint._y, -_size._y, _size._y);
+	closestPoint._z = CLAMP(closestPoint._z, -_size._z, _size._z);
+
+	Vect3 a = pt_l - closestPoint;
+
+	std::pair<COLLISION_BOX_FACE, float> distances[6] =
+	{
+		{ COLLISION_BOX_FACE_X_POS, (closestPoint._x > 0) ? std::abs(a._x) : std::abs(a._x) + _size._x * 2.f },
+		{ COLLISION_BOX_FACE_X_NEG, (closestPoint._x < 0) ? std::abs(a._x) : std::abs(a._x) + _size._x * 2.f },
+		{ COLLISION_BOX_FACE_Y_POS, (closestPoint._y > 0) ? std::abs(a._y) : std::abs(a._y) + _size._y * 2.f },
+		{ COLLISION_BOX_FACE_Y_NEG, (closestPoint._y < 0) ? std::abs(a._y) : std::abs(a._y) + _size._y * 2.f },
+		{ COLLISION_BOX_FACE_Z_POS, (closestPoint._z > 0) ? std::abs(a._z) : std::abs(a._z) + _size._z * 2.f },
+		{ COLLISION_BOX_FACE_Z_NEG, (closestPoint._z < 0) ? std::abs(a._z) : std::abs(a._z) + _size._z * 2.f },
+	};
+
+	std::qsort(distances, 6, sizeof(std::pair<COLLISION_BOX_FACE, float>), [](const void* a, const void* b)
+	{
+		if ((*(std::pair<COLLISION_BOX_FACE, float>*)a).second < ((*(std::pair<COLLISION_BOX_FACE, float>*)b).second)) return -1;
+		if ((*(std::pair<COLLISION_BOX_FACE, float>*)a).second > ((*(std::pair<COLLISION_BOX_FACE, float>*)b).second)) return 1;
+		else return 0;
+	});
+
+	return distances[0].first;
+}
+
 /////////////////// GETTERS / SETTERS /////////////////
 Vect3 CollisionBox::getSize() const
 {
@@ -372,14 +403,12 @@ void CollisionBox::blackMagic(const Vect3Normal& dirn_ls, std::vector<Vect3>& o_
 	for (int i = 0; i < 8; i++)
 	{
 		Vect3 check_ls = Vect3(
-			(i % 2 == 0 ? -1.f : 1.f) * _size._x,
-			((i / 2) % 2 == 0 ? -1.f : 1.f) * _size._y,
-			((i / 4) % 2 == 0 ? -1.f : 1.f) * _size._z);
+			(1 & i ? -1.f : 1.f) * _size._x,
+			(2 & i ? -1.f : 1.f) * _size._y,
+			(4 & i ? -1.f : 1.f) * _size._z);
 
-		if (check_ls * dirn_ls > 0.f)
-		{
-			o_edgeList.push_back(this->getTransformMatrix() * check_ls);
-		}
+		// TODO: Discriminate on the check_ls, filter out the 'definitely not' options.
+		o_edgeList.push_back(this->getTransformMatrix() * check_ls);
 	}
 }
 
@@ -437,22 +466,13 @@ void CollisionBox::blackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 			opt_2_ls = Vect3(opt_1_ls._x, opt_1_ls._y, -opt_1_ls._z);
 		}
 
-		// Local edges are selected. If both points are in direction of other cube,
-		//  add them to the edge list.
-		Vect3 dirn_ls = this->getTransformMatrix().getInverse().transformDirn(dirn_ws);
-		if (pt_1_ls * dirn_ls > 0.f &&
-			pt_2_ls * dirn_ls > 0.f)
-		{
-			o_MyEdges.push_back(this->getTransformMatrix() * pt_1_ls);
-			o_MyEdges.push_back(this->getTransformMatrix() * pt_2_ls);
-		}
-		dirn_ls = other->getTransformMatrix().getInverse().transformDirn(dirn_ws * -1.f);
-		if (opt_1_ls * dirn_ls > 0.f &&
-			opt_2_ls * dirn_ls > 0.f)
-		{
-			o_OtherEdges.push_back(other->getTransformMatrix() * opt_1_ls);
-			o_OtherEdges.push_back(other->getTransformMatrix() * opt_2_ls);
-		}
+		// Local edges are selected.
+		// TODO: Discriminate on them, only push into the list if they're feasible.
+		// May be done via ClosestPoint to ClosestPoint comparison.
+		o_MyEdges.push_back(this->getTransformMatrix() * pt_1_ls);
+		o_MyEdges.push_back(this->getTransformMatrix() * pt_2_ls);
+		o_OtherEdges.push_back(other->getTransformMatrix() * opt_1_ls);
+		o_OtherEdges.push_back(other->getTransformMatrix() * opt_2_ls);
 	}
 }
 
@@ -461,6 +481,10 @@ void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 	// Find the edge vectors...
 	Vect3 ourEdge = pt12 - pt11;
 	Vect3 otherEdge = pt22 - pt21;
+
+	// This check can be performed ahead of time, so do it now!
+	if (getFaceDirectionOfLocalPoint(pt21) == getFaceDirectionOfLocalPoint(pt22))
+		return;
 
 	float alpha1, alpha2; // Coefficients in finding the shortest distance between the edges
 
@@ -528,6 +552,10 @@ bool CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 	Vect3 otherEdge = pt22 - pt21;
 
 	float alpha1, alpha2; // Coefficients in finding the shortest distance between the edges
+
+	// This check can be performed ahead of time for edge-edge detection, so do it now!
+	if (getFaceDirectionOfLocalPoint(pt21) == getFaceDirectionOfLocalPoint(pt22))
+		return false;
 
 	// Linear algebra time! If some point ourMiddleishPoint = ourEdgeOrigin_ws + (alpha)(ourEdge),
 	//  and likewise for the otherMiddleishPoint, then (otherMiddleish - ourMiddleish) * ourEdge = 0

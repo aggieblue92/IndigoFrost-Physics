@@ -80,8 +80,8 @@ namespace Frost
 		void addForce(IForce* forceToAdd, std::string objectToAffect);
 
 		// Attach a collision manager to the world manager class
+		// TODO: Replace this with a constructor.
 		void attachCollisionManager(ICollisionManager* toAttach);
-		// void attachCollisionManager(COLLISION_MANAGER_TYPE typeToCreate);
 
 	protected:
 		ICollisionManager* _collisionManager;

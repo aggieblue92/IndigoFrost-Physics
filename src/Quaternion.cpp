@@ -168,10 +168,17 @@ void Quaternion::getAxisAngle(FLOAT3& o_Axis, float& o_Angle) const
 {
 	o_Angle = 2.f * std::acos(_w);
 	float sin_half_angle = std::sin(o_Angle / 2.f);
-	o_Axis = Vect3Normal(
-		this->_x / sin_half_angle,
-		this->_y / sin_half_angle,
-		this->_z / sin_half_angle);
+	if (sin_half_angle == 0.f)
+	{
+		o_Axis = Vect3(1.f, 0.f, 0.f);
+	}
+	else
+	{
+		o_Axis = Vect3Normal(
+			this->_x / sin_half_angle,
+			this->_y / sin_half_angle,
+			this->_z / sin_half_angle);
+	}
 }
 
 inline float Quaternion::magnitude()
