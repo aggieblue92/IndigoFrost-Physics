@@ -77,18 +77,18 @@ BoundingSphere::BoundingSphere(const Collidable& c)
 		switch (c.getCollisionObject(i)->getType())
 		{
 		case FROST_COLLISION_GEOMETRY_TYPE_SPHERE:
-			if (furthestDistance < ((CollisionSphere*)c.getCollisionObject(i))->getRadius() + extraDistance)
+			if (furthestDistance < ((CollisionSphere*)c.getCollisionObject(i).get())->getRadius() + extraDistance)
 			{
-				furthestDistance = ((CollisionSphere*)c.getCollisionObject(i))->getRadius() + extraDistance;
+				furthestDistance = ((CollisionSphere*)c.getCollisionObject(i).get())->getRadius() + extraDistance;
 			}
 			break;
 		case FROST_COLLISION_GEOMETRY_TYPE_BOX:
-			if (furthestDistance < ((CollisionBox*)c.getCollisionObject(i))->getSize().magnitude() + extraDistance)
+			if (furthestDistance < ((CollisionBox*)c.getCollisionObject(i).get())->getSize().magnitude() + extraDistance)
 			{
-				furthestDistance = ((CollisionBox*)c.getCollisionObject(i))->getSize().magnitude() + extraDistance;
+				furthestDistance = ((CollisionBox*)c.getCollisionObject(i).get())->getSize().magnitude() + extraDistance;
 			}
 			break;
-		default: 
+		default:
 			throw NotImplementedException();
 		}
 	}

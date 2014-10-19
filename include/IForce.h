@@ -32,14 +32,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "Vect3.h"
 #include "IPhysicsObject.h"
+#include <memory>
 
 namespace Frost
 {
 	class IForce
 	{
 	public:
-		virtual void applyForce(IPhysicsObject* affectedPhysicsObject, float duration) = 0;
-		virtual IForce* getNewForcePtr() const = 0;
+		virtual void applyForce(std::shared_ptr<IPhysicsObject> affectedPhysicsObject, float duration) = 0;
 	};
 }
 

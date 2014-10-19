@@ -28,14 +28,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "IForce.h"
 #include "IPhysicsNode.h"
 #include <vector>
+#include <memory>
 
 namespace Frost
 {
 	struct ForceEntry
 	{
-		IForce* _force;
-		IPhysicsNode* _obj;
-		ForceEntry(IForce*, IPhysicsNode*);
+		std::shared_ptr<IForce> _force;
+		std::shared_ptr<IPhysicsNode> _obj;
+		ForceEntry(std::shared_ptr<IForce>, std::shared_ptr<IPhysicsNode>);
 	};
 
 	class ForceRegistry
@@ -45,11 +46,11 @@ namespace Frost
 		
 		// Add a force/body pair to the registry.
 		//  Set either value to 0 to specify that it is applies to all objects of that type.
-		void add(IForce* force, IPhysicsNode* physicsObject);
+		void add(std::shared_ptr<IForce> force, std::shared_ptr<IPhysicsNode> physicsObject);
 
 		// Remove a force/body pair from the registry.
 		//  Set either value to 0 to specify that it applies to all objects of that type in the registry.
-		bool remove(IForce* force, IPhysicsNode* physicsObject);
+		bool remove(std::shared_ptr<IForce> force, std::shared_ptr<IPhysicsNode> physicsObject);
 
 		unsigned int size() const;
 

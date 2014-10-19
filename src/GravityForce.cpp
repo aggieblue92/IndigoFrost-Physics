@@ -60,15 +60,10 @@ float GravityForce::getGravityMagnitude()
 	return _gravityAcceleration;
 }
 
-void GravityForce::applyForce(IPhysicsObject* affectedObject, float duration)
+void GravityForce::applyForce(std::shared_ptr<IPhysicsObject> affectedObject, float duration)
 {
 	if (affectedObject->getInverseMass() == 0.f)
 		return;
 	else
 		affectedObject->addForceAtOrigin(_gravityDirection * _gravityAcceleration * (1.f / affectedObject->getInverseMass()));
-}
-
-IForce* GravityForce::getNewForcePtr() const
-{
-	return new GravityForce(*this);
 }

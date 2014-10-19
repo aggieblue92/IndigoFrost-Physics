@@ -36,7 +36,7 @@ ICollisionGeometry::ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const
 , _attachedObject(0)
 {}
 
-ICollisionGeometry::ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const FLOAT3& pos, const Quaternion& orientation, IPhysicsObject* attached)
+ICollisionGeometry::ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const FLOAT3& pos, const Quaternion& orientation, std::shared_ptr<IPhysicsObject> attached)
 : Movable(pos, orientation)
 , _type(type)
 , _attachedObject(attached)
@@ -48,21 +48,20 @@ ICollisionGeometry::ICollisionGeometry(const ICollisionGeometry& copy)
 , _attachedObject(copy._attachedObject)
 {}
 
-FROST_COLLISION_GEOMETRY_TYPE ICollisionGeometry::getType()
+FROST_COLLISION_GEOMETRY_TYPE ICollisionGeometry::getType() const
 {
 	return _type;
 }
 
-IPhysicsObject* ICollisionGeometry::getAttachedObjectPtr() const
+std::shared_ptr<IPhysicsObject> ICollisionGeometry::getAttachedObjectPtr() const
 {
 	return _attachedObject;
 }
 
-void ICollisionGeometry::attachObject(IPhysicsObject* t)
+void ICollisionGeometry::attachObject(std::shared_ptr<IPhysicsObject> t)
 {
 	if (_attachedObject == 0)
 		_attachedObject = t;
 	else
 		throw DuplicateActionException();
-	// TODO: Replace this line with a more meaningful exception
 }

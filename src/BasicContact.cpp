@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "BasicContact.h"
 using namespace Frost;
 
-BasicContact::BasicContact(const Vect3& objPt, const Vect3& penetration, IPhysicsObject* receivingObject)
+BasicContact::BasicContact(const Vect3& objPt, const Vect3& penetration, std::shared_ptr<IPhysicsObject> receivingObject)
 : IContact(objPt, penetration)
 , _affectedObject(receivingObject)
 {}
@@ -38,6 +38,7 @@ bool BasicContact::resolve(float dt)
 	// Otherwise, handle it using the super simple
 	//  spring formula with a pretty rigid spring.
 	// F = -kx
+	// TODO: Adjust this to use an enum for SOFT, RIGID, ...
 
 	const float K = 350.f; // 350 N/m
 

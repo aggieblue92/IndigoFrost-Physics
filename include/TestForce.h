@@ -32,8 +32,7 @@ namespace Frost
 	class TestForce : public IForce
 	{
 	public:
-		virtual void applyForce(IPhysicsObject* affectedObject, float dt);
-		virtual IForce* getNewForcePtr() const;
+		virtual void applyForce(std::shared_ptr<IPhysicsObject> affectedObject, float dt);
 	};
 }
 

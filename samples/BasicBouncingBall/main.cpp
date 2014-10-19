@@ -55,28 +55,26 @@ int main()
 	std::vector<std::string> objNames;
 
 	// Add objects to the scene...
-	root.addObject(new Frost::BasicPhysicsObject(10.f, Frost::MathConstants::MATRIX_IDENTITY,
-		0.f, 0.f, { 0.f, 150.f, 400.f }),
-		new Frost::Collidable(),
+	root.addObject(std::make_shared<Frost::BasicPhysicsObject>(10.f, Frost::MathConstants::MATRIX_IDENTITY,
+		0.f, 0.f, Frost::Vect3(0.f, 150.f, 400.f)),
 		"Ball");
 	objNames.push_back("Ball");
-	root.addObject(new Frost::BasicPhysicsObject(0.f, Frost::MathConstants::MATRIX_ZERO,
-		1.f, 1.f, { 0.f, 0.f, 400.f }),
-		new Frost::Collidable(),
+	root.addObject(std::make_shared<Frost::BasicPhysicsObject>(0.f, Frost::MathConstants::MATRIX_ZERO,
+		1.f, 1.f, Frost::Vect3(0.f, 0.f, 400.f)),
 		"Table");
 	objNames.push_back("Table");
 
 	// Add collision information to the objects in our scene
 	root["Ball"]->getCollidableData()->addCollisionObject(
-		new Frost::CollisionSphere(10.f, root["Ball"]->getPhysicsObject()->getPos(), root["Ball"]->getPhysicsObject()),
+		std::make_shared<Frost::CollisionSphere>(10.f, root["Ball"]->getPhysicsObject()->getPos(), root["Ball"]->getPhysicsObject()),
 		Frost::MathConstants::MATRIX_IDENTITY);
 	root["Table"]->getCollidableData()->addCollisionObject(
-		new Frost::CollisionBox({ 130.f, 10.f, 130.f }, root["Table"]->getPhysicsObject()->getPos(),
+		std::make_shared<Frost::CollisionBox>(Frost::Vect3(130.f, 10.f, 130.f), root["Table"]->getPhysicsObject()->getPos(),
 		Frost::MathConstants::QUATERNION_UNIT, root["Table"]->getPhysicsObject()),
 		Frost::MathConstants::MATRIX_IDENTITY);
 
 	// Add forces to the objects in our scene
-	root.addForce(Frost::GravityForce(Frost::MathConstants::VECTOR_UNIT_Y * -1.f, 98.1f), "Ball");
+	root.addForce(std::make_shared<Frost::GravityForce>(Frost::MathConstants::VECTOR_UNIT_Y * -1.f, 98.1f), "Ball");
 
 	// Create our scene nodes...
 	setUpBoringStuff(device, root, objNames);
@@ -107,4 +105,7 @@ int main()
 			frames = 0;
 		}
 	}
+
+	device->drop();
+	device = 0;
 }

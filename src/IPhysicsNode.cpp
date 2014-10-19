@@ -25,31 +25,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "IPhysicsNode.h"
 using namespace Frost;
 
-IPhysicsNode::IPhysicsNode(IPhysicsObject* ao, Collidable* c, std::string name)
+IPhysicsNode::IPhysicsNode(std::shared_ptr<IPhysicsObject> ao, std::shared_ptr<Collidable> c, std::string name)
 : _obj(ao)
 , _name(name)
 , _collidableData(c)
 {}
 
-IPhysicsNode::~IPhysicsNode()
+IPhysicsNode::IPhysicsNode(const IPhysicsNode& o)
+: _obj(o._obj)
+, _name(o._name)
+, _collidableData(o._collidableData)
 {}
 
-IPhysicsNode::operator Frost::IPhysicsObject*()
-{
-	return _obj;
-}
+IPhysicsNode::~IPhysicsNode()
+{}
 
 std::string IPhysicsNode::getName() const
 {
 	return _name;
 }
 
-IPhysicsObject* IPhysicsNode::getPhysicsObject()
+std::shared_ptr<IPhysicsObject> IPhysicsNode::getPhysicsObject()
 {
 	return _obj;
 }
 
-Collidable* IPhysicsNode::getCollidableData()
+std::shared_ptr<Collidable> IPhysicsNode::getCollidableData()
 {
 	return _collidableData;
 }

@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "CommonContact.h"
 using namespace Frost;
 
-CommonCollisionSphere::CommonCollisionSphere(float radius, const FLOAT3& pos, float bounciness, float friction, IPhysicsObject* attachedObject)
+CommonCollisionSphere::CommonCollisionSphere(float radius, const FLOAT3& pos, float bounciness, float friction, std::shared_ptr<IPhysicsObject> attachedObject)
 : CollisionSphere(radius, pos, attachedObject)
 , _frictionCoefficient(friction)
 , _bouncinessCoefficient(bounciness)
@@ -38,7 +38,7 @@ CommonCollisionSphere::CommonCollisionSphere(const CommonCollisionSphere& o)
 , _bouncinessCoefficient(o._bouncinessCoefficient)
 {}
 
-IContact* CommonCollisionSphere::summonDemons(const Vect3& pt_w, const Vect3& pen, IPhysicsObject* thisObj, IPhysicsObject* otherObj) const
+std::shared_ptr<IContact> CommonCollisionSphere::summonDemons(const Vect3& pt_w, const Vect3& pen, std::shared_ptr<IPhysicsObject> thisObj, std::shared_ptr<IPhysicsObject> otherObj) const
 {
-	return new CommonContact(pt_w, pen, _bouncinessCoefficient, _frictionCoefficient, thisObj, otherObj);
+	return std::make_shared<CommonContact>(pt_w, pen, _bouncinessCoefficient, _frictionCoefficient, thisObj, otherObj);
 }

@@ -8,7 +8,7 @@
 class FrostCollisionTestSceneNode : public irr::scene::ISceneNode
 {
 public:
-	FrostCollisionTestSceneNode(irr::scene::ISceneNode* parent, irr::scene::ISceneManager* mgr, irr::s32 idm, Frost::IPhysicsNode* physicsNode);
+	FrostCollisionTestSceneNode(irr::scene::ISceneNode* parent, irr::scene::ISceneManager* mgr, irr::s32 idm, std::shared_ptr<Frost::IPhysicsNode> physicsNode);
 
 	virtual void OnRegisterSceneNode();
 
@@ -27,7 +27,7 @@ private:
 	std::vector<irr::u32> _indices;
 	irr::video::SMaterial _material;
 
-	Frost::IPhysicsNode* _frostNode;
+	std::shared_ptr<Frost::IPhysicsNode> _frostNode;
 };
 
 irr::core::vector3df convFrostVect(const Frost::Vect3& o);

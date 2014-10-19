@@ -42,17 +42,17 @@ namespace Frost
 		BVHTree();
 		~BVHTree();
 
-		virtual void addPhysicsNode(IPhysicsNode*);
-		virtual void removePhysicsNode(IPhysicsNode*);
+		virtual void addPhysicsNode(std::shared_ptr<IPhysicsNode>);
+		virtual void removePhysicsNode(std::shared_ptr<IPhysicsNode>);
 		virtual void removePhysicsNode(std::string);
-		virtual void genContacts(std::vector<IContact*>&);
+		virtual void genContacts(std::vector<std::shared_ptr<IContact>>&);
 
 		virtual void update(float);
 
 	private:
-		BVHNode* _root;
+		std::shared_ptr<BVHNode> _root;
 
-		void genContacts(std::vector<IContact*>& o_contactList, BVHNode* l, BVHNode* r);
+		void genContacts(std::vector<std::shared_ptr<IContact>>& o_contactList, std::shared_ptr<BVHNode> l, std::shared_ptr<BVHNode> r);
 		//std::thread treeUpdatingThread;
 	};
 }

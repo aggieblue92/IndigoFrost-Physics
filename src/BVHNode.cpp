@@ -25,36 +25,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "BVHNode.h"
 using namespace Frost;
 
-BVHNode::BVHNode(Collidable* ac, std::string name)
-: IPhysicsNode((ac == 0) ? 0 : ac->getAttachedObject(), ac, name)
+BVHNode::BVHNode(std::shared_ptr<Collidable> ac, std::string name)
+: IPhysicsNode((ac.get() == 0) ? std::shared_ptr<IPhysicsObject>(0) : ac->getAttachedObject(), ac, name)
 , _left(0)
 , _right(0)
 , _volume(0)
 {
 	if (ac != 0)
 	{
-		_volume = new BoundingSphere(*ac);
+		_volume = std::make_shared<BoundingSphere>(*ac);
 	}
 }
 
 BVHNode::~BVHNode()
-{
-	if (_left != 0)
-	{
-		delete _left;
-		_left = 0;
-	}
-	if (_right != 0)
-	{
-		delete _right;
-		_right = 0;
-	}
-	
-	delete _volume; 
-	_volume = 0;
-}
+{}
 
-BVHNode* BVHNode::insert(Collidable* toAttach, std::string name)
+std::shared_ptr<BVHNode> BVHNode::insert(std::shared_ptr<Collidable> toAttach, std::string name)
 {
 	// If tree is empty, make this the new root
 	if (_volume == 0)
@@ -67,7 +53,7 @@ BVHNode* BVHNode::insert(Collidable* toAttach, std::string name)
 
 		_obj = toAttach->getAttachedObject();
 		_collidableData = toAttach;
-		_volume = new BoundingSphere(*toAttach);
+		_volume = std::make_shared<BoundingSphere>(*toAttach);
 
 		_name = name;
 	}
@@ -76,8 +62,8 @@ BVHNode* BVHNode::insert(Collidable* toAttach, std::string name)
 	//  children are this and the newObject node.
 	else if (this->isLeaf())
 	{
-		_left = new BVHNode(_collidableData, this->_name);
-		_right = new BVHNode(toAttach, name);
+		_left = std::make_shared<BVHNode>(_collidableData, _name);
+		_right = std::make_shared<BVHNode>(toAttach, name);
 		_collidableData = 0;
 		_obj = 0;
 	}
@@ -106,7 +92,7 @@ void BVHNode::remove(std::string toRemove)
 	throw NotImplementedException();
 }
 
-void BVHNode::remove(Collidable* toRemove)
+void BVHNode::remove(std::shared_ptr<Collidable> toRemove)
 {
 	throw NotImplementedException();
 }
@@ -136,9 +122,9 @@ void BVHNode::updateBoundingVolumes()
 	}
 }
 
-BVHNode* BVHNode::getDeepestElement()
+std::shared_ptr<BVHNode> BVHNode::getDeepestElement()
 {
-	BVHNode* toReturn = 0;
+	std::shared_ptr<BVHNode> toReturn(nullptr);
 	int deepest = -1;
 	getDeepestElement(toReturn, deepest, 0);
 	return toReturn;
@@ -149,12 +135,12 @@ int BVHNode::getDepth() const
 	throw NotImplementedException();
 }
 
-BVHNode* BVHNode::getLeftChild() const
+std::shared_ptr<BVHNode> BVHNode::getLeftChild() const
 {
 	return _left;
 }
 
-BVHNode* BVHNode::getRightChild() const
+std::shared_ptr<BVHNode> BVHNode::getRightChild() const
 {
 	return _right;
 }
@@ -169,11 +155,11 @@ bool BVHNode::isLeaf() const
 	return _collidableData != 0;
 }
 
-void BVHNode::getDeepestElement(BVHNode*& o_deepest, int& depth, int myDepth)
+void BVHNode::getDeepestElement(std::shared_ptr<BVHNode>& o_deepest, int& depth, int myDepth)
 {
 	if (myDepth > depth)
 	{
-		o_deepest = this;
+		o_deepest = std::shared_ptr<BVHNode>(this);
 		depth = myDepth;
 	}
 

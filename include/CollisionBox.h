@@ -53,7 +53,7 @@ namespace Frost
 		CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation);
 
 		// Construct a box with the given dimensions, at the given position and orientation, and attach the given physical object.
-		CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation, IPhysicsObject* toAttach);
+		CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation, std::shared_ptr<IPhysicsObject> toAttach);
 
 		// Copy ctor
 		CollisionBox(const CollisionBox& other);
@@ -61,10 +61,10 @@ namespace Frost
 		//////////////////// OVERRIDES //////////////////
 
 		// Returns whether or not the box is in contact with the other collision geometry
-		virtual bool isTouching(ICollisionGeometry* other) const;
+		virtual bool isTouching(const ICollisionGeometry& other) const;
 
 		// Appends a list of contacts (if any) between the two geometry objects to o_list
-		virtual void genContacts(ICollisionGeometry* other, std::vector<IContact*>& o_list) const;
+		virtual void genContacts(const ICollisionGeometry& other, std::vector<std::shared_ptr<IContact>>& o_list) const;
 
 		///////////////// GETTERS/SETTERS ///////////////
 		virtual Vect3 getSize() const;
@@ -74,11 +74,11 @@ namespace Frost
 
 	protected:
 	public:
-		virtual bool isTouchingB(CollisionBox* b) const;
-		virtual void genContactsB(CollisionBox* b, std::vector<IContact*>& o) const;
+		virtual bool isTouchingB(const CollisionBox& b) const;
+		virtual void genContactsB(const CollisionBox& b, std::vector<std::shared_ptr<IContact>>& o) const;
 
-		virtual bool isTouchingS(CollisionSphere* s) const;
-		virtual void genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const;
+		virtual bool isTouchingS(const CollisionSphere& s) const;
+		virtual void genContactsS(const CollisionSphere& s, std::vector<std::shared_ptr<IContact>>& o) const;
 
 		// This code is all used in box-box collisions...
 		enum COLLISION_BOX_FACE
@@ -99,10 +99,10 @@ namespace Frost
 		// Now, I can. These functions are used in what forms the meat and potatoes of the
 		//  collision resolution in the physics engine.
 		void blackMagic(const Vect3Normal&, std::vector<Vect3>&) const;
-		void blackMagic(CollisionBox*, std::vector<Vect3>&, std::vector<Vect3>&) const;
-		void performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<IContact*>&, IPhysicsObject* otherObject, CollisionBox* oBox) const;
-		bool performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, IPhysicsObject* otherObject) const;
-		virtual IContact* summonDemons(const Vect3&, const Vect3&, IPhysicsObject*, IPhysicsObject*) const;
+		void blackMagic(const CollisionBox&, std::vector<Vect3>&, std::vector<Vect3>&) const;
+		void performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::vector<std::shared_ptr<IContact>>&, std::shared_ptr<IPhysicsObject> otherObject, const CollisionBox& oBox) const;
+		bool performDarkRitual(const Vect3Normal&, const Vect3&, const Vect3&, const Vect3&, const Vect3&, std::shared_ptr<IPhysicsObject> otherObject) const;
+		virtual std::shared_ptr<IContact> summonDemons(const Vect3&, const Vect3&, std::shared_ptr<IPhysicsObject>, std::shared_ptr<IPhysicsObject>) const;
 	};
 }
 

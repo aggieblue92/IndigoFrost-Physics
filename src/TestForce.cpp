@@ -25,13 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "TestForce.h"
 using namespace Frost;
 
-void TestForce::applyForce(IPhysicsObject* o, float dt)
+void TestForce::applyForce(std::shared_ptr<IPhysicsObject> o, float dt)
 {
 	/*Vect3 pt_w = o->GetPos() - MathConstants::VECTOR_UNIT_Y;
 	o->addForceAtPoint(MathConstants::VECTOR_UNIT_Z, pt_w);*/
-}
-
-IForce* TestForce::getNewForcePtr() const
-{
-	return new TestForce(*this);
 }

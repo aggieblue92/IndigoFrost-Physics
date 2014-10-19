@@ -25,19 +25,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ForceRegistry.h"
 using namespace Frost;
 
-ForceEntry::ForceEntry(IForce* f, IPhysicsNode* n)
+ForceEntry::ForceEntry(std::shared_ptr<IForce> f, std::shared_ptr<IPhysicsNode> n)
 : _force(f), _obj(n) {}
 
 ForceRegistry::ForceRegistry()
 : _forcesList()
 {}
 
-void ForceRegistry::add(IForce* force, IPhysicsNode* physicsNode)
+void ForceRegistry::add(std::shared_ptr<IForce> force, std::shared_ptr<IPhysicsNode> physicsNode)
 {
 	_forcesList.push_back(ForceEntry(force, physicsNode));
 }
 
-bool ForceRegistry::remove(IForce* force, IPhysicsNode* pn)
+bool ForceRegistry::remove(std::shared_ptr<IForce> force, std::shared_ptr<IPhysicsNode> pn)
 {
 	bool toReturn = false;
 	for (auto i = _forcesList.begin(); i < _forcesList.end(); ++i)

@@ -93,6 +93,7 @@ Vect3 Vect3::operator/(float o) const
 	return Vect3(this->_x / o, this->_y / o, this->_z / o);
 }
 
+
 Vect3& Vect3::operator+=(const FLOAT3& o)
 {
 	this->_x += o._x;

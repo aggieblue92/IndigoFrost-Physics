@@ -40,7 +40,7 @@ CollisionBox::CollisionBox(const FLOAT3& size, const FLOAT3& position, const Qua
 , _size(size)
 {}
 
-CollisionBox::CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation, IPhysicsObject* toAttach)
+CollisionBox::CollisionBox(const FLOAT3& size, const FLOAT3& position, const Quaternion& orientation, std::shared_ptr<IPhysicsObject> toAttach)
 : ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE_BOX, position, orientation, toAttach)
 , _size(size)
 {}
@@ -50,39 +50,39 @@ CollisionBox::CollisionBox(const CollisionBox& o)
 , _size(o._size)
 {}
 
-bool CollisionBox::isTouching(ICollisionGeometry* other) const
+bool CollisionBox::isTouching(const ICollisionGeometry& other) const
 {
-	if (other->getType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
+	if (other.getType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
 	{
-		return isTouchingB((CollisionBox*)other);
+		return isTouchingB(*((CollisionBox*)&other));
 	}
-	else if (other->getType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
+	else if (other.getType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
 	{
-		return isTouchingS((CollisionSphere*)other);
+		return isTouchingS(*((CollisionSphere*)&other));
 	}
 	else
 	{
-		throw UnsupportedCollisionGeometryEvent(_type, other->getType());
+		throw UnsupportedCollisionGeometryEvent(_type, other.getType());
 	}
 }
 
-void CollisionBox::genContacts(ICollisionGeometry* other, std::vector<IContact*>& o_cl) const
+void CollisionBox::genContacts(const ICollisionGeometry& other, std::vector<std::shared_ptr<IContact>>& o_cl) const
 {
-	if (other->getType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
+	if (other.getType() == FROST_COLLISION_GEOMETRY_TYPE_BOX)
 	{
-		genContactsB((CollisionBox*)other, o_cl);
+		genContactsB(*((CollisionBox*)&other), o_cl);
 	}
-	else if (other->getType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
+	else if (other.getType() == FROST_COLLISION_GEOMETRY_TYPE_SPHERE)
 	{
-		genContactsS((CollisionSphere*)other, o_cl);
+		genContactsS(*((CollisionSphere*)&other), o_cl);
 	}
 	else
 	{
-		throw UnsupportedCollisionGeometryEvent(_type, other->getType());
+		throw UnsupportedCollisionGeometryEvent(_type, other.getType());
 	}
 }
 
-bool CollisionBox::isTouchingB(CollisionBox* b) const
+bool CollisionBox::isTouchingB(const CollisionBox& b) const
 {
 	// Two types of detection to test for: edge-edge and corner-face
 	// All other types will resolve to one of those two types, or can be
@@ -90,7 +90,7 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 
 	// Get the world position of the two boxes...
 	Vect3 myPos_ws = this->getPos();
-	Vect3 otherPos_ws = b->getPos();
+	Vect3 otherPos_ws = b.getPos();
 	Vect3Normal dirn_ws = otherPos_ws - myPos_ws;
 
 	// TODO: Can be optimized by running a bunch of this
@@ -103,15 +103,15 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	std::vector<Vect3> otherQualifying_ws(0);
 
 	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws), myQualifying_ws);
-	b->blackMagic(b->getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
+	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
 
 	// Check qualifying points...
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
 	{
-		Vect3 checkPoint = b->getTransformMatrix().getInverse() * myQualifying_ws[i];
-		if ((std::abs(checkPoint._x) <= b->getSize()._x) &&
-			(std::abs(checkPoint._y) <= b->getSize()._y) &&
-			(std::abs(checkPoint._z) <= b->getSize()._z))
+		Vect3 checkPoint = b.getTransformMatrix().getInverse() * myQualifying_ws[i];
+		if ((std::abs(checkPoint._x) <= b.getSize()._x) &&
+			(std::abs(checkPoint._y) <= b.getSize()._y) &&
+			(std::abs(checkPoint._z) <= b.getSize()._z))
 		{
 			// Collision at a point-face, point-edge, or point-point
 			return true;
@@ -142,7 +142,7 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	{
 		for (int j = 0; j < (int)other_edge_list_ws.size(); j += 2)
 		{
-			if (performDarkRitual(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], b->getAttachedObjectPtr()))
+			if (performDarkRitual(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], b.getAttachedObjectPtr()))
 				return true;
 		}
 	}
@@ -150,7 +150,7 @@ bool CollisionBox::isTouchingB(CollisionBox* b) const
 	return false;
 }
 
-void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) const
+void CollisionBox::genContactsB(const CollisionBox& b, std::vector<std::shared_ptr<IContact>>& o) const
 {
 	// Two types of detection to test for: edge-edge and corner-face
 	// All other types will resolve to one of those two types, or can be
@@ -158,7 +158,7 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 
 	// Get the world position of the two boxes...
 	Vect3 myPos_ws = this->getPos();
-	Vect3 otherPos_ws = b->getPos();
+	Vect3 otherPos_ws = b.getPos();
 	Vect3Normal dirn_ws = otherPos_ws - myPos_ws;
 
 	// TODO: Can be optimized by running a bunch of this
@@ -171,37 +171,37 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 	std::vector<Vect3> otherQualifying_ws(0);
 
 	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws), myQualifying_ws);
-	b->blackMagic(b->getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
+	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
 
 	// Check qualifying points...
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
 	{
-		Vect3 checkPoint = b->getTransformMatrix().getInverse() * myQualifying_ws[i];
-		if ((std::abs(checkPoint._x) <= b->getSize()._x) &&
-			(std::abs(checkPoint._y) <= b->getSize()._y) &&
-			(std::abs(checkPoint._z) <= b->getSize()._z))
+		Vect3 checkPoint = b.getTransformMatrix().getInverse() * myQualifying_ws[i];
+		if ((std::abs(checkPoint._x) <= b.getSize()._x) &&
+			(std::abs(checkPoint._y) <= b.getSize()._y) &&
+			(std::abs(checkPoint._z) <= b.getSize()._z))
 		{
 			// Collision at a point-face, point-edge, or point-point
 			//  Collision vector is direction to closest face.
 			Vect3 collision = Vect3(
-				(checkPoint._x > 0.f) ? b->getSize()._x - checkPoint._x : checkPoint._x + b->getSize()._x,
-				(checkPoint._y > 0.f) ? b->getSize()._y - checkPoint._y : checkPoint._y + b->getSize()._y,
-				(checkPoint._z > 0.f) ? b->getSize()._z - checkPoint._z : checkPoint._z + b->getSize()._z
+				(checkPoint._x > 0.f) ? b.getSize()._x - checkPoint._x : checkPoint._x + b.getSize()._x,
+				(checkPoint._y > 0.f) ? b.getSize()._y - checkPoint._y : checkPoint._y + b.getSize()._y,
+				(checkPoint._z > 0.f) ? b.getSize()._z - checkPoint._z : checkPoint._z + b.getSize()._z
 				);
 
 			// We'll choose direction of least penetration
-			Vect3 collPt = b->getTransformMatrix() * checkPoint;
+			Vect3 collPt = b.getTransformMatrix() * checkPoint;
 			Vect3 collDirn = ComponentProduct(
-				b->getTransformMatrix().transformDirn(collision),
+				b.getTransformMatrix().transformDirn(collision),
 				(collision._x < collision._y && collision._x < collision._z) ? MathConstants::VECTOR_UNIT_X
 					: (collision._y < collision._z) ? MathConstants::VECTOR_UNIT_Y : MathConstants::VECTOR_UNIT_Z);
 			if (this->getAttachedObjectPtr())
 			{
-				// Or is it b->getattached?
+				// Or is it b.getattached?
 				try
 				{
 					o.push_back(
-						summonDemons(collPt, collDirn, getAttachedObjectPtr(), b->getAttachedObjectPtr()));
+						summonDemons(collPt, collDirn, getAttachedObjectPtr(), b.getAttachedObjectPtr()));
 					//o.push_back(new BasicContact(collPt, collDirn, this->getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
@@ -209,13 +209,13 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 					// Instead push back a different kind of thing.
 				}
 			}
-			if (b->getAttachedObjectPtr())
+			if (b.getAttachedObjectPtr())
 			{
 				try
 				{
 					o.push_back(
-						b->summonDemons(collPt, collDirn * -1.f, b->getAttachedObjectPtr(), getAttachedObjectPtr()));
-					//o.push_back(new BasicContact(collPt, collDirn * -1.f, b->getAttachedObjectPtr()));
+						b.summonDemons(collPt, collDirn * -1.f, b.getAttachedObjectPtr(), getAttachedObjectPtr()));
+					//o.push_back(new BasicContact(collPt, collDirn * -1.f, b.getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
 				{
@@ -252,7 +252,7 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 				try
 				{
 					o.push_back(
-						summonDemons(collPt, collDirn * -1.f, getAttachedObjectPtr(), b->getAttachedObjectPtr()));
+						summonDemons(collPt, collDirn * -1.f, getAttachedObjectPtr(), b.getAttachedObjectPtr()));
 					//o.push_back(new BasicContact(collPt, collDirn * -1.f, this->getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
@@ -260,13 +260,13 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 					// Instead push back a different kind of thing.
 				}
 			}
-			if (b->getAttachedObjectPtr())
+			if (b.getAttachedObjectPtr())
 			{
 				try
 				{
 					o.push_back(
-						b->summonDemons(collPt, collDirn, b->getAttachedObjectPtr(), getAttachedObjectPtr()));
-					//o.push_back(new BasicContact(collPt, collDirn, b->getAttachedObjectPtr()));
+						b.summonDemons(collPt, collDirn, b.getAttachedObjectPtr(), getAttachedObjectPtr()));
+					//o.push_back(new BasicContact(collPt, collDirn, b.getAttachedObjectPtr()));
 				}
 				catch (const ZeroMagnitudeException&)
 				{
@@ -288,15 +288,15 @@ void CollisionBox::genContactsB(CollisionBox* b, std::vector<IContact*>& o) cons
 	{
 		for (int j = 0; j < (int)other_edge_list_ws.size(); j += 2)
 		{
-			performDarkRitual(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], o, b->getAttachedObjectPtr(), b);
+			performDarkRitual(dirn_ws, our_edge_list_ws[i], our_edge_list_ws[i + 1], other_edge_list_ws[j], other_edge_list_ws[j + 1], o, b.getAttachedObjectPtr(), b);
 		}
 	}
 }
 
-bool CollisionBox::isTouchingS(CollisionSphere* s) const
+bool CollisionBox::isTouchingS(const CollisionSphere& s) const
 {
 	// Get the sphere position in local coordinates of the box.
-	Vect3 transformedSpherePosition = this->getTransformMatrix().getInverse() * s->getPos();
+	Vect3 transformedSpherePosition = this->getTransformMatrix().getInverse() * s.getPos();
 
 	// If the sphere is further away than the magnitude of the furthest distance a corner can
 	//  be, get an early out:
@@ -313,13 +313,13 @@ bool CollisionBox::isTouchingS(CollisionSphere* s) const
 
 	// Now we have the closest point on the box.
 	//  If it's closer than the radius, we have contact.
-	return ((closestBoxPoint - transformedSpherePosition).squareMagnitude() <= s->getRadius() * s->getRadius());
+	return ((closestBoxPoint - transformedSpherePosition).squareMagnitude() <= s.getRadius() * s.getRadius());
 }
 
-void CollisionBox::genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const
+void CollisionBox::genContactsS(const CollisionSphere& s, std::vector<std::shared_ptr<IContact>>& o) const
 {
 	// Get the sphere position in local coordinates of the box.
-	Vect3 transformedSpherePosition = this->getTransformMatrix().getInverse() * s->getPos();
+	Vect3 transformedSpherePosition = this->getTransformMatrix().getInverse() * s.getPos();
 
 	// If the sphere is further away than the magnitude of the furthest distance a corner can
 	//  be, get an early out:
@@ -336,11 +336,11 @@ void CollisionBox::genContactsS(CollisionSphere* s, std::vector<IContact*>& o) c
 
 	// Now we have the closest point on the box.
 	//  If it's closer than the radius, we have contact.
-	if ((closestBoxPoint - transformedSpherePosition).squareMagnitude() <= s->getRadius() * s->getRadius())
+	if ((closestBoxPoint - transformedSpherePosition).squareMagnitude() <= s.getRadius() * s.getRadius())
 	{
 		// Box contact data: contact is under the surface of the sphere, pointing directly out.
 		Vect3Normal d = (closestBoxPoint - transformedSpherePosition);
-		Vect3 collisionPoint_l = transformedSpherePosition + d * s->getRadius();
+		Vect3 collisionPoint_l = transformedSpherePosition + d * s.getRadius();
 		Vect3 penetration_l = closestBoxPoint - collisionPoint_l;
 		Vect3 collisionPoint_w = getTransformMatrix() * collisionPoint_l;
 		Vect3 penetration_w = getTransformMatrix().transformDirn(penetration_l);
@@ -348,14 +348,14 @@ void CollisionBox::genContactsS(CollisionSphere* s, std::vector<IContact*>& o) c
 				collisionPoint_w,
 				penetration_w,
 				_attachedObject,
-				s->getAttachedObjectPtr()));
+				s.getAttachedObjectPtr()));
 
 		// Sphere contact data: Exact opposite of the box contact data
 		penetration_w *= -1.f;
-		o.push_back(s->summonDemons(
+		o.push_back(s.summonDemons(
 			collisionPoint_w,
 			penetration_w,
-			s->getAttachedObjectPtr(),
+			s.getAttachedObjectPtr(),
 			_attachedObject));
 	}
 }
@@ -412,9 +412,9 @@ void CollisionBox::blackMagic(const Vect3Normal& dirn_ls, std::vector<Vect3>& o_
 	}
 }
 
-void CollisionBox::blackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges, std::vector<Vect3>& o_OtherEdges) const
+void CollisionBox::blackMagic(const CollisionBox& other, std::vector<Vect3>& o_MyEdges, std::vector<Vect3>& o_OtherEdges) const
 {
-	Vect3 dirn_ws = other->getPos() - this->getPos();
+	Vect3 dirn_ws = other.getPos() - this->getPos();
 
 	// 12 edges: Pick two directions, the edge will be formed by the two vertices on either.
 	//  e.g., pick ++, edge is +++/++-
@@ -431,9 +431,9 @@ void CollisionBox::blackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 				((i / 2) % 2 == 0 ? -1.f : 1.f) * _size._y,
 				(i % 2 == 0 ? -1.f : 1.f) * _size._z);
 			opt_1_ls = Vect3(
-				other->_size._x,
-				((i / 2) % 2 == 0 ? -1.f : 1.f) * other->_size._y,
-				(i % 2 == 0 ? -1.f : 1.f) * other->_size._z);
+				other._size._x,
+				((i / 2) % 2 == 0 ? -1.f : 1.f) * other._size._y,
+				(i % 2 == 0 ? -1.f : 1.f) * other._size._z);
 			pt_2_ls = Vect3(-pt_1_ls._x, pt_1_ls._y, pt_1_ls._z);
 			opt_2_ls = Vect3(-opt_1_ls._x, opt_1_ls._y, opt_1_ls._z);
 		}
@@ -445,9 +445,9 @@ void CollisionBox::blackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 				_size._y,
 				(i % 2 == 0 ? -1.f : 1.f) * _size._z);
 			opt_1_ls = Vect3(
-				((i / 2) % 2 == 0 ? -1.f : 1.f) * other->_size._x,
-				other->_size._y,
-				(i % 2 == 0 ? -1.f : 1.f) * other->_size._z);
+				((i / 2) % 2 == 0 ? -1.f : 1.f) * other._size._x,
+				other._size._y,
+				(i % 2 == 0 ? -1.f : 1.f) * other._size._z);
 			pt_2_ls = Vect3(pt_1_ls._x, -pt_1_ls._y, pt_1_ls._z);
 			opt_2_ls = Vect3(opt_1_ls._x, -opt_1_ls._y, opt_1_ls._z);
 		}
@@ -459,9 +459,9 @@ void CollisionBox::blackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 				(i % 2 == 0 ? -1.f : 1.f) * _size._y,
 				_size._z);
 			opt_1_ls = Vect3(
-				((i / 2) % 2 == 0 ? -1.f : 1.f) * other->_size._x,
-				(i % 2 == 0 ? -1.f : 1.f) * other->_size._y,
-				other->_size._z);
+				((i / 2) % 2 == 0 ? -1.f : 1.f) * other._size._x,
+				(i % 2 == 0 ? -1.f : 1.f) * other._size._y,
+				other._size._z);
 			pt_2_ls = Vect3(pt_1_ls._x, pt_1_ls._y, -pt_1_ls._z);
 			opt_2_ls = Vect3(opt_1_ls._x, opt_1_ls._y, -opt_1_ls._z);
 		}
@@ -471,12 +471,12 @@ void CollisionBox::blackMagic(CollisionBox* other, std::vector<Vect3>& o_MyEdges
 		// May be done via ClosestPoint to ClosestPoint comparison.
 		o_MyEdges.push_back(this->getTransformMatrix() * pt_1_ls);
 		o_MyEdges.push_back(this->getTransformMatrix() * pt_2_ls);
-		o_OtherEdges.push_back(other->getTransformMatrix() * opt_1_ls);
-		o_OtherEdges.push_back(other->getTransformMatrix() * opt_2_ls);
+		o_OtherEdges.push_back(other.getTransformMatrix() * opt_1_ls);
+		o_OtherEdges.push_back(other.getTransformMatrix() * opt_2_ls);
 	}
 }
 
-void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, std::vector<IContact*>& o_Contacts, IPhysicsObject* otherObject, CollisionBox* ob) const
+void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, std::vector<std::shared_ptr<IContact>>& o_Contacts, std::shared_ptr<IPhysicsObject> otherObject, const CollisionBox& ob) const
 {
 	// Find the edge vectors...
 	Vect3 ourEdge = pt12 - pt11;
@@ -539,13 +539,13 @@ void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 		(pt11 + ourEdge * alpha1) - (pt21 + otherEdge * alpha2),
 		_attachedObject, otherObject));
 
-	o_Contacts.push_back(ob->summonDemons(
+	o_Contacts.push_back(ob.summonDemons(
 		pt21 + otherEdge * alpha2,
 		(pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1),
 		otherObject, _attachedObject));
 }
 
-bool CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, IPhysicsObject* otherObject) const
+bool CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt11, const Vect3& pt12, const Vect3& pt21, const Vect3& pt22, std::shared_ptr<IPhysicsObject> otherObject) const
 {
 	// Find the edge vectors...
 	Vect3 ourEdge = pt12 - pt11;
@@ -607,9 +607,9 @@ bool CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 	return true;
 }
 
-IContact* CollisionBox::summonDemons(const Vect3& point, const Vect3& penetration, IPhysicsObject* afObj, IPhysicsObject* oobj) const
+std::shared_ptr<IContact> CollisionBox::summonDemons(const Vect3& point, const Vect3& penetration, std::shared_ptr<IPhysicsObject> afObj, std::shared_ptr<IPhysicsObject> oobj) const
 {
 	// Return a contact object.
 	// This function is virtual to allow for derived classes to make fancier contacts.
-	return new BasicContact(point, penetration, afObj);
+	return std::make_shared<BasicContact>(point, penetration, afObj);
 }

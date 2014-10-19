@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ICollisionGeometry.h"
 #include "IPhysicsObject.h"
 #include <vector>
+#include <memory>
 
 namespace Frost
 {
@@ -40,21 +41,21 @@ namespace Frost
 	{
 	public:
 		Collidable();
-		Collidable(IPhysicsObject* toAttach);
+		Collidable(std::shared_ptr<IPhysicsObject> toAttach);
 		~Collidable();
 
-		void attachObject(IPhysicsObject*);
+		void attachObject(std::shared_ptr<IPhysicsObject>);
 
-		IPhysicsObject* getAttachedObject() const;
+		std::shared_ptr<IPhysicsObject> getAttachedObject() const;
 
 		Matrix getTransform(int index) const;
-		ICollisionGeometry* getCollisionObject(int index) const;
+		std::shared_ptr<ICollisionGeometry> getCollisionObject(int index) const;
 
-		void addCollisionObject(ICollisionGeometry* toAdd, const Matrix& offset);
+		void addCollisionObject(std::shared_ptr<ICollisionGeometry> toAdd, const Matrix& offset);
 		void removeCollisionObject(int index);
 
-		virtual bool isTouching(Collidable* other);
-		virtual void genContacts(Collidable* other, std::vector<IContact*>& o_contactList);
+		virtual bool isTouching(std::shared_ptr<Collidable> other);
+		virtual void genContacts(std::shared_ptr<Collidable> other, std::vector<std::shared_ptr<IContact>>& o_contactList);
 
 		bool isDirty() const;
 		void clean();
@@ -62,9 +63,9 @@ namespace Frost
 		int getNumObjects() const;
 
 	protected:
-		std::vector<ICollisionGeometry*> _collisionGeometryList;
+		std::vector<std::shared_ptr<ICollisionGeometry>> _collisionGeometryList;
 		std::vector<Matrix> _collisionGeometryTransforms;
-		IPhysicsObject* _attachedObject;
+		std::shared_ptr<IPhysicsObject> _attachedObject;
 		bool _isDirty;
 
 	private:

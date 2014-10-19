@@ -32,38 +32,39 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "IPhysicsNode.h"
 #include "Collidable.h"
 #include "BoundingSphere.h"
+#include <memory>
 
 namespace Frost
 {
 	class BVHNode : public IPhysicsNode
 	{
 	public:
-		BVHNode(Collidable* attachedCollidable, std::string name ="");
+		BVHNode(std::shared_ptr<Collidable> attachedCollidable, std::string name ="");
 		~BVHNode();
 
-		BVHNode* insert(Collidable* toAttach, std::string name = "");
+		std::shared_ptr<BVHNode> insert(std::shared_ptr<Collidable> toAttach, std::string name = "");
 		void remove(std::string toRemove);
-		void remove(Collidable* toRemove);
+		void remove(std::shared_ptr<Collidable> toRemove);
 
 		void updateBoundingVolumes();
 
-		BVHNode* getDeepestElement();
+		std::shared_ptr<BVHNode> getDeepestElement();
 
 		int getDepth() const;
 
-		BVHNode* getLeftChild() const;
-		BVHNode* getRightChild() const;
+		std::shared_ptr<BVHNode> getLeftChild() const;
+		std::shared_ptr<BVHNode> getRightChild() const;
 
 		BoundingSphere& getVolume() const;
 
 		bool isLeaf() const;
 
 	private:
-		BVHNode* _left;
-		BVHNode* _right;
-		BoundingSphere* _volume;
+		std::shared_ptr<BVHNode> _left;
+		std::shared_ptr<BVHNode> _right;
+		std::shared_ptr<BoundingSphere> _volume;
 
-		void getDeepestElement(BVHNode*& o_deepest, int& depth, int myDepth = 0);
+		void getDeepestElement(std::shared_ptr<BVHNode>& o_deepest, int& depth, int myDepth = 0);
 	};
 }
 

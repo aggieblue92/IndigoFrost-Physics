@@ -93,7 +93,7 @@ float PlayerMotionForce::getTimeToMaxVelodity() const
 	return _timeToMaxSpeed;
 }
 
-void PlayerMotionForce::applyForce(IPhysicsObject* me, float dt)
+void PlayerMotionForce::applyForce(std::shared_ptr<IPhysicsObject> me, float dt)
 {
 	// We'll be taking the inverse of the suration, so make sure
 	//  that in fact it's greater than zero.
@@ -117,9 +117,4 @@ void PlayerMotionForce::applyForce(IPhysicsObject* me, float dt)
 	//  no matter what the mass of the object... We gave
 	//  time to acceleration, not a force value, no?
 	me->addForceAtOrigin(acc / me->getInverseMass());
-}
-
-IForce* PlayerMotionForce::getNewForcePtr() const
-{
-	return new PlayerMotionForce(*this);
 }

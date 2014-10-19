@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using namespace Frost;
 
 SpringForce::SpringForce(const Vect3& lcp,
-	IPhysicsObject* o,
+	std::shared_ptr<IPhysicsObject> o,
 	const Vect3& ocp,
 	float k,
 	float x)
@@ -50,7 +50,7 @@ SpringForce::SpringForce(const SpringForce& o)
 , _localConnectionPoint(o._localConnectionPoint)
 {}
 
-void SpringForce::applyForce(IPhysicsObject* me, float dt)
+void SpringForce::applyForce(std::shared_ptr<IPhysicsObject> me, float dt)
 {
 	// Calculate the two ends in world space
 	Vect3 lws = me->getTransformMatrix() * _localConnectionPoint;
@@ -65,9 +65,4 @@ void SpringForce::applyForce(IPhysicsObject* me, float dt)
 	// Calculate the final force and apply it
 	me->addForceAtPoint(Vect3Normal(distance) * magnitude, lws);
 	_otherObjectInvolved->addForceAtPoint(Vect3Normal(distance) * -magnitude, rhs);
-}
-
-IForce* SpringForce::getNewForcePtr() const
-{
-	return new SpringForce(*this);
 }

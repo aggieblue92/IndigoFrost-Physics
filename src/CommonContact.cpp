@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cmath>
 using namespace Frost;
 
-CommonContact::CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, IPhysicsObject* attachedObj, IPhysicsObject* otherObject)
+CommonContact::CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, std::shared_ptr<IPhysicsObject> attachedObj, std::shared_ptr<IPhysicsObject> otherObject)
 : IContact(pt, penetration)
 , _affectedObject(attachedObj)
 , _friction(friction)

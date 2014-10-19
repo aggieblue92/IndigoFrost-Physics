@@ -34,26 +34,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "Collidable.h"
 #include "FrostExceptions.h"
 #include <string>
+#include <memory>
 
 namespace Frost
 {
 	class IPhysicsNode
 	{
 	public:
-		IPhysicsNode(IPhysicsObject* attachedObject = 0, Collidable* collisionInformation = 0, std::string name = "");
+		IPhysicsNode(std::shared_ptr<IPhysicsObject> attachedObject = 0, std::shared_ptr<Collidable> collisionInformation = std::shared_ptr<Collidable>(0), std::string name = "");
+		IPhysicsNode(const IPhysicsNode&);
 		~IPhysicsNode();
 
-		operator IPhysicsObject*();
-
-		IPhysicsObject* getPhysicsObject();
-		Collidable* getCollidableData();
+		std::shared_ptr<IPhysicsObject> getPhysicsObject();
+		std::shared_ptr<Collidable> getCollidableData();
 
 		std::string getName() const;
 		void setName(std::string newName);
 
 	protected:
-		IPhysicsObject* _obj;
-		Collidable* _collidableData;
+		std::shared_ptr<IPhysicsObject> _obj;
+		std::shared_ptr<Collidable> _collidableData;
 		std::string _name;
 	};
 }

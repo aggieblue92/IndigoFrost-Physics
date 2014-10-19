@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define FROST_CONTACT_INTERFACE_H
 
 #include "Movable.h"
+#include <memory>
 
 namespace Frost
 {

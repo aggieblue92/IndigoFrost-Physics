@@ -68,26 +68,26 @@ namespace Frost
 		ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const FLOAT3& pos, const Quaternion& orientation);
 
 		// Constructor with type, spatial information and attached object
-		ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const FLOAT3& pos, const Quaternion& orientation, IPhysicsObject* attachedObject);
+		ICollisionGeometry(FROST_COLLISION_GEOMETRY_TYPE type, const FLOAT3& pos, const Quaternion& orientation, std::shared_ptr<IPhysicsObject> attachedObject);
 
 		// Copy ctor
 		ICollisionGeometry(const ICollisionGeometry& copy);
 
 		/////////////////// VIRTUAL FUNCS ///////////////
-		virtual bool isTouching(ICollisionGeometry* otherGeometry) const = 0;
-		virtual void genContacts(ICollisionGeometry* otherGeometry, std::vector<IContact*>& o_list) const = 0;
+		virtual bool isTouching(const ICollisionGeometry& otherGeometry) const = 0;
+		virtual void genContacts(const ICollisionGeometry& otherGeometry, std::vector<std::shared_ptr<IContact>>& o_list) const = 0;
 
 		/////////////////// HELPERS //////////////////////
-		FROST_COLLISION_GEOMETRY_TYPE getType();
-		IPhysicsObject* getAttachedObjectPtr() const;
+		FROST_COLLISION_GEOMETRY_TYPE getType() const;
+		std::shared_ptr<IPhysicsObject> getAttachedObjectPtr() const;
 
 		// Attach an object to the collision geometry. Fails if
 		//  the collision geometry already has an attached object.
-		void attachObject(IPhysicsObject* toAttach);
+		void attachObject(std::shared_ptr<IPhysicsObject> toAttach);
 
 	protected:
 		FROST_COLLISION_GEOMETRY_TYPE _type;
-		IPhysicsObject* _attachedObject;
+		std::shared_ptr<IPhysicsObject> _attachedObject;
 	};
 }
 

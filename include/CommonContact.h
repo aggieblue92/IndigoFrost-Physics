@@ -39,13 +39,13 @@ namespace Frost
 	class CommonContact : public IContact
 	{
 	public:
-		CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, IPhysicsObject* receivingObject, IPhysicsObject* otherObject);
+		CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, std::shared_ptr<IPhysicsObject> receivingObject, std::shared_ptr<IPhysicsObject> otherObject);
 
 		virtual bool resolve(float dt);
 
 	protected:
-		IPhysicsObject* _affectedObject;
-		IPhysicsObject* _otherObject;
+		std::shared_ptr<IPhysicsObject> _affectedObject;
+		std::shared_ptr<IPhysicsObject> _otherObject;
 		float _bounciness;
 		float _friction;
 	};

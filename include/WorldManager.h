@@ -36,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "IPhysicsNode.h"
 #include "ICollisionManager.h"
 #include "BVHTree.h"
+#include <memory>
 
 namespace Frost
 {
@@ -64,34 +65,32 @@ namespace Frost
 		virtual void update(float timeElapsed);
 
 		// Add an object to the managed system.
-		IPhysicsNode* addObject(IPhysicsObject* objectToAdd, Collidable* collisionData, std::string name = "");
+		std::shared_ptr<IPhysicsNode> addObject(std::shared_ptr<IPhysicsObject> objectToAdd, std::shared_ptr<Collidable> collisionData, std::string name = "");
+		std::shared_ptr<IPhysicsNode> addObject(std::shared_ptr<IPhysicsObject> objectToAdd, std::string name = "");
 
 		// Get an object, by name, from the managed system
-		IPhysicsNode* getObjectByName(std::string name);
+		std::shared_ptr<IPhysicsNode> getObjectByName(std::string name);
 
-		IPhysicsNode* operator[](std::string name);
+		std::shared_ptr<IPhysicsNode> operator[](std::string name);
 
 		// Add a force to the system, to an object
-		void addForce(const IForce& forceToAdd, IPhysicsNode* objectToAffect);
-		void addForce(IForce* forceToAdd, IPhysicsNode* objectToAffect);
+		void addForce(std::shared_ptr<IForce> forceToAdd, std::shared_ptr<IPhysicsNode> objectToAffect);
 
 		// Add a force to tye system, to an object by string name
-		void addForce(const IForce& forceToAdd, std::string objectToAffect);
-		void addForce(IForce* forceToAdd, std::string objectToAffect);
+		void addForce(std::shared_ptr<IForce> forceToAdd, std::string objectToAffect);
 
 		// Attach a collision manager to the world manager class
 		// TODO: Replace this with a constructor.
-		void attachCollisionManager(ICollisionManager* toAttach);
+		void attachCollisionManager(std::shared_ptr<ICollisionManager> toAttach);
 
 	protected:
-		ICollisionManager* _collisionManager;
-		ForceRegistry _internalForces;
-		ForceRegistry _externalForces;
-		std::vector<IPhysicsNode*> _allManagedObjects;
+		std::shared_ptr<ICollisionManager> _collisionManager;
+		ForceRegistry _forces;
+		std::vector<std::shared_ptr<IPhysicsNode>> _allManagedObjects;
 
 	private:
 		static int nInstances;
-		std::vector<IContact*> _masterContactList;
+		std::vector<std::shared_ptr<IContact>> _masterContactList;
 	};
 }
 

@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "IPhysicsNode.h"
 #include "IContact.h"
 #include <vector>
+#include <memory>
 
 /////////////////////////////////////////
 // ICollisionManager: All physics nodes
@@ -40,10 +41,10 @@ namespace Frost
 	class ICollisionManager
 	{
 	public:
-		virtual void addPhysicsNode(IPhysicsNode*) = 0;
-		virtual void removePhysicsNode(IPhysicsNode*) = 0;
+		virtual void addPhysicsNode(std::shared_ptr<IPhysicsNode>) = 0;
+		virtual void removePhysicsNode(std::shared_ptr<IPhysicsNode>) = 0;
 		virtual void removePhysicsNode(std::string) = 0;
-		virtual void genContacts(std::vector<IContact*>&) = 0;
+		virtual void genContacts(std::vector<std::shared_ptr<IContact>>&) = 0;
 
 		virtual void update(float) = 0;
 	};

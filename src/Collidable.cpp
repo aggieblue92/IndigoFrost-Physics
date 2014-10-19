@@ -32,23 +32,16 @@ Collidable::Collidable()
 , _isDirty(true)
 {}
 
-Collidable::Collidable(IPhysicsObject* objToAttach)
+Collidable::Collidable(std::shared_ptr<IPhysicsObject> objToAttach)
 : _collisionGeometryList(0)
 , _collisionGeometryTransforms(0)
 , _attachedObject(objToAttach)
 {}
 
 Collidable::~Collidable()
-{
-	for (unsigned int i = 0u; i < _collisionGeometryList.size(); ++i)
-	{
-		delete _collisionGeometryList[i];
-		_collisionGeometryList[i] = 0;
-	}
-	_collisionGeometryList.resize(0);
-}
+{}
 
-void Collidable::attachObject(IPhysicsObject* toAttach)
+void Collidable::attachObject(std::shared_ptr<IPhysicsObject> toAttach)
 {
 	if (_attachedObject != 0)
 	{
@@ -61,7 +54,7 @@ void Collidable::attachObject(IPhysicsObject* toAttach)
 	}
 }
 
-IPhysicsObject* Collidable::getAttachedObject() const
+std::shared_ptr<IPhysicsObject> Collidable::getAttachedObject() const
 {
 	return _attachedObject;
 }
@@ -86,7 +79,7 @@ Matrix Collidable::getTransform(int index) const
 	}
 }
 
-ICollisionGeometry* Collidable::getCollisionObject(int index) const
+std::shared_ptr<ICollisionGeometry> Collidable::getCollisionObject(int index) const
 {
 	if (index < 0
 		|| index >= (int)_collisionGeometryList.size())
@@ -99,7 +92,7 @@ ICollisionGeometry* Collidable::getCollisionObject(int index) const
 	}
 }
 
-void Collidable::addCollisionObject(ICollisionGeometry* toAdd, const Matrix& t)
+void Collidable::addCollisionObject(std::shared_ptr<ICollisionGeometry> toAdd, const Matrix& t)
 {
 	if (toAdd == 0)
 	{
@@ -123,14 +116,12 @@ void Collidable::removeCollisionObject(int index)
 	else
 	{
 		_isDirty = true;
-		delete _collisionGeometryList[index];
-		_collisionGeometryList[index] = 0;
 		_collisionGeometryList.erase(_collisionGeometryList.begin() + index);
 		_collisionGeometryTransforms.erase(_collisionGeometryTransforms.begin() + index);
 	}
 }
 
-bool Collidable::isTouching(Collidable* other)
+bool Collidable::isTouching(std::shared_ptr<Collidable> other)
 {
 	// First off, update collision geometry transform matrices to the appropriate spots:
 	this->updateMatrices();
@@ -143,7 +134,7 @@ bool Collidable::isTouching(Collidable* other)
 			j < other->_collisionGeometryList.end();
 			++j)
 		{
-			if ((**i).isTouching(*j))
+			if ((**i).isTouching(**j))
 			{
 				return true;
 			}
@@ -153,7 +144,7 @@ bool Collidable::isTouching(Collidable* other)
 	return false;
 }
 
-void Collidable::genContacts(Collidable* other, std::vector<IContact*>& o)
+void Collidable::genContacts(std::shared_ptr<Collidable> other, std::vector<std::shared_ptr<IContact>>& o)
 {
 	// First off, update collision geometry transform matrices to the appropriate spots:
 	this->updateMatrices();
@@ -165,7 +156,7 @@ void Collidable::genContacts(Collidable* other, std::vector<IContact*>& o)
 			j < other->_collisionGeometryList.end();
 			++j)
 		{
-			(**i).genContacts(*j, o);
+			(**i).genContacts(**j, o);
 		}
 	}
 }

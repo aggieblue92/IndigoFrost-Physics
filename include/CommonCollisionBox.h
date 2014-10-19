@@ -39,7 +39,7 @@ namespace Frost
 	{
 	public:
 		CommonCollisionBox(const FLOAT3& halfSize, const FLOAT3& pos, const Quaternion& orientation,
-			float bounciness, float frictionCoefficient, IPhysicsObject* attachedObject);
+			float bounciness, float frictionCoefficient, std::shared_ptr<IPhysicsObject> attachedObject);
 		CommonCollisionBox(const CommonCollisionBox& o);
 
 	protected:
@@ -47,7 +47,7 @@ namespace Frost
 		float _bouncinessCoefficient;
 
 	private:
-		virtual IContact* summonDemons(const Vect3& pt, const Vect3& pen, IPhysicsObject* thisObj, IPhysicsObject* other_obj) const;
+		virtual std::shared_ptr<IContact> summonDemons(const Vect3& pt, const Vect3& pen, std::shared_ptr<IPhysicsObject> thisObj, std::shared_ptr<IPhysicsObject> other_obj) const;
 	};
 }
 

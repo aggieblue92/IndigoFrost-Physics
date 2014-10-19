@@ -1,6 +1,6 @@
 #include "FrostCollisionTestSceneNode.h"
 
-FrostCollisionTestSceneNode::FrostCollisionTestSceneNode(irr::scene::ISceneNode* parent, irr::scene::ISceneManager* mgr, irr::s32 id, Frost::IPhysicsNode* node)
+FrostCollisionTestSceneNode::FrostCollisionTestSceneNode(irr::scene::ISceneNode* parent, irr::scene::ISceneManager* mgr, irr::s32 id, std::shared_ptr<Frost::IPhysicsNode> node)
 : irr::scene::ISceneNode(parent, mgr, id)
 , _frostNode(node)
 , _verts(0)
@@ -14,7 +14,7 @@ FrostCollisionTestSceneNode::FrostCollisionTestSceneNode(irr::scene::ISceneNode*
 	// Setup the vertices here...
 	if (_geo->getType() == Frost::FROST_COLLISION_GEOMETRY_TYPE_BOX)
 	{
-		Frost::Vect3 d = ((Frost::CollisionBox*)_geo)->getSize();
+		Frost::Vect3 d = ((Frost::CollisionBox*)_geo.get())->getSize();
 
 		_verts.resize(24);
 
@@ -87,7 +87,7 @@ FrostCollisionTestSceneNode::FrostCollisionTestSceneNode(irr::scene::ISceneNode*
 		_verts.clear();
 		_indices.clear();
 
-		float rad = ((Frost::CollisionSphere*)_geo)->getRadius();
+		float rad = ((Frost::CollisionSphere*)_geo.get())->getRadius();
 
 		// Place on the top vertex...
 		_verts.push_back(irr::video::S3DVertex(0.f, rad, 0.f, 0.f, 1.f, 0.f, irr::video::SColor(255, 0, 0, 155), 0, 0));
@@ -196,7 +196,8 @@ void FrostCollisionTestSceneNode::updateAbsolutePosition()
 	Frost::Vect3 pos;
 	Frost::Quaternion orientation;
 	float angle;
-	_frostNode->getPhysicsObject()->getTransformMatrix().getOrientationAndPosition(pos, orientation);
+	pos = _frostNode->getPhysicsObject()->getTransformMatrix().getPosition();
+	orientation = _frostNode->getPhysicsObject()->getTransformMatrix().getTranspose().getOrientation();
 	orientation.getAxisAngle(axis, angle);
 
 	irr::core::matrix4 m, n, f;

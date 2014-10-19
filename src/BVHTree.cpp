@@ -28,16 +28,13 @@ using namespace Frost;
 BVHTree::BVHTree()
 : _root(0)
 {
-	_root = new BVHNode(0, "");
+	_root = std::make_shared<BVHNode>(std::shared_ptr<Collidable>(0), "");
 }
 
 BVHTree::~BVHTree()
-{
-	delete _root;
-	_root = 0;
-}
+{}
 
-void BVHTree::addPhysicsNode(IPhysicsNode* t)
+void BVHTree::addPhysicsNode(std::shared_ptr<IPhysicsNode> t)
 {
 	if (t == 0)
 	{
@@ -53,7 +50,7 @@ void BVHTree::addPhysicsNode(IPhysicsNode* t)
 	}
 }
 
-void BVHTree::removePhysicsNode(IPhysicsNode* toRemove)
+void BVHTree::removePhysicsNode(std::shared_ptr<IPhysicsNode> toRemove)
 {
 	if (toRemove == 0) return;
 	else if (toRemove->getName() != "")
@@ -74,7 +71,7 @@ void BVHTree::removePhysicsNode(std::string toRemove)
 	}
 }
 
-void BVHTree::genContacts(std::vector<IContact*>& o_contactList)
+void BVHTree::genContacts(std::vector<std::shared_ptr<IContact>>& o_contactList)
 {
 	// If the left and right side aren't touching, just go
 	//  down the left and right sides, giving each 1/2 of the contact limit
@@ -83,7 +80,7 @@ void BVHTree::genContacts(std::vector<IContact*>& o_contactList)
 	else genContacts(o_contactList, _root->getLeftChild(), _root->getRightChild());
 }
 
-void BVHTree::genContacts(std::vector<IContact*>& o_contactList, BVHNode* l, BVHNode* r)
+void BVHTree::genContacts(std::vector<std::shared_ptr<IContact>>& o_contactList, std::shared_ptr<BVHNode> l, std::shared_ptr<BVHNode> r)
 {
 	if (l == 0 || r == 0) return;
 

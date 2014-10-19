@@ -39,17 +39,16 @@ namespace Frost
 	{
 	public:
 		SpringForce(const Vect3& localConnectionPoint,
-			IPhysicsObject* otherObject,
+			std::shared_ptr<IPhysicsObject> otherObject,
 			const Vect3& otherConnectionPoint,
 			float springConstant,
 			float restLength);
 		SpringForce(const SpringForce& o);
 
-		virtual void applyForce(IPhysicsObject* affectedPhysicsObject, float duration);
-		virtual IForce* getNewForcePtr() const;
+		virtual void applyForce(std::shared_ptr<IPhysicsObject> affectedPhysicsObject, float duration);
 
 	private:
-		IPhysicsObject* _otherObjectInvolved;
+		std::shared_ptr<IPhysicsObject> _otherObjectInvolved;
 		float _springConstant;
 		float _restLength;
 		Vect3 _localConnectionPoint;

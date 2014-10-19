@@ -38,12 +38,12 @@ namespace Frost
 	class BasicContact : public IContact
 	{
 	public:
-		BasicContact(const Vect3& objPt, const Vect3& penetration, IPhysicsObject* receivingObject);
+		BasicContact(const Vect3& objPt, const Vect3& penetration, std::shared_ptr<IPhysicsObject> receivingObject);
 
 		virtual bool resolve(float dt);
 
 	protected:
-		IPhysicsObject* _affectedObject;
+		std::shared_ptr<IPhysicsObject> _affectedObject;
 	};
 }
 

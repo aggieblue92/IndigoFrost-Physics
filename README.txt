@@ -16,6 +16,7 @@ love to see it. I would take that as the highest of compliments.
 
 --------------------------DIRECTORY STRUCTURE--------------------------
 
+/build               -Files for building Indigo Frost
 /docs                -Documentation for Indigo Frost
   /classes           -Documentation for each class used
   /for_dummies       -High-level overview of the engine

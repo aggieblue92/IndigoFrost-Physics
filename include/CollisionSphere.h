@@ -44,7 +44,7 @@ namespace Frost
 		/////////////////// CTORS //////////////////////
 
 		// Construct a sphere with the given dimensions, position and attached object
-		CollisionSphere(float radius, const FLOAT3& pos, IPhysicsObject* attachedObject);
+		CollisionSphere(float radius, const FLOAT3& pos, std::shared_ptr<IPhysicsObject> attachedObject);
 
 		// Copy ctor
 		CollisionSphere(const CollisionSphere& other);
@@ -52,10 +52,10 @@ namespace Frost
 		//////////////////// OVERRIDES //////////////////
 
 		// Returns whether or not the box is in contact with the other collision geometry
-		virtual bool isTouching(ICollisionGeometry* other) const;
+		virtual bool isTouching(const ICollisionGeometry& other) const;
 
 		// Appends a list of contacts (if any) between the two geometry objects to o_list
-		virtual void genContacts(ICollisionGeometry* other, std::vector<IContact*>& o_list) const;
+		virtual void genContacts(const ICollisionGeometry& other, std::vector<std::shared_ptr<IContact>>& o_list) const;
 
 		////////////////////// HELPERS ////////////////////
 		float getRadius() const;
@@ -64,14 +64,14 @@ namespace Frost
 		float _radius;
 
 	protected:
-		virtual bool isTouchingB(CollisionBox* b) const;
-		virtual void genContactsB(CollisionBox* b, std::vector<IContact*>& o) const;
+		virtual bool isTouchingB(const CollisionBox& b) const;
+		virtual void genContactsB(const CollisionBox& b, std::vector<std::shared_ptr<IContact>>& o) const;
 
-		virtual bool isTouchingS(CollisionSphere* s) const;
-		virtual void genContactsS(CollisionSphere* s, std::vector<IContact*>& o) const;
+		virtual bool isTouchingS(const CollisionSphere& s) const;
+		virtual void genContactsS(const CollisionSphere& s, std::vector<std::shared_ptr<IContact>>& o) const;
 
 	private:
-		virtual IContact* summonDemons(const Vect3&, const Vect3&, IPhysicsObject*, IPhysicsObject*) const;
+		virtual std::shared_ptr<IContact> summonDemons(const Vect3&, const Vect3&, std::shared_ptr<IPhysicsObject>, std::shared_ptr<IPhysicsObject>) const;
 	};
 }
 

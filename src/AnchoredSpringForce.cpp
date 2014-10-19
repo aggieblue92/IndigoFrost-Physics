@@ -39,15 +39,10 @@ AnchoredSpringForce::AnchoredSpringForce(const AnchoredSpringForce& o)
 , _restLength(o._restLength)
 {}
 
-void AnchoredSpringForce::applyForce(IPhysicsObject* affected, float dt)
+void AnchoredSpringForce::applyForce(std::shared_ptr<IPhysicsObject> affected, float dt)
 {
 	Vect3 conn_world = affected->getTransformMatrix() * _connection_local;
 	Vect3 disp = _anchor_world - conn_world;
 	float dx = disp.magnitude() - _restLength;
 	affected->addForceAtPoint(Vect3Normal(disp) * dx * _springConstant, conn_world);
-}
-
-IForce* AnchoredSpringForce::getNewForcePtr() const
-{
-	return new AnchoredSpringForce(*this);
 }

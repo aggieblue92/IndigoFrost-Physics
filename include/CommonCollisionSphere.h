@@ -38,7 +38,7 @@ namespace Frost
 	class CommonCollisionSphere : public CollisionSphere
 	{
 	public:
-		CommonCollisionSphere(float radius, const FLOAT3& pos, float bounciness, float frictionCoefficient, IPhysicsObject* attachedObject);
+		CommonCollisionSphere(float radius, const FLOAT3& pos, float bounciness, float frictionCoefficient, std::shared_ptr<IPhysicsObject> attachedObject);
 		CommonCollisionSphere(const CommonCollisionSphere& other);
 
 	protected:
@@ -46,7 +46,7 @@ namespace Frost
 		float _bouncinessCoefficient;
 
 	private:
-		virtual IContact* summonDemons(const Vect3& pt, const Vect3& pen, IPhysicsObject* thisObject, IPhysicsObject* other_obj) const;
+		virtual std::shared_ptr<IContact> summonDemons(const Vect3& pt, const Vect3& pen, std::shared_ptr<IPhysicsObject> thisObject, std::shared_ptr<IPhysicsObject> other_obj) const;
 	};
 }
 
