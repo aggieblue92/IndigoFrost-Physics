@@ -36,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "IPhysicsNode.h"
 #include "ICollisionManager.h"
 #include "BVHTree.h"
+#include "BruteForceCollisionManager.h"
 #include <memory>
 
 namespace Frost
@@ -51,6 +52,7 @@ namespace Frost
 	//  include different collision manager types here.
 	enum FROST_COLLISION_MANAGER
 	{
+		FROST_COLLISION_MANAGER_BRUTE_FORCE,
 		FROST_COLLISION_MANAGER_BVHTREE
 	};
 
@@ -82,6 +84,14 @@ namespace Frost
 		// Attach a collision manager to the world manager class
 		// TODO: Replace this with a constructor.
 		void attachCollisionManager(std::shared_ptr<ICollisionManager> toAttach);
+
+#if defined(_DEBUG)
+		std::shared_ptr<ICollisionManager> getCollMan()
+		{
+			// Asserting that it is a whatever...
+			return _collisionManager;
+		}
+#endif
 
 	protected:
 		std::shared_ptr<ICollisionManager> _collisionManager;

@@ -77,6 +77,7 @@ namespace Frost
 		virtual bool isTouching(const ICollisionGeometry& otherGeometry) const = 0;
 		virtual void genContacts(const ICollisionGeometry& otherGeometry, std::vector<std::shared_ptr<IContact>>& o_list) const = 0;
 
+
 		/////////////////// HELPERS //////////////////////
 		FROST_COLLISION_GEOMETRY_TYPE getType() const;
 		std::shared_ptr<IPhysicsObject> getAttachedObjectPtr() const;

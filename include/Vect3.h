@@ -64,6 +64,7 @@ namespace Frost
 		float& operator[](int i);
 		Vect3& operator=(const FLOAT3& other);
 		bool operator==(const FLOAT3& other) const;
+		bool operator!=(const FLOAT3& other) const;
 
 		///////////// OTHER VECTOR FUNCTIONS //////////////
 		float magnitude() const;

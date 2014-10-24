@@ -66,6 +66,7 @@ std::shared_ptr<BVHNode> BVHNode::insert(std::shared_ptr<Collidable> toAttach, s
 		_right = std::make_shared<BVHNode>(toAttach, name);
 		_collidableData = 0;
 		_obj = 0;
+		_name = "";
 	}
 
 	else

@@ -88,6 +88,13 @@ std::shared_ptr<ICollisionGeometry> Collidable::getCollisionObject(int index) co
 	}
 	else
 	{
+		// Update the position of the collision geometry...
+		if (_collisionGeometryList[index]->getAttachedObjectPtr() != nullptr)
+		{
+			auto tf = _collisionGeometryTransforms[index];
+			auto obtf = _collisionGeometryList[index]->getAttachedObjectPtr()->getTransformMatrix();
+			_collisionGeometryList[index]->setTransformMatrix(tf * obtf);
+		}
 		return _collisionGeometryList[index];
 	}
 }

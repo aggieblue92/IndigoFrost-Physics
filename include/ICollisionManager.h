@@ -46,7 +46,7 @@ namespace Frost
 		virtual void removePhysicsNode(std::string) = 0;
 		virtual void genContacts(std::vector<std::shared_ptr<IContact>>&) = 0;
 
-		virtual void update(float) = 0;
+		virtual void update(float dt) = 0;
 	};
 }
 

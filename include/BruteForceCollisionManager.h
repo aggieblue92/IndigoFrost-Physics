@@ -22,42 +22,34 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-#ifndef FROST_COLLISION_MANAGER_BVH_TREE_H
-#define FROST_COLLISION_MANAGER_BVH_TREE_H
 
-/////////////////////////////////////////
-// BVHTree: A collision manager that uses
-//  a bounding volume heirarchy to perform
-//  collision detection in a world.
-/////////////////////////////////////////
+#ifndef FROST_COLLISION_MANAGER_BRUTE_FORCE_H
+#define FROST_COLLISION_MANAGER_BRUTE_FORCE_H
 
 #include "ICollisionManager.h"
-#include "BVHNode.h"
+
+/////////////////////////////////////////
+// BruteForceCollisionManager: Collision
+//  manager to use with debugging, does no
+//  coarse collision detection.
+/////////////////////////////////////////
 
 namespace Frost
 {
-	class BVHTree : public ICollisionManager
+	class BruteForceCollisionManager : public ICollisionManager
 	{
 	public:
-		BVHTree();
-		~BVHTree();
-
+		BruteForceCollisionManager();
+		
 		virtual void addPhysicsNode(std::shared_ptr<IPhysicsNode>);
 		virtual void removePhysicsNode(std::shared_ptr<IPhysicsNode>);
 		virtual void removePhysicsNode(std::string);
 		virtual void genContacts(std::vector<std::shared_ptr<IContact>>&);
 
-		virtual void update(float);
-
-#if defined(_DEBUG)
-		std::shared_ptr<BVHNode> getRoot() { return _root; }
-#endif
+		virtual void update(float dt);
 
 	private:
-		std::shared_ptr<BVHNode> _root;
-
-		void genContacts(std::vector<std::shared_ptr<IContact>>& o_contactList, std::shared_ptr<BVHNode> l, std::shared_ptr<BVHNode> r);
-		//std::thread treeUpdatingThread;
+		std::vector<std::shared_ptr<IPhysicsNode>> _objList;
 	};
 }
 

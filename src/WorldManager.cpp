@@ -52,6 +52,9 @@ WorldManager::WorldManager(FROST_COLLISION_MANAGER cmt)
 	case FROST_COLLISION_MANAGER_BVHTREE:
 		_collisionManager = std::shared_ptr<ICollisionManager>(new BVHTree());
 		break;
+	case FROST_COLLISION_MANAGER_BRUTE_FORCE:
+		_collisionManager = std::shared_ptr<ICollisionManager>(new BruteForceCollisionManager());
+		break;
 	default:
 		throw NotImplementedException();
 	}
@@ -84,11 +87,6 @@ void WorldManager::update(float timeElapsed)
 		throw NotImplementedException();
 	}
 
-	if (timeElapsed == 0.f)
-	{
-		return;
-	}
-
 	_collisionManager->update(timeElapsed);
 	_forces.updateForces(timeElapsed);
 
@@ -96,6 +94,11 @@ void WorldManager::update(float timeElapsed)
 	//  contacts must be resolved before physics objects can be updated. This is because
 	//  contacts may add forces to the object, and may look at forces in the object.
 	_collisionManager->genContacts(_masterContactList);
+
+	// TODO: Figure this out...
+	//  There are things you don't want to do if no time has elapsed.
+	//  You should implement this instead at the Collidable level.
+	if (timeElapsed == 0) return;
 
 	// TODO: In the future, you should always have a thread running that updates
 	//  all this, and then just query it at the frame.

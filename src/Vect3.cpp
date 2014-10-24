@@ -156,6 +156,11 @@ bool Vect3::operator==(const FLOAT3& o) const
 		this->_z == o._z;
 }
 
+bool Vect3::operator!=(const FLOAT3& other) const
+{
+	return !(*this == other);
+}
+
 ///////////// OTHER VECTOR FUNCTIONS //////////////
 float Vect3::magnitude() const
 {

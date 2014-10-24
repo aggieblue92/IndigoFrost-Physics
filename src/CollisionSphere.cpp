@@ -104,6 +104,7 @@ bool CollisionSphere::isTouchingB(const CollisionBox& b) const
 void CollisionSphere::genContactsB(const CollisionBox& b, std::vector<std::shared_ptr<IContact>>& o) const
 {
 	// Get the sphere position in local coordinates of the box.
+
 	Vect3 transformedSpherePosition = b.getTransformMatrix().getInverse() * this->getPos();
 
 	// If the sphere is further away than the magnitude of the furthest distance

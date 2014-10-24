@@ -69,7 +69,10 @@ bool CommonContact::resolve(float dt)
 	if (velocityIntoNormal > roughFrameAcc)
 	{
 		Vect3 velocityVecIntoNormal = _contactNormal * velocityIntoNormal;
-		_affectedObject->addForceAtPoint(-_affectedObject->getMass() * (velocityVecIntoNormal * (1.f + _bounciness)) / dt, _objCollisionPoint);
+		// Instead of adding a force, let's just try to reverse the velocity into the normal...
+		Vect3 velocityReboundDelta = velocityVecIntoNormal * -(1.f + _bounciness);
+		_affectedObject->setLinearVelocity(_affectedObject->getLinearVelocity() + velocityReboundDelta);
+		//_affectedObject->addForceAtPoint(-_affectedObject->getMass() * (velocityVecIntoNormal * (1.f + _bounciness)) / dt, _objCollisionPoint);
 	}
 
 	// If it isn't, just apply the normal force
@@ -81,15 +84,18 @@ bool CommonContact::resolve(float dt)
 	// Find motion along surface, apply friction force to it.
 	//  We do this by reconciling motion due to angular velocity, and motion due to linear velocity,
 	//  in any direction perpendicular to the collision normal.
-	Vect3 x = CrossProduct(Vect3Normal(relativeVelocityOfCollisionPoint), _contactNormal);
-	if (x.squareMagnitude() != 0.f)
+	if (relativeVelocityOfCollisionPoint != MathConstants::VECTOR_ZERO)
 	{
-		Vect3Normal pointDirection = CrossProduct(_contactNormal, Vect3Normal(x));
-		Vect3 frictionForce;
+		Vect3 x = CrossProduct(Vect3Normal(relativeVelocityOfCollisionPoint), _contactNormal);
+		if (x.squareMagnitude() != 0.f)
+		{
+			Vect3Normal pointDirection = CrossProduct(_contactNormal, Vect3Normal(x));
+			Vect3 frictionForce;
 
-		frictionForce = pointDirection * (_friction * normalForce).magnitude() * -1.f;
+			frictionForce = pointDirection * (_friction * normalForce).magnitude() * -1.f;
 
-		_affectedObject->addForceAtPoint(frictionForce, _objCollisionPoint);
+			_affectedObject->addForceAtPoint(frictionForce, _objCollisionPoint);
+		}
 	}
 
 	return true;
