@@ -20,9 +20,19 @@ love to see it. I would take that as the highest of compliments.
 /docs                -Documentation for Indigo Frost
   /classes           -Documentation for each class used
   /for_dummies       -High-level overview of the engine
+  /design            -Contains notes about the development of the engine
   /tutorial *        -Outlines usage of the current release version
 /src                 -Source code for the Indigo Frost engine
-/bin *               -Compiled binary libraries
+/lib                 -Output directory for building static libraries
 /samples *           -Sample projects that use Indigo Frost
 
 * These are only included in release commits of Indigo Frost.
+
+--------------------------BUILDING INSTRUCTIONS--------------------------
+
+LINUX:
+  In a terminal, go to the root directory and type "Make"
+
+WINDOWS:
+  Go do something. I'm afraid I don't have the files up currently,
+they will be present in the next commit.

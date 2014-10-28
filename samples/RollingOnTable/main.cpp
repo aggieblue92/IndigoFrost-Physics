@@ -14,8 +14,8 @@ class StuffBroke { public: std::string errMessage; StuffBroke(std::string msg) :
 void setUpBoringStuff(irr::IrrlichtDevice*& o_device, irr::IEventReceiver& er)
 {
 	// Ask user for driver type and create the device...
-	//auto driverType = irr::driverChoiceConsole();
-	irr::video::E_DRIVER_TYPE driverType = irr::video::EDT_DIRECT3D9;
+	auto driverType = irr::driverChoiceConsole();
+	//irr::video::E_DRIVER_TYPE driverType = irr::video::EDT_DIRECT3D9;
 	if (driverType == irr::video::EDT_COUNT)
 	{
 		throw StuffBroke("Could not initialize driver of specified type!");
@@ -114,19 +114,19 @@ int main()
 
 		// Update our PlayerMotionForce
 		Frost::Vect3 dirn(0.f, 0.f, 0.f);
-		if (mer.IsKeyDown(irr::KEY_KEY_W))
+		if (mer.IsKeyDown(irr::KEY_UP))
 		{
 			dirn += Frost::MathConstants::VECTOR_UNIT_Z;
 		}
-		if (mer.IsKeyDown(irr::KEY_KEY_S))
+		if (mer.IsKeyDown(irr::KEY_DOWN))
 		{
 			dirn -= Frost::MathConstants::VECTOR_UNIT_Z;
 		}
-		if (mer.IsKeyDown(irr::KEY_KEY_D))
+		if (mer.IsKeyDown(irr::KEY_RIGHT))
 		{
 			dirn += Frost::MathConstants::VECTOR_UNIT_X;
 		}
-		if (mer.IsKeyDown(irr::KEY_KEY_A))
+		if (mer.IsKeyDown(irr::KEY_LEFT))
 		{
 			dirn -= Frost::MathConstants::VECTOR_UNIT_X;
 		}
