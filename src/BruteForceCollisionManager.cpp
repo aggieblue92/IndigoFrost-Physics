@@ -61,18 +61,6 @@ void BruteForceCollisionManager::removePhysicsNode(std::string name)
 
 void BruteForceCollisionManager::genContacts(std::vector<std::shared_ptr<IContact>>& o)
 {
-#if defined(_DEBUG)
-	std::vector<std::shared_ptr<IContact>> test(0);
-	for (unsigned int i = 0u; i < _objList.size(); ++i)
-	{
-		for (unsigned int j = i + 1u; j < _objList.size(); ++j)
-		{
-			_objList[i]->getCollidableData()->genContacts(_objList[j]->getCollidableData(), test);
-		}
-	}
-	int breakOn = test.size();
-#endif
-
 	for (unsigned int i = 0u; i < _objList.size(); ++i)
 	{
 		for (unsigned int j = i + 1u; j < _objList.size(); ++j)

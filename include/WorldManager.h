@@ -85,14 +85,6 @@ namespace Frost
 		// TODO: Replace this with a constructor.
 		void attachCollisionManager(std::shared_ptr<ICollisionManager> toAttach);
 
-#if defined(_DEBUG)
-		std::shared_ptr<ICollisionManager> getCollMan()
-		{
-			// Asserting that it is a whatever...
-			return _collisionManager;
-		}
-#endif
-
 	protected:
 		std::shared_ptr<ICollisionManager> _collisionManager;
 		ForceRegistry _forces;

@@ -31,13 +31,13 @@ GravityForce::GravityForce(float objMass)
 {}
 
 GravityForce::GravityForce(const Vect3Normal& dirn, float mag)
-: _gravityAcceleration(mag)
-, _gravityDirection(dirn)
+: _gravityDirection(dirn)
+, _gravityAcceleration(mag)
 {}
 
 GravityForce::GravityForce(const GravityForce& o)
-: _gravityAcceleration(o._gravityAcceleration)
-, _gravityDirection(o._gravityDirection)
+: _gravityDirection(o._gravityDirection)
+, _gravityAcceleration(o._gravityAcceleration)
 {}
 
 void GravityForce::setMagnitude(float nm)

@@ -414,8 +414,6 @@ void CollisionBox::blackMagic(const Vect3Normal& dirn_ls, std::vector<Vect3>& o_
 
 void CollisionBox::blackMagic(const CollisionBox& other, std::vector<Vect3>& o_MyEdges, std::vector<Vect3>& o_OtherEdges) const
 {
-	Vect3 dirn_ws = other.getPos() - this->getPos();
-
 	// 12 edges: Pick two directions, the edge will be formed by the two vertices on either.
 	//  e.g., pick ++, edge is +++/++-
 	// Pick all edges in WORLD space

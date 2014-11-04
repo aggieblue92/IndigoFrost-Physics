@@ -29,9 +29,9 @@ using namespace Frost;
 CommonContact::CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, std::shared_ptr<IPhysicsObject> attachedObj, std::shared_ptr<IPhysicsObject> otherObject)
 : IContact(pt, penetration)
 , _affectedObject(attachedObj)
-, _friction(friction)
-, _bounciness(bounciness)
 , _otherObject(otherObject)
+, _bounciness(bounciness)
+, _friction(friction)
 {
 	// TODO: Reconsider - the other object might be able to be null...
 	if (attachedObj == 0 || otherObject == 0)
@@ -55,8 +55,6 @@ bool CommonContact::resolve(float dt)
 
 	// Look at velocity going into the contact normal - if it is the kind of velocity that
 	//  can be caused by one or two frames, just null it out.
-	Vect3 affLinear = _affectedObject->getLinearVelocity();
-	Vect3 affAngular = Frost::CrossProduct(_affectedObject->getAngularVelocity(), _affectedObject->getPos() - _objCollisionPoint);
 	Vect3 relativeVelocityOfCollisionPoint = _affectedObject->getLinearVelocity()
 		+ Frost::CrossProduct(_affectedObject->getAngularVelocity(), _affectedObject->getPos() - _objCollisionPoint)
 		- _otherObject->getLinearVelocity()

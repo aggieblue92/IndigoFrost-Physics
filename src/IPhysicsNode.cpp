@@ -27,14 +27,14 @@ using namespace Frost;
 
 IPhysicsNode::IPhysicsNode(std::shared_ptr<IPhysicsObject> ao, std::shared_ptr<Collidable> c, std::string name)
 : _obj(ao)
-, _name(name)
 , _collidableData(c)
+, _name(name)
 {}
 
 IPhysicsNode::IPhysicsNode(const IPhysicsNode& o)
 : _obj(o._obj)
-, _name(o._name)
 , _collidableData(o._collidableData)
+, _name(o._name)
 {}
 
 IPhysicsNode::~IPhysicsNode()

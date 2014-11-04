@@ -30,11 +30,11 @@ SpringForce::SpringForce(const Vect3& lcp,
 	const Vect3& ocp,
 	float k,
 	float x)
-	: _otherLocalConnectionPoint(ocp)
-	, _restLength(x)
-	, _springConstant(k)
-	, _otherObjectInvolved(o)
-	, _localConnectionPoint(lcp)
+: _otherObjectInvolved(o)
+, _springConstant(k)
+, _restLength(x)
+, _localConnectionPoint(lcp)
+, _otherLocalConnectionPoint(ocp)
 {
 	if (o == 0)
 	{
@@ -43,11 +43,11 @@ SpringForce::SpringForce(const Vect3& lcp,
 }
 
 SpringForce::SpringForce(const SpringForce& o)
-: _otherLocalConnectionPoint(o._otherLocalConnectionPoint)
-, _restLength(o._restLength)
+: _otherObjectInvolved(o._otherObjectInvolved)
 , _springConstant(o._springConstant)
-, _otherObjectInvolved(o._otherObjectInvolved)
+, _restLength(o._restLength)
 , _localConnectionPoint(o._localConnectionPoint)
+, _otherLocalConnectionPoint(o._otherLocalConnectionPoint)
 {}
 
 void SpringForce::applyForce(std::shared_ptr<IPhysicsObject> me, float dt)

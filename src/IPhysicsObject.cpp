@@ -29,30 +29,30 @@ IPhysicsObject::IPhysicsObject()
 : Movable()
 , _linearVelocity(0.f, 0.f, 0.f)
 , _angularVelocity(0.f, 0.f, 0.f)
-, _invMass(0.f)
-, _invInertiaTensor(MathConstants::MATRIX_ZERO)
 , _netForce(0.f, 0.f, 0.f)
 , _netTorque(0.f, 0.f, 0.f)
+, _invMass(0.f)
+, _invInertiaTensor(MathConstants::MATRIX_ZERO)
 {}
 
 IPhysicsObject::IPhysicsObject(const IPhysicsObject& toCopy)
 : Movable(toCopy)
 , _linearVelocity(toCopy._linearVelocity)
 , _angularVelocity(toCopy._angularVelocity)
-, _invMass(toCopy._invMass)
-, _invInertiaTensor(toCopy._invInertiaTensor)
 , _netForce(toCopy._netForce)
 , _netTorque(toCopy._netTorque)
+, _invMass(toCopy._invMass)
+, _invInertiaTensor(toCopy._invInertiaTensor)
 {}
 
 IPhysicsObject::IPhysicsObject(const Movable& inMovable)
 : Movable(inMovable)
 , _linearVelocity(0.f, 0.f, 0.f)
 , _angularVelocity(0.f, 0.f, 0.f)
-, _invMass(0.f)
-, _invInertiaTensor(MathConstants::MATRIX_ZERO)
 , _netForce(0.f, 0.f, 0.f)
 , _netTorque(0.f, 0.f, 0.f)
+, _invMass(0.f)
+, _invInertiaTensor(MathConstants::MATRIX_ZERO)
 {}
 
 IPhysicsObject::IPhysicsObject(const FLOAT3& pos, const Quaternion& quat,
@@ -63,10 +63,10 @@ IPhysicsObject::IPhysicsObject(const FLOAT3& pos, const Quaternion& quat,
 : Movable(pos, quat)
 , _linearVelocity(linVel)
 , _angularVelocity(angVel)
-, _invMass(invMass)
-, _invInertiaTensor(invIT)
 , _netForce(0.f, 0.f, 0.f)
 , _netTorque(0.f, 0.f, 0.f)
+, _invMass(invMass)
+, _invInertiaTensor(invIT)
 {}
 
 Vect3 IPhysicsObject::getLinearVelocity() const

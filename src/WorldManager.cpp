@@ -29,9 +29,10 @@ using namespace Frost;
 int WorldManager::nInstances = 0;
 
 WorldManager::WorldManager()
-: _masterContactList(0)
+: _collisionManager(0)
 , _forces()
-, _collisionManager(0)
+, _allManagedObjects()
+, _masterContactList(0)
 {
 	if (nInstances > 0)
 		throw DuplicateActionException();
@@ -40,9 +41,11 @@ WorldManager::WorldManager()
 }
 
 WorldManager::WorldManager(FROST_COLLISION_MANAGER cmt)
-: _masterContactList(0)
+: _collisionManager(0)
 , _forces()
-, _collisionManager(0)
+, _allManagedObjects()
+, _masterContactList(0)
+
 {
 	if (nInstances > 0)
 		throw DuplicateActionException();

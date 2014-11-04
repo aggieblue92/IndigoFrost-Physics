@@ -49,10 +49,6 @@ namespace Frost
 
 		virtual void update(float);
 
-#if defined(_DEBUG)
-		std::shared_ptr<BVHNode> getRoot() { return _root; }
-#endif
-
 	private:
 		std::shared_ptr<BVHNode> _root;
 
