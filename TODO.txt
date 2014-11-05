@@ -1,0 +1,5 @@
+-Finish adding DebugLogger support to the rest of the engine
+-Add WorldManager file format that it can read in and write out to, to create complete scenes.
+ ++ This will help with debugging - you can dump out a world state as well as the initial world state, and use it in more controlled testing.
+ ++ Perhaps in the samples add a key listener that creates a snapshot when the user presses a key.
+ ++ In the testing playback, maybe keep a buffer of many frames that can be used?

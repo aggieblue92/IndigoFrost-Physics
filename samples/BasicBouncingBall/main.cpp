@@ -46,6 +46,9 @@ int main()
 	irr::IrrlichtDevice* device = 0;
 	setUpBoringStuff(device);
 
+	// Setup the physics debugger...
+	Frost::DebugLogger::createLogger(Frost::DebugLogger::DEBUG_LEVEL_DEBUG_TO_FILE | Frost::DebugLogger::DEBUG_LEVEL_LOG_TO_CLOG | Frost::DebugLogger::DEBUG_LEVEL_LOG_TO_FILE | Frost::DebugLogger::DEBUG_LEVEL_ERR_TO_FILE | Frost::DebugLogger::DEBUG_LEVEL_ERR_TO_CERR, "log.txt");
+
 	// This is where you set up the physics code:
 	// Create the WorldManager object, using a BVH Tree for the collision manager
 	Frost::WorldManager root(Frost::FROST_COLLISION_MANAGER_BVHTREE);

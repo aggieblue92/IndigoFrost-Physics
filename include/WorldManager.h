@@ -37,7 +37,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "ICollisionManager.h"
 #include "BVHTree.h"
 #include "BruteForceCollisionManager.h"
+#include "DebugLogger.h"
 #include <memory>
+#include <sstream>
 
 namespace Frost
 {

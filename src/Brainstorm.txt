@@ -1,9 +1,0 @@
-Perhaps you should change the structure of the engine -
-
-WorldMan takes in IPhysicsObjects sure, but all the collisions, forces, etc. instead go to a derived class,
-  perhaps FullPhysicsObject?
-  This allows for objects like Bullet, Fireball, etc. whatever, to be included, without having to conform to the
-  rules you're giving to the IPhysicsObject
-
-CollisionBox: You're catching zero magnitude exceptions for contacts in the case of no interpenetration - instead,
-  you could create and apply a NoInterpenetrationContact or something?
