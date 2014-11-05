@@ -56,6 +56,10 @@ int main()
 	// This is where you set up the physics code:
 	// Create the WorldManager object, using a BVH Tree for the collision manager
 	const Frost::FROST_COLLISION_MANAGER collManType = Frost::FROST_COLLISION_MANAGER_BRUTE_FORCE;
+	
+	// Setup logging...
+	Frost::DebugLogger::createLogger(Frost::DebugLogger::DEBUG_LEVEL_DEBUG_TO_FILE | Frost::DebugLogger::DEBUG_LEVEL_LOG_TO_CLOG | Frost::DebugLogger::DEBUG_LEVEL_LOG_TO_FILE | Frost::DebugLogger::DEBUG_LEVEL_ERR_TO_FILE | Frost::DebugLogger::DEBUG_LEVEL_ERR_TO_CERR, "log.txt");
+
 	Frost::WorldManager root(collManType);
 
 

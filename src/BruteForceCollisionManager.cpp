@@ -32,6 +32,12 @@ BruteForceCollisionManager::BruteForceCollisionManager()
 
 void BruteForceCollisionManager::addPhysicsNode(std::shared_ptr<IPhysicsNode> t)
 {
+	if(t->getName() != "")
+	{
+		std::stringstream ss("");
+		ss << "Added " << t->getName() << " to the collision manager" << std::endl;
+		DebugLogger::log(ss.str());
+	}
 	_objList.push_back(t);
 }
 

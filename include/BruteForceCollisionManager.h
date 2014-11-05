@@ -26,7 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FROST_COLLISION_MANAGER_BRUTE_FORCE_H
 #define FROST_COLLISION_MANAGER_BRUTE_FORCE_H
 
+#include "DebugLogger.h"
 #include "ICollisionManager.h"
+#include <sstream>
 
 /////////////////////////////////////////
 // BruteForceCollisionManager: Collision
