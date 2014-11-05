@@ -1,5 +1,5 @@
 libindigofrost.a:
-	g++ -c -std=c++11 -I../../include ../../src/*.cpp
+	g++ -c -std=c++11 -Wall -I../../include ../../src/*.cpp
 	ar rvs libindigofrost.a *.o
 	if [ ! -d "./obj" ]; then mkdir obj; fi
 	mv *.o obj
