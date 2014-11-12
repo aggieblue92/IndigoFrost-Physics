@@ -45,4 +45,11 @@ void AnchoredSpringForce::applyForce(std::shared_ptr<IPhysicsObject> affected, f
 	Vect3 disp = _anchor_world - conn_world;
 	float dx = disp.magnitude() - _restLength;
 	affected->addForceAtPoint(Vect3Normal(disp) * dx * _springConstant, conn_world);
+
+	if(DebugLogger::isFlagSet(DebugLogger::DEBUG_LEVEL_DEBUG_TO_FILE | DebugLogger::DEBUG_LEVEL_DEBUG_TO_COUT))
+	{
+		std::stringstream ss("");
+		ss << "AnchoredSpringForce: Force added: " << Vect3(Vect3Normal(disp) * dx * _springConstant) << " at point " << conn_world << "\n";
+		DebugLogger::debug(ss.str());
+	}
 }

@@ -24,7 +24,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "WorldManager.h"
 #include <thread>
-using namespace Frost;
+
+namespace Frost
+{
 
 int WorldManager::nInstances = 0;
 
@@ -261,4 +263,5 @@ void WorldManager::attachCollisionManager(std::shared_ptr<ICollisionManager> t)
 		DebugLogger::err("Error - a collision manager is already attached to this WorldManager object!\n");
 		throw DuplicateActionException();
 	}
+}
 }

@@ -107,16 +107,12 @@ namespace Frost
 
 	inline DebugLogger::DEBUG_LEVEL& operator|=(DebugLogger::DEBUG_LEVEL& a, DebugLogger::DEBUG_LEVEL b)
 	{
-		unsigned int ua = static_cast<unsigned int>(a);
-		unsigned int ub = static_cast<unsigned int>(b);
 		a |= b;
 		return a = static_cast<DebugLogger::DEBUG_LEVEL>(a);
 	}
 
 	inline DebugLogger::DEBUG_LEVEL& operator&=(DebugLogger::DEBUG_LEVEL& a, DebugLogger::DEBUG_LEVEL b)
 	{
-		unsigned int ua = static_cast<unsigned int>(a);
-		unsigned int ub = static_cast<unsigned int>(b);
 		a &= b;
 		return a = static_cast<DebugLogger::DEBUG_LEVEL>(a);
 	}

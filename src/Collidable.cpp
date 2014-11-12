@@ -45,6 +45,7 @@ void Collidable::attachObject(std::shared_ptr<IPhysicsObject> toAttach)
 {
 	if (_attachedObject != 0)
 	{
+		DebugLogger::err("Error - there is already an IPhysicsObject attached to this collidable object!\n");
 		throw DuplicateActionException();
 	}
 	else
@@ -64,6 +65,8 @@ Matrix Collidable::getTransform(int index) const
 	if (index >= (int)_collisionGeometryTransforms.size()
 		|| index < 0)
 	{
+		std::stringstream ss("");
+		ss << "Error: index " << index << " is out of bounds of the collidable array (size " << _collisionGeometryTransforms.size() << ")" << std::endl;
 		throw IndexOutOfBoundsException(index);
 	}
 	else
@@ -101,8 +104,9 @@ std::shared_ptr<ICollisionGeometry> Collidable::getCollisionObject(int index) co
 
 void Collidable::addCollisionObject(std::shared_ptr<ICollisionGeometry> toAdd, const Matrix& t)
 {
-	if (toAdd == 0)
+	if (toAdd == nullptr)
 	{
+		DebugLogger::err("Error - Collidable::addCollisionObject was provided a null object!\n");
 		throw NullObjectException();
 	}
 	else
@@ -118,6 +122,9 @@ void Collidable::removeCollisionObject(int index)
 	if (index < 0
 		|| index >= (int)_collisionGeometryList.size())
 	{
+		std::stringstream ss("");
+		ss << "Error: index " << index << " is out of bounds of the collidable array (size " << _collisionGeometryTransforms.size() << ")" << std::endl;
+		DebugLogger::err(ss.str());
 		throw IndexOutOfBoundsException(index);
 	}
 	else
@@ -143,6 +150,7 @@ bool Collidable::isTouching(std::shared_ptr<Collidable> other)
 		{
 			if ((**i).isTouching(**j))
 			{
+				DebugLogger::debug("Objects are touching\n");
 				return true;
 			}
 		}
@@ -163,7 +171,15 @@ void Collidable::genContacts(std::shared_ptr<Collidable> other, std::vector<std:
 			j < other->_collisionGeometryList.end();
 			++j)
 		{
+			unsigned int osize = o.size();
 			(**i).genContacts(**j, o);
+			if (o.size() > osize)
+			{
+				std::stringstream ss("");
+				ss << (o.size() - osize) << " contacts generated between collidables being tested (";
+				ss << (i - _collisionGeometryList.begin()) << ", " << (j - other->_collisionGeometryList.begin()) << ")" << std::endl;
+				DebugLogger::debug(ss.str());
+			}
 		}
 	}
 }
