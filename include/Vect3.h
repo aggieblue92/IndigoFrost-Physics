@@ -32,6 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "FloatStructs.h"
 #include "FrostExceptions.h"
+#include "DebugLogger.h"
 
 namespace Frost
 {
@@ -85,6 +86,14 @@ namespace Frost
 	Vect3 ComponentProduct(const Vect3& v1, const Vect3& v2);
 
 	Vect3 operator*(float n, const Vect3& o);
+
+	std::ostream& operator<<(std::ostream& o, FLOAT3 v) {
+		return o << "<" << v._x << ", " << v._y << ", " << v._z << ">";
+	}
+
+	std::ostream& operator<<(std::ostream& o, Vect3 v) {
+		return o << "<" << v._x << ", " << v._y << ", " << v._z << ">";
+	}
 }
 
 #endif

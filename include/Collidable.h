@@ -30,10 +30,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //  collision geometry
 /////////////////////////////////////////
 
-#include "ICollisionGeometry.h"
-#include "IPhysicsObject.h"
 #include <vector>
 #include <memory>
+#include <sstream>
+#include "DebugLogger.h"
+#include "ICollisionGeometry.h"
+#include "IPhysicsObject.h"
 
 namespace Frost
 {

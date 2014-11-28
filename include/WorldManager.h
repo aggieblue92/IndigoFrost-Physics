@@ -30,6 +30,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //  Everything is wrapped in here. Yep.
 /////////////////////////////////////////
 
+#include <memory>
+#include <sstream>
+#include <fstream>
+#include <string>
 #include "FrostPhysics.h"
 #include "ForceRegistry.h"
 #include "IForce.h"
@@ -38,8 +42,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "BVHTree.h"
 #include "BruteForceCollisionManager.h"
 #include "DebugLogger.h"
-#include <memory>
-#include <sstream>
 
 namespace Frost
 {
@@ -48,6 +50,13 @@ namespace Frost
 	public:
 		std::string name;
 		ObjectDoesNotExistException(std::string n) : name(n) {}
+	};
+
+	class FileNotFoundException
+	{
+	public:
+		std::string fileName;
+		FileNotFoundException(std::string fn) : fileName(fn) {}
 	};
 
 	// As different collision management schemes are added to the engine,
