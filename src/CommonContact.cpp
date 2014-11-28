@@ -48,7 +48,7 @@ bool CommonContact::resolve(float dt)
 
 	// Identify the normal force of the object against the
 	//  surface of contact
-	Vect3 normalForce = (_affectedObject->getNetForce() * _contactNormal) * _contactNormal * -1.f;
+	Vect3 normalForce = (_affectedObject->getNetForce() * _contactNormal.asVect3()) * _contactNormal.asVect3() * -1.f;
 
 	// Via an impulse, resolve interpenetration
 	_affectedObject->impulse(_objCollisionPoint, _contactNormal * _contactMagnitude * -1.f);
@@ -61,8 +61,8 @@ bool CommonContact::resolve(float dt)
 		- Frost::CrossProduct(_otherObject->getAngularVelocity(), _objCollisionPoint - _otherObject->getPos());
 
 	// If it is more, apply bounciness to it and reverse it.
-	float velocityIntoNormal = relativeVelocityOfCollisionPoint * _contactNormal;
-	float roughFrameAcc = _affectedObject->getInverseMass() * _contactNormal * _affectedObject->getNetForce() * dt * dt;
+	float velocityIntoNormal = relativeVelocityOfCollisionPoint * _contactNormal.asVect3();
+	float roughFrameAcc = _affectedObject->getInverseMass() * _contactNormal.asVect3() * _affectedObject->getNetForce() * dt * dt;
 	//float twoFrames = normalForce.Magnitude() * _affectedObject->getInverseMass() * 1.8f;
 	if (velocityIntoNormal > roughFrameAcc)
 	{
@@ -84,10 +84,10 @@ bool CommonContact::resolve(float dt)
 	//  in any direction perpendicular to the collision normal.
 	if (relativeVelocityOfCollisionPoint != MathConstants::VECTOR_ZERO)
 	{
-		Vect3 x = CrossProduct(Vect3Normal(relativeVelocityOfCollisionPoint), _contactNormal);
+		Vect3 x = CrossProduct(Vect3Normal(relativeVelocityOfCollisionPoint).asVect3(), _contactNormal.asVect3());
 		if (x.squareMagnitude() != 0.f)
 		{
-			Vect3Normal pointDirection = CrossProduct(_contactNormal, Vect3Normal(x));
+			Vect3Normal pointDirection = CrossProduct(_contactNormal.asVect3(), Vect3Normal(x).asVect3());
 			Vect3 frictionForce;
 
 			frictionForce = pointDirection * (_friction * normalForce).magnitude() * -1.f;

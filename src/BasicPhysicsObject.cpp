@@ -61,8 +61,8 @@ void BasicPhysicsObject::addForceAtPoint(const Vect3& f_w, const Vect3& pt_world
 	try
 	{
 		Vect3Normal armNormal = pt_world - getPos();
-		Vect3 originWorldForce = armNormal * (f_w * armNormal);
-		Vect3 originWorldTorque = CrossProduct(f_w, armNormal);
+		Vect3 originWorldForce = armNormal * (armNormal * f_w);
+		Vect3 originWorldTorque = armNormal % f_w;
 
 		addForceAtOrigin(originWorldForce);
 		addTorqueAtOrigin(originWorldTorque);
@@ -104,8 +104,8 @@ void BasicPhysicsObject::update(float dt)
 void BasicPhysicsObject::impulse(const Vect3& applicationPoint, const Vect3& distance)
 {
 	Vect3Normal armNormal = applicationPoint - getPos();
-	Vect3 worldLinearMotion = armNormal * (distance * armNormal);
-	Vect3 worldAngularMotion = CrossProduct(distance, armNormal);
+	Vect3 worldLinearMotion = armNormal * (armNormal * distance);
+	Vect3 worldAngularMotion = armNormal % distance;
 
 	move(worldLinearMotion);
 	setOrientation(getOrientation() + worldAngularMotion);

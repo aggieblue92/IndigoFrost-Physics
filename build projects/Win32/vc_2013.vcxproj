@@ -36,6 +36,7 @@
     <ClInclude Include="..\..\include\CommonCollisionBox.h" />
     <ClInclude Include="..\..\include\CommonCollisionSphere.h" />
     <ClInclude Include="..\..\include\CommonContact.h" />
+    <ClInclude Include="..\..\include\DebugLogger.h" />
     <ClInclude Include="..\..\include\FloatStructs.h" />
     <ClInclude Include="..\..\include\ForceRegistry.h" />
     <ClInclude Include="..\..\include\FrostExceptions.h" />
@@ -73,6 +74,7 @@
     <ClCompile Include="..\..\src\CommonCollisionBox.cpp" />
     <ClCompile Include="..\..\src\CommonCollisionSphere.cpp" />
     <ClCompile Include="..\..\src\CommonContact.cpp" />
+    <ClCompile Include="..\..\src\DebugLogger.cpp" />
     <ClCompile Include="..\..\src\ForceRegistry.cpp" />
     <ClCompile Include="..\..\src\GravityForce.cpp" />
     <ClCompile Include="..\..\src\ICollisionGeometry.cpp" />
@@ -141,22 +143,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(ProjectDir)\..\..\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)..\..\bin\$(Platform)</OutDir>
+    <OutDir>$(SolutionDir)..\..\bin\$(Platform)\</OutDir>
     <TargetName>indigofrost_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Library (Debug)|Win32'">
     <IncludePath>$(ProjectDir)\..\..\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)..\..\lib\$(Platform)</OutDir>
+    <OutDir>$(SolutionDir)..\..\lib\$(Platform)\</OutDir>
     <TargetName>indigofrost_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)\..\..\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)..\..\bin\$(Platform)</OutDir>
+    <OutDir>$(SolutionDir)..\..\bin\$(Platform)\</OutDir>
     <TargetName>indigofrost</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Library (Release)|Win32'">
     <IncludePath>$(ProjectDir)\..\..\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)..\..\lib\$(Platform)</OutDir>
+    <OutDir>$(SolutionDir)..\..\lib\$(Platform)\</OutDir>
     <TargetName>indigofrost</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

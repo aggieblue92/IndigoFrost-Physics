@@ -69,6 +69,8 @@ namespace Frost
 		///////////// OTHER VECTOR FUNCTIONS //////////////
 		float magnitude() const;
 		float squareMagnitude() const;
+		bool isApproximately(const FLOAT3& other, float tolerableError);
+		bool isApproximately(const FLOAT3& other, FLOAT3 tolerableError);
 
 	private:
 	};

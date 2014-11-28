@@ -34,13 +34,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace Frost
 {
-	// Exceptions...
-	class Vect3Normal : public Vect3
+	// TODO: Re-evaluate how you do this - protected inheritance
+	//  seems to make casting to FLOAT3 impossible...
+
+	class Vect3Normal : protected FLOAT3
 	{
 	public:
 		/////////////////// CTORS //////////////////////
-		// Default ctor - initialize to the unit X vector
-		Vect3Normal();
 		// Initialize component-wise
 		Vect3Normal(float x, float y, float z);
 		// Initialize with another Vect3 or other R32B32G32_FLOAT structure
@@ -50,12 +50,42 @@ namespace Frost
 		// Initialize with another normal vector (copy ctor)
 		Vect3Normal(const Vect3Normal& right);
 
+		// GETTERS
+		float x() const { return _x; }
+		float y() const { return _y; }
+		float z() const { return _z; }
+		Vect3 asVect3() const { return Vect3(*this); }
+
+		// VECTOR FUNCTIONS
+		Vect3 operator*(float scalarMultiple) const;
+		Vect3 operator/(float scalarDivisor) const;
+		Vect3 operator+(const FLOAT3& otherVector) const;
+		Vect3 operator-(const FLOAT3& otherVector) const;
+		float operator*(const FLOAT3& otherVector) const;
+		Vect3 operator%(const FLOAT3& otherVector) const;
+
 		///////////// OPERATOR OVERLOADS /////////////
 		Vect3Normal& operator=(const FLOAT3& other);
 		Vect3Normal& operator=(const Vect3Normal& other);
+		float operator[](int i) const;
+		bool operator==(const FLOAT3& other) const;
+		bool operator==(const Vect3Normal& other) const;
+		bool operator!=(const FLOAT3& other) const;
+		bool operator!=(const Vect3Normal& other) const;
+
+		// HELPFUL FUNCTIONS
+		bool isApproximately(const FLOAT3& other, float tolerableError);
+		bool isApproximately(const FLOAT3& other, FLOAT3& tolerableError);
+
+	protected:
+		float magnitude() const;
 
 	private:
 		// Define invalid operations here
+
+		// No default constructor - no sensible default construction
+		//  of a normal vector.
+		Vect3Normal() {}
 
 		// FORBIDDEN!
 		void operator+=(const FLOAT3&) {}

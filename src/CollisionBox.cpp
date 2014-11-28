@@ -102,8 +102,8 @@ bool CollisionBox::isTouchingB(const CollisionBox& b) const
 	std::vector<Vect3> myQualifying_ws(0);
 	std::vector<Vect3> otherQualifying_ws(0);
 
-	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws), myQualifying_ws);
-	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
+	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), myQualifying_ws);
+	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), otherQualifying_ws);
 
 	// Check qualifying points...
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
@@ -170,8 +170,8 @@ void CollisionBox::genContactsB(const CollisionBox& b, std::vector<std::shared_p
 	std::vector<Vect3> myQualifying_ws(0);
 	std::vector<Vect3> otherQualifying_ws(0);
 
-	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws), myQualifying_ws);
-	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
+	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), myQualifying_ws);
+	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), otherQualifying_ws);
 
 	// Check qualifying points...
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
@@ -529,7 +529,7 @@ void CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 	if (alpha1 < 0.f || alpha1 > 1.f || alpha2 > 1.f || alpha2 < 0.f) return;
 
 	Vect3 edgeDistance_ws((pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1));
-	if (edgeDistance_ws * dirn_ws > 0.f) return;
+	if (dirn_ws * edgeDistance_ws > 0.f) return;
 
 	// They are within bounds. Generate contact...
 	o_Contacts.push_back(this->summonDemons(
@@ -599,7 +599,7 @@ bool CollisionBox::performDarkRitual(const Vect3Normal& dirn_ws, const Vect3& pt
 		return false;
 
 	Vect3 edgeDistance_ws((pt21 + otherEdge * alpha2) - (pt11 + ourEdge * alpha1));
-	if (edgeDistance_ws * dirn_ws > 0.f)
+	if (dirn_ws * edgeDistance_ws > 0.f)
 		return false;
 
 	return true;

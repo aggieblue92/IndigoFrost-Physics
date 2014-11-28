@@ -68,9 +68,9 @@ Quaternion::Quaternion(const FLOAT3& axis, float angle)
 	Vect3Normal axis_n(axis);
 	angle /= 2.f;
 	_w = std::cos(angle);
-	_x = axis_n._x * std::sin(angle);
-	_y = axis_n._y * std::sin(angle);
-	_z = axis_n._z * std::sin(angle);
+	_x = axis_n.x() * std::sin(angle);
+	_y = axis_n.y() * std::sin(angle);
+	_z = axis_n.z() * std::sin(angle);
 }
 
 ///////////// OPERATOR OVERLOADS /////////////
@@ -177,7 +177,7 @@ void Quaternion::getAxisAngle(FLOAT3& o_Axis, float& o_Angle) const
 		o_Axis = Vect3Normal(
 			this->_x / sin_half_angle,
 			this->_y / sin_half_angle,
-			this->_z / sin_half_angle);
+			this->_z / sin_half_angle).asVect3();
 	}
 }
 

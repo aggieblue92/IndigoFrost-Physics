@@ -146,7 +146,7 @@ namespace Frost
 		if(!_inst)
 			return false;
 		else
-			return _inst->_debugLevel & flag;
+			return (_inst->_debugLevel & flag) > 0x00;
 	}
 
 	void DebugLogger::run()
