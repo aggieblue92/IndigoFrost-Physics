@@ -87,13 +87,7 @@ namespace Frost
 
 	Vect3 operator*(float n, const Vect3& o);
 
-	std::ostream& operator<<(std::ostream& o, FLOAT3 v) {
-		return o << "<" << v._x << ", " << v._y << ", " << v._z << ">";
-	}
-
-	std::ostream& operator<<(std::ostream& o, Vect3 v) {
-		return o << "<" << v._x << ", " << v._y << ", " << v._z << ">";
-	}
+	std::ostream& operator<<(std::ostream& o, Vect3 v);
 }
 
 #endif

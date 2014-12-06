@@ -106,7 +106,7 @@ void PlayerMotionForce::applyForce(std::shared_ptr<IPhysicsObject> me, float dt)
 
 	// If the object is already traveling at or above max speed,
 	//  don't do anything else here.
-	if (me->getLinearVelocity() * _direction.asVect3() >= _speed)
+	if (me->getLinearVelocity() * _direction >= _speed)
 		return;
 
 	// Acceleration (for a linear curve):

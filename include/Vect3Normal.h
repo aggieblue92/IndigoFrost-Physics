@@ -37,7 +37,7 @@ namespace Frost
 	// TODO: Re-evaluate how you do this - protected inheritance
 	//  seems to make casting to FLOAT3 impossible...
 
-	class Vect3Normal : protected FLOAT3
+	class Vect3Normal : public FLOAT3
 	{
 	public:
 		/////////////////// CTORS //////////////////////
@@ -49,12 +49,6 @@ namespace Frost
 		Vect3Normal(const Vect3& right);
 		// Initialize with another normal vector (copy ctor)
 		Vect3Normal(const Vect3Normal& right);
-
-		// GETTERS
-		float x() const { return _x; }
-		float y() const { return _y; }
-		float z() const { return _z; }
-		Vect3 asVect3() const { return Vect3(*this); }
 
 		// VECTOR FUNCTIONS
 		Vect3 operator*(float scalarMultiple) const;

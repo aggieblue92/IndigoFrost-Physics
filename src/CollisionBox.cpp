@@ -102,8 +102,8 @@ bool CollisionBox::isTouchingB(const CollisionBox& b) const
 	std::vector<Vect3> myQualifying_ws(0);
 	std::vector<Vect3> otherQualifying_ws(0);
 
-	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), myQualifying_ws);
-	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), otherQualifying_ws);
+	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws), myQualifying_ws);
+	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
 
 	// Check qualifying points...
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)
@@ -170,8 +170,8 @@ void CollisionBox::genContactsB(const CollisionBox& b, std::vector<std::shared_p
 	std::vector<Vect3> myQualifying_ws(0);
 	std::vector<Vect3> otherQualifying_ws(0);
 
-	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), myQualifying_ws);
-	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws.asVect3()), otherQualifying_ws);
+	this->blackMagic(this->getTransformMatrix().getInverse().transformDirn(dirn_ws), myQualifying_ws);
+	b.blackMagic(b.getTransformMatrix().getInverse().transformDirn(dirn_ws), otherQualifying_ws);
 
 	// Check qualifying points...
 	for (int i = 0; i < (int)myQualifying_ws.size(); i++)

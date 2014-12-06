@@ -158,9 +158,9 @@ namespace Frost
 	float operator*(const FLOAT3& left, const Vect3Normal& right)
 	{
 		return
-			left._x * right.x()
-			+ left._y * right.y()
-			+ left._z * right.z();
+			left._x * right._x
+			+ left._y * right._y
+			+ left._z * right._z;
 	}
 
 	Vect3 operator%(const FLOAT3& left, const Vect3Normal& right)

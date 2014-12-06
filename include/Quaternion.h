@@ -78,13 +78,7 @@ namespace Frost
 		float magnitude();
 	};
 
-	std::ostream& operator<<(std::ostream& o, Quaternion& q)
-	{
-		FLOAT3 axis;
-		float angle;
-		q.getAxisAngle(axis, angle);
-		return o << "--" <<  angle << " about <" << axis._x << ", " << axis._y << ", " << axis._z << ">--";
-	}
+	std::ostream& operator<<(std::ostream& o, Quaternion& q);
 }
 
 #endif

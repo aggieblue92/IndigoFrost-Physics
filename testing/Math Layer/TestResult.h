@@ -26,4 +26,6 @@ private:
 	std::string _message;
 };
 
+const TestResult TEST_PASSED(true, "");
+
 #endif

@@ -1,6 +1,11 @@
 #include "CollisionSphere_test.h"
 #include <iostream>
 
+inline void AnnounceTestGroup(std::string unitBeingTested)
+{
+	std::cout << "-----" << unitBeingTested << "-----" << std::endl;
+}
+
 inline void ConductTest(TestResult(*test)(), std::string testName)
 {
 	std::cout << testName << ": ";
@@ -19,7 +24,11 @@ inline void ConductTest(TestResult(*test)(), std::string testName)
 
 int main()
 {
-	ConductTest(ConstructionTest, "CollisionSphere ctor");
+	AnnounceTestGroup("Collision Sphere");
+	ConductTest(CollisionSphereTests::ConstructionTests, "Construction");
+	ConductTest(CollisionSphereTests::AccessorTests, "Accessors");
+	ConductTest(CollisionSphereTests::IsTouchingBoxTests, "Box Collision");
+	ConductTest(CollisionSphereTests::IsTouchingSphereTests, "Sphere Collision");
 	std::cout << "\n--------------------------------\nAll tests passed!\n--------------------------------";
 	std::cin.ignore();
 	return 0;

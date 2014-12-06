@@ -1,3 +1,10 @@
 #include "TestResult.h"
+#include <CollisionSphere.h>
 
-TestResult ConstructionTest();
+namespace CollisionSphereTests
+{
+	TestResult ConstructionTests();
+	TestResult IsTouchingSphereTests();
+	TestResult IsTouchingBoxTests();
+	TestResult AccessorTests();
+}

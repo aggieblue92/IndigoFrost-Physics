@@ -211,4 +211,8 @@ namespace Frost
 		return o * n;
 	}
 
+	std::ostream& Frost::operator<<(std::ostream& o, Vect3 v) {
+		return o << "<" << v._x << ", " << v._y << ", " << v._z << ">";
+	}
+
 }

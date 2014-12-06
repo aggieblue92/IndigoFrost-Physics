@@ -68,6 +68,7 @@ namespace Frost
 		FLOAT4 operator[](int i) const;
 		FLOAT4& operator[](int i);
 		bool operator==(const FLOAT4X4& other) const;
+		bool operator!=(const FLOAT4X4& other) const;
 
 		//////////////// OTHER MATRIX FUNCTIONS ////////////////
 
@@ -87,6 +88,8 @@ namespace Frost
 		// Transform a unit direction
 		Vect3Normal transformNormal(const FLOAT3& dirn) const;
 	};
+
+	std::ostream& operator<<(std::ostream& o, Matrix m);
 }
 
 #endif
