@@ -40,6 +40,7 @@ namespace Frost
 	{
 	public:
 		CommonContact(const Vect3& pt, const Vect3& penetration, float bounciness, float friction, std::shared_ptr<IPhysicsObject> receivingObject, std::shared_ptr<IPhysicsObject> otherObject);
+		CommonContact(const Vect3& pt, const Vect3Normal& penetrationDirection, float penetrationMagnitude, float bounciness, float friction, std::shared_ptr<IPhysicsObject> receivingObject, std::shared_ptr<IPhysicsObject> otherObject);
 
 		virtual bool resolve(float dt);
 

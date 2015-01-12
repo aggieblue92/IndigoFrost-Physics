@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vc_2013", "vc_2013.vcxproj", "{6972BFE7-B137-4A70-9305-F2F68621C3DC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "..\UnitTests\UnitTests.vcxproj", "{26D21B9C-2315-4887-AA66-C6EE2F409419}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +23,14 @@ Global
 		{6972BFE7-B137-4A70-9305-F2F68621C3DC}.Static Library (Debug)|Win32.Build.0 = Static Library (Debug)|Win32
 		{6972BFE7-B137-4A70-9305-F2F68621C3DC}.Static Library (Release)|Win32.ActiveCfg = Static Library (Release)|Win32
 		{6972BFE7-B137-4A70-9305-F2F68621C3DC}.Static Library (Release)|Win32.Build.0 = Static Library (Release)|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Debug|Win32.ActiveCfg = Debug|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Debug|Win32.Build.0 = Debug|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Release|Win32.ActiveCfg = Release|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Release|Win32.Build.0 = Release|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Static Library (Debug)|Win32.ActiveCfg = Debug|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Static Library (Debug)|Win32.Build.0 = Debug|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Static Library (Release)|Win32.ActiveCfg = Release|Win32
+		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Static Library (Release)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

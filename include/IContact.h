@@ -39,6 +39,7 @@ namespace Frost
 	{
 	public:
 		IContact(const Vect3& objPt, const Vect3& penetrationVector);
+		IContact(const Vect3& objPt, const Vect3Normal& penetrationDir, float penetrationMagnitude);
 
 		// This method resolves or suggests a resolution between the objects in collision.
 		// Returns: True if resolution succeeds, false if not.

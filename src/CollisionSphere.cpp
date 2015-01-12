@@ -138,6 +138,7 @@ void CollisionSphere::genContactsB(const CollisionBox& b, std::vector<std::share
 		o.push_back(this->summonDemons(
 			collisionPoint_w,
 			penetration_w,
+			penetration_w.magnitude(),
 			b.getAttachedObjectPtr(), _attachedObject));
 
 		// Sphere contact data: Exact opposite of the box contact.
@@ -145,6 +146,7 @@ void CollisionSphere::genContactsB(const CollisionBox& b, std::vector<std::share
 		o.push_back(this->summonDemons(
 			collisionPoint_w,
 			penetration_w,
+			penetration_w.magnitude(),
 			this->getAttachedObjectPtr(), b.getAttachedObjectPtr()));
 	}
 }
@@ -190,14 +192,15 @@ void CollisionSphere::genContactsS(const CollisionSphere& s, std::vector<std::sh
 			- (this->getPos() + directionNormal * this->getRadius()))
 			* 0.5f
 			+ (this->getPos() + directionNormal * this->getRadius());
-		o.push_back(summonDemons(contactPoint, directionNormal * contactMagnitude * -1.f, s.getAttachedObjectPtr(), _attachedObject));
-		o.push_back(summonDemons(contactPoint, directionNormal * contactMagnitude, this->getAttachedObjectPtr(), s.getAttachedObjectPtr()));
+
+		o.push_back(summonDemons(contactPoint, directionNormal * -1.f, contactMagnitude, s.getAttachedObjectPtr(), _attachedObject));
+		o.push_back(summonDemons(contactPoint, directionNormal, contactMagnitude, this->getAttachedObjectPtr(), s.getAttachedObjectPtr()));
 	}
 }
 
-std::shared_ptr<IContact> CollisionSphere::summonDemons(const Vect3& pt, const Vect3& pen, std::shared_ptr<IPhysicsObject> obj, std::shared_ptr<IPhysicsObject> oobj) const
+std::shared_ptr<IContact> CollisionSphere::summonDemons(const Vect3& pt, const Vect3Normal& penDir, float penMag, std::shared_ptr<IPhysicsObject> obj, std::shared_ptr<IPhysicsObject> oobj) const
 {
 	// This function is here so that overriding this class is easier - all contact generation
 	//  goes in here, though the information is generated outside of the function
-	return std::make_shared<BasicContact>(pt, pen, obj);
+	return std::make_shared<BasicContact>(pt, penDir, penMag, obj);
 }

@@ -46,7 +46,7 @@ namespace Frost
 		float _bouncinessCoefficient;
 
 	private:
-		virtual std::shared_ptr<IContact> summonDemons(const Vect3& pt, const Vect3& pen, std::shared_ptr<IPhysicsObject> thisObject, std::shared_ptr<IPhysicsObject> other_obj) const;
+		virtual std::shared_ptr<IContact> summonDemons(const Vect3& pt, const Vect3Normal& penDir, float penMag, std::shared_ptr<IPhysicsObject> thisObject, std::shared_ptr<IPhysicsObject> other_obj) const;
 	};
 }
 

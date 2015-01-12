@@ -34,7 +34,21 @@ CommonContact::CommonContact(const Vect3& pt, const Vect3& penetration, float bo
 , _friction(friction)
 {
 	// TODO: Reconsider - the other object might be able to be null...
-	if (attachedObj == 0 || otherObject == 0)
+	if (attachedObj == nullptr || otherObject == nullptr)
+	{
+		throw NullObjectException();
+	}
+}
+
+CommonContact::CommonContact(const Vect3& pt, const Vect3Normal& penetrationDirection, float penetrationMagnitude, float bounciness, float friction, std::shared_ptr<IPhysicsObject> receivingObject, std::shared_ptr<IPhysicsObject> otherObject)
+: IContact(pt, penetrationDirection, penetrationMagnitude)
+, _affectedObject(receivingObject)
+, _otherObject(otherObject)
+, _bounciness(bounciness)
+, _friction(friction)
+{
+	// TODO: Reconsider - the other objects might be able to be null..
+	if (receivingObject == nullptr || otherObject == nullptr)
 	{
 		throw NullObjectException();
 	}

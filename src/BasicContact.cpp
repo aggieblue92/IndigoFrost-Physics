@@ -30,6 +30,11 @@ BasicContact::BasicContact(const Vect3& objPt, const Vect3& penetration, std::sh
 , _affectedObject(receivingObject)
 {}
 
+BasicContact::BasicContact(const Vect3& objPt, const Vect3Normal& penDirection, float penMagnitude, std::shared_ptr<IPhysicsObject> receivingObject)
+: IContact(objPt, penDirection, penMagnitude)
+, _affectedObject(receivingObject)
+{}
+
 bool BasicContact::resolve(float dt)
 {
 	// If there is no attached object, GTFO

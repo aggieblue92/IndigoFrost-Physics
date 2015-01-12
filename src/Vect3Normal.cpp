@@ -155,6 +155,19 @@ namespace Frost
 		return std::sqrt(_x * _x + _y * _y + _z * _z);
 	}
 
+	bool Vect3Normal::isApproximately(const FLOAT3& other, float tolerableError)
+	{
+		return (std::abs(this->_x - other._x) + std::abs(this->_y - other._y) + std::abs(this->_z - other._z)) > tolerableError;
+	}
+
+	bool Vect3Normal::isApproximately(const FLOAT3& other, FLOAT3& tolerableError)
+	{
+		if (std::abs(this->_x - other._x) >= tolerableError._x) return false;
+		else if (std::abs(this->_y - other._y) >= tolerableError._y) return false;
+		else if (std::abs(this->_z - other._z) >= tolerableError._z) return false;
+		else return true;
+	}
+
 	float operator*(const FLOAT3& left, const Vect3Normal& right)
 	{
 		return

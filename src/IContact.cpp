@@ -31,6 +31,12 @@ IContact::IContact(const Vect3& objPt, const Vect3& penetrationVector)
 , _contactMagnitude(penetrationVector.magnitude())
 {}
 
+IContact::IContact(const Vect3& objPt, const Vect3Normal& dir, float mag)
+: _objCollisionPoint(objPt)
+, _contactNormal(dir)
+, _contactMagnitude(mag)
+{}
+
 Vect3 IContact::getCollisionPoint() const
 {
 	return this->_objCollisionPoint;

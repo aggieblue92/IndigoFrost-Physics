@@ -355,6 +355,7 @@ void CollisionBox::genContactsS(const CollisionSphere& s, std::vector<std::share
 		o.push_back(s.summonDemons(
 			collisionPoint_w,
 			penetration_w,
+			penetration_w.magnitude(),
 			s.getAttachedObjectPtr(),
 			_attachedObject));
 	}

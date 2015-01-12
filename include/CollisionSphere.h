@@ -71,7 +71,7 @@ namespace Frost
 		virtual void genContactsS(const CollisionSphere& s, std::vector<std::shared_ptr<IContact>>& o) const;
 
 	private:
-		virtual std::shared_ptr<IContact> summonDemons(const Vect3&, const Vect3&, std::shared_ptr<IPhysicsObject>, std::shared_ptr<IPhysicsObject>) const;
+		virtual std::shared_ptr<IContact> summonDemons(const Vect3&, const Vect3Normal&, float, std::shared_ptr<IPhysicsObject>, std::shared_ptr<IPhysicsObject>) const;
 	};
 }
 

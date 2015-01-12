@@ -39,6 +39,7 @@ namespace Frost
 	{
 	public:
 		BasicContact(const Vect3& objPt, const Vect3& penetration, std::shared_ptr<IPhysicsObject> receivingObject);
+		BasicContact(const Vect3& objPt, const Vect3Normal& penDirection, float penMagnitude, std::shared_ptr<IPhysicsObject> receivingObject);
 
 		virtual bool resolve(float dt);
 
