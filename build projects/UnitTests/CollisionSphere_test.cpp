@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <FrostMath.h>
 #include <CollisionSphere.h>
+#include <BasicPhysicsObject.h>
 
 namespace Frost
 {
@@ -49,6 +50,13 @@ namespace Microsoft
 
 				return wss.str();
 			}
+
+			template<> static std::wstring ToString<Frost::IPhysicsObject>(Frost::IPhysicsObject* p_ipo)
+			{
+				std::wstringstream wss(L"");
+				wss << L"IPhysicsObject at: " << ToString(p_ipo->getPos());
+				return wss.str();
+			}
 		}
 	}
 }
@@ -63,13 +71,27 @@ namespace UnitTests
 		
 		TEST_METHOD(ctor)
 		{
+			// Construction of independent unit spheres
 			Frost::CollisionSphere unit_sphere(1.f, { 0.f, 0.f, 0.f }, nullptr);
 			Assert::AreEqual(unit_sphere.getRadius(), 1.f, L"Unit sphere reports incorrect radius");
 			Assert::AreEqual(unit_sphere.getPos(), Frost::MathConstants::VECTOR_ZERO, L"Unit sphere not placed at origin");
 			Assert::IsNull(unit_sphere.getAttachedObjectPtr().get(), L"Failed to attach null pointer to unit collision sphere");
 			Assert::AreEqual(unit_sphere.getTransformMatrix(), Frost::MathConstants::MATRIX_IDENTITY, L"Unit sphere at origin does not use identity matrix as transform");
 
-			// TODO: Test attachment of IPhysicsObject instances
+			// Attachment of physics object in ctor...
+			auto tpo = std::make_shared<Frost::BasicPhysicsObject>(1.f, Frost::MathConstants::MATRIX_IDENTITY, 0.f, 0.f);
+			Frost::CollisionSphere unit_with_attachment(1.f, { 0.f, 0.f, 0.f }, tpo);
+			Assert::AreEqual((Frost::IPhysicsObject*)tpo.get(), unit_with_attachment.getAttachedObjectPtr().get(), L"Attached object is not reported the same as object given to attach");
+
+			// Copy constructor
+			auto copy = Frost::CollisionSphere(unit_with_attachment);
+			Assert::AreEqual(unit_with_attachment.getAttachedObjectPtr().get(), copy.getAttachedObjectPtr().get(), L"Copy constructor fails to copy shared pointer reference to new collision sphere");
+			Assert::AreEqual(unit_with_attachment.getPos(), copy.getPos(), L"Position failed to copy in copy ctor");
+		}
+
+		TEST_METHOD(getRadius)
+		{
+
 		}
 
 		TEST_METHOD(isTouching_sphere)
@@ -90,6 +112,11 @@ namespace UnitTests
 			s2 = Frost::CollisionSphere(45.f, { -2.f, 11.f, 2.f }, nullptr);
 			Assert::IsFalse(s1.isTouching(s2), L"Arbitrary spheres falsely reported to be in contact with each other");
 			Assert::IsFalse(s2.isTouching(s1), L"Arbitrary spheres falsely reported to be in contact with each other");
+		}
+
+		TEST_METHOD(isTouching_box)
+		{
+
 		}
 
 		TEST_METHOD(genContacts_sphere)
@@ -152,6 +179,11 @@ namespace UnitTests
 			s2 = Frost::CollisionSphere(0.999f, { 1.f, 0.f, 0.f }, nullptr);
 			s1.genContacts(s2, o_contacts);
 			Assert::AreEqual(o_contacts.size(), 0u, L"Contacts generated when spheres were barely not touching");
+		}
+
+		TEST_METHOD(genContacts_box)
+		{
+
 		}
 
 	};

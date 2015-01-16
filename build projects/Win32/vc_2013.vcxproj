@@ -36,7 +36,6 @@
     <ClInclude Include="..\..\include\CommonCollisionBox.h" />
     <ClInclude Include="..\..\include\CommonCollisionSphere.h" />
     <ClInclude Include="..\..\include\CommonContact.h" />
-    <ClInclude Include="..\..\include\DebugLogger.h" />
     <ClInclude Include="..\..\include\FloatStructs.h" />
     <ClInclude Include="..\..\include\ForceRegistry.h" />
     <ClInclude Include="..\..\include\FrostExceptions.h" />
@@ -48,6 +47,7 @@
     <ClInclude Include="..\..\include\ICollisionManager.h" />
     <ClInclude Include="..\..\include\IContact.h" />
     <ClInclude Include="..\..\include\IForce.h" />
+    <ClInclude Include="..\..\include\IndigoFrost.h" />
     <ClInclude Include="..\..\include\IPhysicsNode.h" />
     <ClInclude Include="..\..\include\IPhysicsObject.h" />
     <ClInclude Include="..\..\include\Matrix.h" />
@@ -74,7 +74,6 @@
     <ClCompile Include="..\..\src\CommonCollisionBox.cpp" />
     <ClCompile Include="..\..\src\CommonCollisionSphere.cpp" />
     <ClCompile Include="..\..\src\CommonContact.cpp" />
-    <ClCompile Include="..\..\src\DebugLogger.cpp" />
     <ClCompile Include="..\..\src\ForceRegistry.cpp" />
     <ClCompile Include="..\..\src\GravityForce.cpp" />
     <ClCompile Include="..\..\src\ICollisionGeometry.cpp" />

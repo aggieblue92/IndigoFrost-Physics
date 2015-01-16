@@ -246,14 +246,103 @@ namespace UnitTests
 		TEST_METHOD(accessorMethods)
 		{
 			// Square brackets access, access and modify
+			Frost::Vect3 v1(2.f, 4.f, 6.f);
+			Assert::AreEqual(2.f, v1[0], L"Square bracket accessor does not return expected result on first component");
+			Assert::AreEqual(4.f, v1[1], L"Square bracket accessor does not return expected result on second component");
+			Assert::AreEqual(6.f, v1[2], L"Square bracket accessor does not return expected result on third component");
+
+			v1[0] = 1.f;
+			v1[1] = 2.f;
+			v1[2] = 3.f;
+			Assert::AreEqual(1.f, v1[0], L"Square bracket mutator does not return expected result on first component");
+			Assert::AreEqual(2.f, v1[1], L"Square bracket mutator does not return expected result on second component");
+			Assert::AreEqual(3.f, v1[2], L"Square bracket mutator does not return expected result on third component");
+
+			// Out of bounds
+			try {
+				auto foo = v1[-1];
+				Assert::Fail(L"Expected index out of bounds exception when accessing -1 element of Vect3");
+			}
+			catch (Frost::IndexOutOfBoundsException iex) {
+				Assert::AreEqual(-1, iex.indexGiven, L"Index provided by IndexOutOfBoundsException not what expected.");
+			}
+			try {
+				auto foo = v1[3];
+				Assert::Fail(L"Expected index out of bounds exception when accessing 3 element of Vect3");
+			}
+			catch (Frost::IndexOutOfBoundsException iex) {
+				Assert::AreEqual(3, iex.indexGiven, L"Index provided by IndexOutOfBoundsException not what expected.");
+			}
+
+			Frost::Vect3 v2 = v1;
+			try {
+				v1[-1] = 555.f;
+				Assert::Fail(L"Expected index out of bounds exception when accessing -1 element of Vect3");
+			}
+			catch (Frost::IndexOutOfBoundsException iex) {
+				Assert::AreEqual(-1, iex.indexGiven, L"Index provided by IndexOutOfBoundsException not what expected.");
+			}
+
+			try {
+				v1[3] = 223.f;
+				Assert::Fail(L"Expected index out of bounds exception when accessing 3 element of Vect3");
+			}
+			catch (Frost::IndexOutOfBoundsException iex) {
+				Assert::AreEqual(3, iex.indexGiven, L"Index provided by IndexOutOfBoundsException not what expected.");
+			}
+			Assert::AreEqual(v1, v2, L"On invalid mutate functions (exception thrown), should not actually mutate vector");
+
+			// Constant vector
+			const Frost::Vect3 v3(2.f, 3.f, 4.f);
+			Assert::AreEqual(2.f, v3[0], L"Square bracket accessor does not return expected result on first component with constant vector");
+			Assert::AreEqual(3.f, v3[1], L"Square bracket accessor does not return expected result on second component with constant vector");
+			Assert::AreEqual(4.f, v3[2], L"Square bracket accessor does not return expected result on third component with constant vector");
+
+			try {
+				auto foo = v3[-1];
+				Assert::Fail(L"Expected index out of bounds exception when accessing -1 element of const Vect3");
+			}
+			catch (Frost::IndexOutOfBoundsException iex) {
+				Assert::AreEqual(-1, iex.indexGiven, L"Index provided by IndexOutOfBoundsException not what expected.");
+			}
+			try {
+				auto foo = v3[3];
+				Assert::Fail(L"Expected index out of bounds exception when accessing 3 element of const Vect3");
+			}
+			catch (Frost::IndexOutOfBoundsException iex) {
+				Assert::AreEqual(3, iex.indexGiven, L"Index provided by IndexOutOfBoundsException not what expected.");
+			}
 		}
 
 		TEST_METHOD(vectorFunctions)
 		{
 			// Scalar Product
+			Assert::AreEqual(Frost::Vect3(1.f, 1.f, 1.f) * Frost::Vect3(2.f, 4.f, 6.f), 12.f, L"Scalar product did not yield expected result");
+			Assert::AreEqual(Frost::Vect3(1.f, 2.f, 0.f) * Frost::Vect3(0.f, 0.f, 2.f), 0.f, L"Scalar product of orthogonal vectors did not yield expected result");
+			Assert::AreEqual(Frost::MathConstants::VECTOR_UNIT_X * Frost::MathConstants::VECTOR_UNIT_Y, 0.f, L"Scalar product of unit x and y vectors did not yield zero");
+			Assert::AreEqual(Frost::MathConstants::VECTOR_ZERO * Frost::Vect3(444.f, 555.f, 666.f), 0.f, L"Scalar product of zero vector with other vector did not yield zero");
+
 			// Vector Product
+			Assert::AreEqual(Frost::CrossProduct(Frost::MathConstants::VECTOR_UNIT_X, Frost::MathConstants::VECTOR_UNIT_Y), Frost::MathConstants::VECTOR_UNIT_Z, L"Vector product of unit x and unit y vectors does not yield unit z vector");
+			Assert::AreEqual(Frost::CrossProduct(Frost::MathConstants::VECTOR_UNIT_Y, Frost::MathConstants::VECTOR_UNIT_X), Frost::MathConstants::VECTOR_UNIT_Z * -1.f, L"Vector product of unit y and unit x vectors does not yield negative unit z vector");
+			Assert::AreEqual(Frost::CrossProduct(Frost::MathConstants::VECTOR_ZERO, Frost::MathConstants::VECTOR_ONE), Frost::MathConstants::VECTOR_ZERO, L"Vector product of zero and one vector does not equal zero vector");
+			Assert::AreEqual(Frost::Vect3(Frost::Vect3Normal(Frost::CrossProduct(Frost::MathConstants::VECTOR_UNIT_X,
+				Frost::Vect3Normal(Frost::MathConstants::VECTOR_UNIT_X + Frost::MathConstants::VECTOR_UNIT_Y)))), Frost::MathConstants::VECTOR_UNIT_Z,
+				L"Vector product of two unit vectors non orthogonal does not yield expected result");
+
 			// Magnitude, Square Magnitude
-			// External scalar, vector, component product
+			Assert::AreEqual(1.f, Frost::MathConstants::VECTOR_UNIT_X.magnitude(), L"Unit x vector does not report magnitude of 1.0");
+			Assert::AreEqual(1.f, Frost::MathConstants::VECTOR_UNIT_Y.magnitude(), L"Unit y vector does not report magnitude of 1.0");
+			Assert::AreEqual(1.f, Frost::MathConstants::VECTOR_UNIT_Z.magnitude(), L"Unit z vector does not report magnitude of 1.0");
+			Assert::AreEqual(0.f, Frost::MathConstants::VECTOR_ZERO.magnitude(), L"Zero vector does not report magnitude of 0.0");
+			Assert::AreEqual(1.f, Frost::MathConstants::VECTOR_UNIT_X.squareMagnitude(), L"Unit x vector does not report square magnitude of 1.0");
+			Assert::AreEqual(1.f, Frost::MathConstants::VECTOR_UNIT_Y.squareMagnitude(), L"Unit y vector does not report square magnitude of 1.0");
+			Assert::AreEqual(1.f, Frost::MathConstants::VECTOR_UNIT_Z.squareMagnitude(), L"Unit z vector does not report square magnitude of 1.0");
+			Assert::AreEqual(0.f, Frost::MathConstants::VECTOR_ZERO.magnitude(), 0.f, L"Zero vector does not report square magnitude of 0.0");
+
+			// Component Product
+			Assert::AreEqual(Frost::Vect3(1.f, 0.f, 0.f), Frost::ComponentProduct(Frost::MathConstants::VECTOR_ONE, Frost::MathConstants::VECTOR_UNIT_X), L"Component product on ones vector and unit x vector did not yield expected result");
+			Assert::AreEqual(Frost::Vect3(3.f, 4.f, 6.f), Frost::ComponentProduct({ 1.f, 2.f, 3.f }, { 3.f, 2.f, 2.f }), L"Component product on arbitrary vectors failed");
 		}
 
 		TEST_METHOD(approximationTests)
@@ -273,9 +362,22 @@ namespace UnitTests
 			Assert::IsFalse(Frost::MathConstants::VECTOR_ZERO == Frost::MathConstants::VECTOR_ONE, L"Equated ones vector to zero vector");
 
 			// isApproximately functions
+			Frost::Vect3 testApproximation(1.999f, 2.001f, 2.f);
+			Assert::IsTrue(testApproximation.isApproximately({ 2.f, 2.f, 2.f }, 0.01f), L"isApproximately test failed on large margin of error");
+			Assert::IsTrue(testApproximation.isApproximately({ 2.f, 2.f, 2.f }, 0.002f), L"isApproximately test failed for exact epsilon");
+			Assert::IsFalse(testApproximation.isApproximately({ 2.f, 2.f, 2.f }, 0.00001f), L"isApproximation test succeeded when should have failed on epsilon too small");
+			Assert::IsTrue(testApproximation.isApproximately({ 2.f, 2.f, 2.f }, { 0.1f, 0.1f, 0.1f }), L"isApproximately test failed on large margin of error");
+			Assert::IsTrue(testApproximation.isApproximately({ 2.f, 2.f, 2.f }, { 0.0010001f, 0.0010001f, 0.0000001f }), L"isApproximately test failed for (nearly) exact epsilon");
+			Assert::IsFalse(testApproximation.isApproximately({ 2.f, 2.f, 2.f }, { 0.00001f, 0.00001f, 0.00001f }), L"isApproximation test succeeded when should have failed on epsilon too small");
+
 			// Negative Numbers
-			// Zero
-			// Excpected Case
+			testApproximation *= -1.f;
+			Assert::IsTrue(testApproximation.isApproximately({ -2.f, -2.f, -2.f }, 0.01f), L"isApproximately test failed on large margin of error with negative vector");
+			Assert::IsTrue(testApproximation.isApproximately({ -2.f, -2.f, -2.f }, 0.002f), L"isApproximately test failed for exact epsilon with negative vector");
+			Assert::IsFalse(testApproximation.isApproximately({ -2.f, -2.f, -2.f }, 0.00001f), L"isApproximation test succeeded when should have failed on negative vector, epsilon too small");
+			Assert::IsTrue(testApproximation.isApproximately({ -2.f, -2.f, -2.f }, { 0.01f, 0.01f, 0.01f }), L"isApproximately test failed on large margin of error with negative vector");
+			Assert::IsTrue(testApproximation.isApproximately({ -2.f, -2.f, -2.f }, { 0.0010001f, 0.0010001f, 0.0000001f }), L"isApproximately test failed for (nearly) exact epsilon with negative vector");
+			Assert::IsFalse(testApproximation.isApproximately({ -2.f, -2.f, -2.f }, { 0.00001f, 0.00001f, 0.00001f }), L"isApproximation test succeeded when should have failed on negative vector, epsilon too small");
 		}
 	};
 }

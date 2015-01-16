@@ -32,15 +32,6 @@ BruteForceCollisionManager::BruteForceCollisionManager()
 
 void BruteForceCollisionManager::addPhysicsNode(std::shared_ptr<IPhysicsNode> t)
 {
-	if(t->getName() != "")
-	{
-		if(t->getName() != "")
-		{
-			std::stringstream ss("");
-			ss << "Added " << t->getName() << " to the collision manager" << std::endl;
-			DebugLogger::log(ss.str());
-		}
-	}
 	_objList.push_back(t);
 }
 
@@ -50,12 +41,6 @@ void BruteForceCollisionManager::removePhysicsNode(std::shared_ptr<IPhysicsNode>
 	{
 		if (_objList[i] == r)
 		{
-			if(r->getName() != "")
-			{
-				std::stringstream ss("");
-				ss << "Removed " << r->getName() << " from the collision manager" << std::endl;
-				DebugLogger::log(ss.str());
-			}
 			_objList.erase(_objList.begin() + i);
 			return;
 		}
@@ -68,9 +53,6 @@ void BruteForceCollisionManager::removePhysicsNode(std::string name)
 	{
 		if (_objList[i]->getName() == name)
 		{
-			DebugLogger::log("Removed ");
-			DebugLogger::log(name);
-			DebugLogger::log(" from the collision manager\n");
 			_objList.erase(_objList.begin() + i);
 			return;
 		}
@@ -83,17 +65,7 @@ void BruteForceCollisionManager::genContacts(std::vector<std::shared_ptr<IContac
 	{
 		for (unsigned int j = i + 1u; j < _objList.size(); ++j)
 		{
-			std::stringstream ss("");
-			ss << "Checking collisions between " << _objList[i]->getName() << " and " << _objList[j]->getName() << std::endl;
-			DebugLogger::debug(ss.str());
-			unsigned int osize = o.size();
 			_objList[i]->getCollidableData()->genContacts(_objList[j]->getCollidableData(), o);
-			if(o.size() > osize)
-			{
-				ss.str("");
-				ss << o.size() - osize << " contacts found! (" << _objList[i]->getName() << ", " << _objList[j]->getName() << ")" << std::endl;
-				DebugLogger::log(ss.str());
-			}
 		}
 	}
 }

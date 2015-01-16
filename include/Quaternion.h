@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "FloatStructs.h"
 #include "FrostExceptions.h"
 #include "Vect3Normal.h"
-#include "DebugLogger.h"
+#include <ostream>
 
 namespace Frost
 {

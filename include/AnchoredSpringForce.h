@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define FROST_FORCES_ANCHORED_SPRING_FORCE
 
 #include "IForce.h"
-#include "DebugLogger.h"
 
 namespace Frost
 {

@@ -56,11 +56,9 @@ WorldManager::WorldManager(FROST_COLLISION_MANAGER cmt)
 	{
 	case FROST_COLLISION_MANAGER_BVHTREE:
 		_collisionManager = std::shared_ptr<ICollisionManager>(new BVHTree());
-		DebugLogger::log("Created WorldManager with BVHTree collision manager.\n");
 		break;
 	case FROST_COLLISION_MANAGER_BRUTE_FORCE:
 		_collisionManager = std::shared_ptr<ICollisionManager>(new BruteForceCollisionManager());
-		DebugLogger::log("Created WorldManager with Brute Force collision manager.\n");
 		break;
 	default:
 		throw NotImplementedException();
@@ -85,31 +83,21 @@ WorldManager::~WorldManager()
 	}
 	_forces.clearRegistry();
 	nInstances--;
-
-	DebugLogger::log("Destroyed WorldManager object.\n");
 }
 
 void WorldManager::update(float timeElapsed)
 {
-	std::stringstream ss("");
-	ss << "Frame updating - " << timeElapsed << " seconds elapsed." << std::endl;
-	DebugLogger::debug(ss.str());
-	ss.str("");
 	if (_collisionManager == 0)
 	{
-		DebugLogger::err("   No collision manager implemented - throwing NotImplementedException()\n");
 		throw NotImplementedException();
 	}
 
-	DebugLogger::debug("   Updating the collision manager...\n");
 	_collisionManager->update(timeElapsed);
-	DebugLogger::debug("   Updating the forces in the world...\n");
 	_forces.updateForces(timeElapsed);
 
 	// Important: With the current implementation (I say that because I don't like it),
 	//  contacts must be resolved before physics objects can be updated. This is because
 	//  contacts may add forces to the object, and may look at forces in the object.
-	DebugLogger::debug("   Generating contacts...\n");
 	_collisionManager->genContacts(_masterContactList);
 
 	// TODO: Figure this out...
@@ -120,46 +108,25 @@ void WorldManager::update(float timeElapsed)
 	// TODO: In the future, you should always have a thread running that updates
 	//  all this, and then just query it at the frame.
 	// Right now, just handle all contacts.
-	ss << "   Found " << _masterContactList.size() << " contacts" << std::endl;
-	if(_masterContactList.size() > 0u)
-		DebugLogger::log(ss.str());
-	else
-		DebugLogger::debug(ss.str());
-	ss.str("");
 	while (_masterContactList.size() > 0u)
 	{
 		_masterContactList[0u]->resolve(timeElapsed);
 		_masterContactList.erase(_masterContactList.begin());
 	}
 
-	DebugLogger::debug("   Done. Updating objects...\n");
 	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
 	{
-		if((*i)->getName() != "")
-			ss << "   Updating " << (*i)->getName() << "...\n";
-		DebugLogger::debug(ss.str());
-		ss.str("");
 		(*i)->getPhysicsObject()->update(timeElapsed);
 	}
 }
 
 std::shared_ptr<IPhysicsNode> WorldManager::addObject(std::shared_ptr<IPhysicsObject> objectToAdd, std::shared_ptr<Collidable> collisionData, std::string name)
 {
-	std::stringstream ss("");
-	if(name != "")
-		ss << "Adding object " << name << " to the WorldManager" << std::endl;
-	else
-		ss << "Adding unnamed object to the WorldManager" << std::endl;
-	DebugLogger::log(ss.str());
-	ss.str("");
 	// Make sure the name does not exist...
 	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
 	{
 		if ((*i)->getName() == name)
 		{
-			ss << "Error - " << name << "already exists in the registry! Throwing an error." << std::endl;
-			DebugLogger::err(ss.str());
-			ss.str("");
 			throw DuplicateActionException();
 		}
 	}
@@ -184,23 +151,11 @@ std::shared_ptr<IPhysicsNode> WorldManager::addObject(std::shared_ptr<IPhysicsOb
 
 std::shared_ptr<IPhysicsNode> WorldManager::addObject(std::shared_ptr<IPhysicsObject> objectToAdd, std::string name)
 {
-	std::stringstream ss("");
-	if(name != "")
-		ss << "Adding object " << name << " to the WorldManager";
-	else
-		ss << "Adding unnamed object to the WorldManager";
-	ss << std::endl;
-	DebugLogger::log(ss.str());
-	ss.str("");
-
 	// Make sure that the name does not exist...
 	for (auto i = _allManagedObjects.begin(); i < _allManagedObjects.end(); ++i)
 	{
 		if ((*i)->getName() == name)
 		{
-			ss << "Error - " << name << "already exists in the registry! Throwing an error." << std::endl;
-			DebugLogger::err(ss.str());
-			ss.str("");
 			throw DuplicateActionException();
 		}
 	}
@@ -240,15 +195,11 @@ std::shared_ptr<IPhysicsNode> WorldManager::operator[](std::string name)
 
 void WorldManager::addForce(std::shared_ptr<IForce> f, std::shared_ptr<IPhysicsNode> o)
 {
-	DebugLogger::log("Adding new force to unnamed object directly\n");
 	_forces.add(f, o);
 }
 
 void WorldManager::addForce(std::shared_ptr<IForce> forceToAdd, std::string o)
 {
-	std::stringstream ss("");
-	ss << "Adding new force to " << o << "..." << std::endl;
-	DebugLogger::log(ss.str());
 	_forces.add(forceToAdd, getObjectByName(o));
 }
 
@@ -260,7 +211,6 @@ void WorldManager::attachCollisionManager(std::shared_ptr<ICollisionManager> t)
 	}
 	else
 	{
-		DebugLogger::err("Error - a collision manager is already attached to this WorldManager object!\n");
 		throw DuplicateActionException();
 	}
 }

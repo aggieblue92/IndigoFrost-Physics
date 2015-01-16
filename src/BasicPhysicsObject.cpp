@@ -41,7 +41,6 @@ BasicPhysicsObject::BasicPhysicsObject(float invMass, const Matrix& invInertiaTe
 {
 	if (_linearDrag < 0.f || _angularDrag < 0.f)
 	{
-		DebugLogger::err("Error in creation of BasicPhysicsObject - linear or angular drag parameter out of range. Throwing exception.\n");
 		throw OutOfBoundsException();
 	}
 }
@@ -66,13 +65,6 @@ void BasicPhysicsObject::addForceAtPoint(const Vect3& f_w, const Vect3& pt_world
 		Vect3 originWorldForce = armNormal * (armNormal * f_w);
 		Vect3 originWorldTorque = armNormal % f_w;
 
-		if(DebugLogger::isFlagSet(DebugLogger::DEBUG_LEVEL_DEBUG_TO_FILE | DebugLogger::DEBUG_LEVEL_DEBUG_TO_COUT))
-		{
-			std::stringstream ss("");
-			ss << "BasicPhysicsObject: Origin force: " << originWorldForce << ", torque: " << originWorldTorque << std::endl;
-			DebugLogger::debug(ss.str());
-		}
-
 		addForceAtOrigin(originWorldForce);
 		addTorqueAtOrigin(originWorldTorque);
 	}
@@ -95,13 +87,6 @@ void BasicPhysicsObject::update(float dt)
 {
 	Vect3 frameAcc = _netForce * _invMass;
 	Vect3 frameTorque = _invInertiaTensor * _netTorque;
-
-	if(DebugLogger::isFlagSet(DebugLogger::DEBUG_LEVEL_LOG_TO_FILE | DebugLogger::DEBUG_LEVEL_LOG_TO_CLOG))
-	{
-		std::stringstream ss("");
-		ss << "Net frame force: " << _netForce << ", torque: " << _netTorque << std::endl;
-		DebugLogger::log(ss.str());
-	}
 
 	_linearVelocity += frameAcc * dt;
 	_angularVelocity += frameTorque * dt;

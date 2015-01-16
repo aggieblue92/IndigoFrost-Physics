@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "FloatStructs.h"
 #include "FrostExceptions.h"
-#include "DebugLogger.h"
+#include <ostream>
 
 namespace Frost
 {
@@ -67,11 +67,13 @@ namespace Frost
 		bool operator==(const FLOAT3& other) const;
 		bool operator!=(const FLOAT3& other) const;
 
-		///////////// OTHER VECTOR FUNCTIONS //////////////
+		// Returns the magnitude of the vector. Use for precise values - use squareMagnitude for better performance.
 		float magnitude() const;
+
+		// Returns the square magnitude of the vector. Achieves better performance than squareMagnitude
 		float squareMagnitude() const;
-		bool isApproximately(const FLOAT3& other, float tolerableError);
-		bool isApproximately(const FLOAT3& other, FLOAT3 tolerableError);
+		bool isApproximately(const FLOAT3& other, float tolerableError) const;
+		bool isApproximately(const FLOAT3& other, FLOAT3 tolerableError) const;
 
 	private:
 	};

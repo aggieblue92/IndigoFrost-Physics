@@ -132,19 +132,22 @@ namespace Frost
 
 	float Vect3::operator[](int i) const
 	{
-		if (i < 0 || i > 2) throw IndexOutOfBoundsException(i);
+		if (i < 0 || i > 2)
+			throw IndexOutOfBoundsException(i);
 		else return *(reinterpret_cast<const float*>(this) + i);
 	}
 
 	float& Vect3::operator[](int i)
 	{
-		if (i < 0 || i > 2) throw IndexOutOfBoundsException(i);
+		if (i < 0 || i > 2)
+			throw IndexOutOfBoundsException(i);
 		else return *(reinterpret_cast<float*>(this) + i);
 	}
 
 	Vect3& Vect3::operator=(const FLOAT3& o)
 	{
-		if (this == &o) return *this;
+		if (this == &o)
+			return *this;
 		this->_x = o._x;
 		this->_y = o._y;
 		this->_z = o._z;
@@ -175,19 +178,19 @@ namespace Frost
 		return _x * _x + _y * _y + _z * _z;
 	}
 
-	bool Vect3::isApproximately(const FLOAT3& other, float tolerableError)
+	bool Vect3::isApproximately(const FLOAT3& other, float tolerableError) const
 	{
 		Vect3 diff = *this - other;
 		return std::abs(diff._x) + std::abs(diff._y) + std::abs(diff._z) <= tolerableError;
 	}
 
-	bool Vect3::isApproximately(const FLOAT3& other, FLOAT3 tolerableError)
+	bool Vect3::isApproximately(const FLOAT3& other, FLOAT3 tolerableError) const
 	{
 		Vect3 diff = *this - other;
 		return
-			std::abs(diff._x) - std::abs(tolerableError._x) >= 0
-			&& std::abs(diff._y) - std::abs(tolerableError._y) >= 0
-			&& std::abs(diff._z) - std::abs(tolerableError._z) >= 0;
+			((std::abs(diff._x) - std::abs(tolerableError._x)) <= 0.f)
+			&& ((std::abs(diff._y) - std::abs(tolerableError._y)) <= 0.f)
+			&& ((std::abs(diff._z) - std::abs(tolerableError._z)) <= 0.f);
 	}
 
 	// Functions:

@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vc_2013", "vc_2013.vcxproj"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "..\UnitTests\UnitTests.vcxproj", "{26D21B9C-2315-4887-AA66-C6EE2F409419}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicVanillaTests", "..\BasicVanillaTests\BasicVanillaTests.vcxproj", "{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RollingOnTable", "..\RollingOnTable\RollingOnTable.vcxproj", "{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +35,22 @@ Global
 		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Static Library (Debug)|Win32.Build.0 = Debug|Win32
 		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Static Library (Release)|Win32.ActiveCfg = Release|Win32
 		{26D21B9C-2315-4887-AA66-C6EE2F409419}.Static Library (Release)|Win32.Build.0 = Release|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Debug|Win32.Build.0 = Debug|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Release|Win32.ActiveCfg = Release|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Release|Win32.Build.0 = Release|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Static Library (Debug)|Win32.ActiveCfg = Debug|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Static Library (Debug)|Win32.Build.0 = Debug|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Static Library (Release)|Win32.ActiveCfg = Release|Win32
+		{B2AF7B53-B328-40C1-BD67-02D3B7795B1B}.Static Library (Release)|Win32.Build.0 = Release|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Debug|Win32.Build.0 = Debug|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Release|Win32.ActiveCfg = Release|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Release|Win32.Build.0 = Release|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Static Library (Debug)|Win32.ActiveCfg = Debug|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Static Library (Debug)|Win32.Build.0 = Debug|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Static Library (Release)|Win32.ActiveCfg = Release|Win32
+		{C10B818B-9C3C-4D40-BD57-98AB7CC4224D}.Static Library (Release)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
